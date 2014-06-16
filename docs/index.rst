@@ -46,13 +46,13 @@ configures the prompt. To include the user, current working directory, or the ab
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 
 
-#doitlive interpreter: <interpreter>
-------------------------------------
+#doitlive shell: <shell>
+-------------------------
 
-configures which interpreter is used to run subsequent commands.
+configures which shell is used to run subsequent commands.
 
 
-Example: ``#doitlive interpreter: /bin/zsh``
+Example: ``#doitlive shell: /bin/zsh``
 
 
 #doitlive alias: <name>=<command>
