@@ -3,13 +3,17 @@ doitlive
 ========
 
 .. image:: https://travis-ci.org/sloria/doitlive.png?branch=master
-        :target: https://travis-ci.org/sloria/doitlive
+  :target: https://travis-ci.org/sloria/doitlive
 
-..
 
-    Because sometimes you need to do it live.
+`doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
-`doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands then replays it in a fake terminal session as you type random characters.
+Get it now
+----------
+
+.. code-block:: bash
+
+    $ pip install doitlive
 
 Usage
 -----
@@ -17,6 +21,11 @@ Usage
 1. Create a file called ``session.sh``. Fill it with some bash commands.
 2. Run ``doitlive session.sh``
 3. Type like a madman.
+
+
+More at http://doitlive.rtfd.org
+--------------------------------
+
 
 Requirements
 ------------
