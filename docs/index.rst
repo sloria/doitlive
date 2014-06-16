@@ -22,6 +22,12 @@ Usage
 
 1. Create a file called ``session.sh``. Fill it with some bash commands.
 2. Run ``doitlive session.sh``
+
+.. code-block:: bash
+
+    $ doitlive session.sh
+
+
 3. Type like a madman.
 
 

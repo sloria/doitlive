@@ -16,7 +16,7 @@ if 'win32' in str(sys.platform).lower():
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = []
+        self.test_args = ['--verbose']
         self.test_suite = True
 
     def run_tests(self):
@@ -70,8 +70,8 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
     ],
     py_modules=["doitlive"],
     entry_points={
