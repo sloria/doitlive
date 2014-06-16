@@ -20,9 +20,9 @@ from tempfile import NamedTemporaryFile
 import click
 from click import echo, style, getchar
 
-__version__ = "0.1.0-dev"
-__author__ = "Steven Loria"
-__license__ = "MIT"
+__version__ = '0.1.0'
+__author__ = 'Steven Loria'
+__license__ = 'MIT'
 
 env = os.environ
 PY2 = int(sys.version[0]) == 2
