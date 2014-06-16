@@ -51,8 +51,8 @@ def read(fname):
 
 setup(
     name='doitlive',
-    version="0.1.0-dev",
-    description='When you need to do it live',
+    version=__version__,
+    description='Because sometimes you need to do it live.',
     long_description=read("README.rst"),
     author='Steven Loria',
     author_email='sloria1@gmail.com',
@@ -60,7 +60,7 @@ setup(
     install_requires=REQUIRES,
     license=read("LICENSE"),
     zip_safe=False,
-    keywords='doitlive',
+    keywords='doitlive cli live coding presentations shell',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
