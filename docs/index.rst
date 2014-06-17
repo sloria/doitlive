@@ -43,6 +43,8 @@ The following options can be included at the top of your session file (all are o
 
 configures "typing" speed. Defaults to 1.
 
+Example: ``#doitlive speed: 3``
+
 #doitlive prompt: <prompt>
 --------------------------
 
