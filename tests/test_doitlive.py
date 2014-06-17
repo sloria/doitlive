@@ -10,6 +10,7 @@ from click.testing import CliRunner
 import doitlive
 from doitlive import cli
 
+doitlive.TESTING = True
 random.seed(42)
 HERE = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,7 +25,7 @@ def run_session(runner, filename, user_input):
     session = os.path.join(HERE, filename)
     # Press ENTER at beginning of session and ENTER twice at end
     user_in = ''.join(['\r', user_input, '\r\r'])
-    return runner.invoke(cli, [session, '--check-output'], input=user_in)
+    return runner.invoke(cli, [session], input=user_in)
 
 
 def test_basic_session(runner):

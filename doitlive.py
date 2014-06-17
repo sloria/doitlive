@@ -30,12 +30,14 @@ if PY2:
 else:
     basestring = (str, bytes)
 
+
 HERE = os.path.abspath(os.path.dirname(__file__))
 ESC = u'\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
+TESTING = False
 
 class PromptState(object):
     user = ''
@@ -57,20 +59,21 @@ def get_default_prompt():
     if env.get('DOITLIVE_PROMPT'):
         return env['DOITLIVE_PROMPT']
     _prompt_state.update()
-    return '{user}@{dir}: $'.format(
+    return '{user}@{cwd}: $'.format(
         user=_prompt_state.user,
-        dir=_prompt_state.display_cwd
+        cwd=_prompt_state.display_cwd
     )
 
 def ensure_utf(string):
     return string.encode('utf-8') if PY2 else string
 
 
-def run_command(cmd, shell=None, check_output=False, aliases=None, envvars=None):
+def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=True):
     shell = shell or env.get('DOITLIVE_INTERPRETER') or '/bin/bash'
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
         os.chdir(os.path.expanduser(directory))
+        _prompt_state.update()
     else:
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work
@@ -95,7 +98,7 @@ def run_command(cmd, shell=None, check_output=False, aliases=None, envvars=None)
             cmd_line = cmd + '\n'
             fp.write(ensure_utf(cmd_line))
             fp.flush()
-            if check_output:
+            if test_mode:
                 return subprocess.check_output([shell, fp.name])
             else:
                 return subprocess.call([shell, fp.name])
@@ -110,10 +113,9 @@ def wait_for(chars):
             echo()
             return in_char
 
-def magictype(text, shell, check_output,
-        prompt=get_default_prompt, aliases=None, envvars=None, speed=1):
-    if callable(prompt):
-        prompt = prompt()
+def magictype(text, shell, prompt_func=get_default_prompt, aliases=None,
+        envvars=None, speed=1, test_mode=False):
+    prompt = prompt_func()
     echo(prompt + ' ', nl=False)
     i = 0
     while i < len(text):
@@ -125,8 +127,8 @@ def magictype(text, shell, check_output,
         echo(char, nl=False)
         i += speed
     wait_for(RETURNS)
-    output = run_command(text, shell, check_output=check_output,
-        aliases=aliases, envvars=envvars)
+    output = run_command(text, shell,aliases=aliases, envvars=envvars,
+        test_mode=test_mode)
     if isinstance(output, basestring):
         echo(output)
 
@@ -138,8 +140,12 @@ def format_prompt(prompt):
         full_cwd=_prompt_state.cwd
     )
 
-def run(commands, shell='/bin/bash',
-        check_output=False, prompt=get_default_prompt, speed=1):
+
+def make_prompt_formatter(template):
+    return lambda: format_prompt(template)
+
+def run(commands, shell='/bin/bash', prompt_func=get_default_prompt, speed=1,
+        test_mode=False):
     echof("We'll do it live!", fg='red', bold=True)
     echof('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
 
@@ -156,7 +162,7 @@ def run(commands, shell='/bin/bash',
             if match:
                 option, arg = match.group('option'), match.group('arg')
                 if option == 'prompt':
-                    prompt = format_prompt(arg)
+                    prompt_func = make_prompt_formatter(arg)
                 elif option == 'shell':
                     shell = arg
                 elif option == 'alias':
@@ -166,22 +172,20 @@ def run(commands, shell='/bin/bash',
                 elif option == 'speed':
                     speed = int(arg)
             continue
-        magictype(command, shell, check_output,
-            prompt=prompt, aliases=aliases, envvars=envvars, speed=speed)
-    if callable(prompt):
-        prompt = prompt()
+        magictype(command, shell, prompt_func=prompt_func, aliases=aliases,
+            envvars=envvars, speed=speed, test_mode=test_mode)
+    prompt = prompt_func()
     echo(prompt + ' ', nl=False)
     wait_for(RETURNS)
     echof("FINISHED SESSION", fg='yellow', bold=True)
 
-@click.option('--check-output', is_flag=True, default=False)
 @click.option('--speed', '-S', default=1, help='Typing speed.')
 @click.option('--shell', '-s', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @click.version_option(__version__, '--version', '-v')
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, check_output, speed):
+def cli(session_file, shell, speed):
     """The doitlive CLI.
 
     \b
@@ -195,8 +199,8 @@ def cli(session_file, shell, check_output, speed):
     """
     run(session_file.readlines(),
         shell=shell,
-        check_output=check_output,
-        speed=speed)
+        speed=speed,
+        test_mode=TESTING)
 
 DEMO = [
     'echo "Greetings"',
@@ -205,13 +209,12 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
-@click.option('--check-output', is_flag=True, default=False)
 @click.option('--speed', '-S', default=1, help='Typing speed.')
 @click.option('--shell', '-i', default='/bin/bash')
 @click.command()
-def demo(shell, check_output, speed):
+def demo(shell, speed):
     """Run a demo doitlive session."""
-    run(DEMO, shell=shell, check_output=check_output, speed=speed)
+    run(DEMO, shell=shell, speed=speed, test_mode=TESTING)
 
 
 if __name__ == '__main__':
