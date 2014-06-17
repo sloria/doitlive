@@ -19,7 +19,7 @@ from tempfile import NamedTemporaryFile
 import click
 from click import echo, style, getchar
 
-__version__ = '0.2.0-dev'
+__version__ = '0.2.0'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
