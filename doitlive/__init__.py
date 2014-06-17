@@ -36,7 +36,8 @@ DEMO_FILE = os.path.join(HERE, 'doitlive-demo.sh')
 ESC = u'\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
-            '(?P<option>prompt|shell|alias|env):\s*(?P<arg>.+)$')
+            '(?P<option>prompt|shell|alias|env|speed):'
+            '\s*(?P<arg>.+)$')
 
 class PromptState(object):
     user = ''
@@ -110,16 +111,19 @@ def wait_for(chars):
             return in_char
 
 def magictype(text, shell, check_output,
-        prompt=get_default_prompt, aliases=None, envvars=None):
+        prompt=get_default_prompt, aliases=None, envvars=None, speed=1):
     if callable(prompt):
         prompt = prompt()
     echo(prompt + ' ', nl=False)
-    for c in text:
+    i = 0
+    while i < len(text):
+        char = text[i:i + speed]
         in_char = getchar()
         if in_char == ESC:
             echo()
             raise click.Abort()
-        echo(c, nl=False)
+        echo(char, nl=False)
+        i += speed
     wait_for(RETURNS)
     output = run_command(text, shell, check_output=check_output,
         aliases=aliases, envvars=envvars)
@@ -141,7 +145,7 @@ def run(commands, shell='/bin/bash',
 
     click.pause()
     click.clear()
-    aliases, envvars = [], []
+    aliases, envvars, speed = [], [], 1
     for line in commands:
         command = line.strip()
         if not command:
@@ -159,9 +163,11 @@ def run(commands, shell='/bin/bash',
                     aliases.append(arg)
                 elif option == 'env':
                     envvars.append(arg)
+                elif option == 'speed':
+                    speed = int(arg)
             continue
         magictype(command, shell, check_output,
-            prompt=prompt, aliases=aliases, envvars=envvars)
+            prompt=prompt, aliases=aliases, envvars=envvars, speed=speed)
     if callable(prompt):
         prompt = prompt()
     echo(prompt + ' ', nl=False)
@@ -169,7 +175,8 @@ def run(commands, shell='/bin/bash',
     echof("FINISHED SESSION", fg='yellow', bold=True)
 
 @click.option('--check-output', is_flag=True, default=False)
-@click.option('--shell', '-i', default='/bin/bash')
+@click.option('--shell', '-s', metavar='<shell>',
+    default='/bin/bash', help='The shell to use.')
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @click.version_option(__version__, '--version', '-v')
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
@@ -178,10 +185,9 @@ def cli(session_file, shell, check_output):
 
     \b
     How to use:
-        1. Create a file called session.sh
-        2. Put some bash commands in that file.
-        3. Run "doitlive session.sh"
-        4. Type like a madman.
+        1. Create a file called session.sh. Fill it with bash commands.
+        2. Run "doitlive session.sh"
+        3. Type like a madman.
 
     Press ESC or ^C at any time to exit the session.
     To see a demo session, run "doitlive-demo".

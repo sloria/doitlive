@@ -20,7 +20,7 @@ Get it now
 Usage
 =====
 
-1. Create a file called ``session.sh``. Fill it with some bash commands.
+1. Create a file called ``session.sh``. Fill it with bash commands.
 2. Run ``doitlive session.sh``
 
 .. code-block:: bash

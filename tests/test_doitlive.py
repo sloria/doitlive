@@ -71,3 +71,8 @@ def test_custom_var(runner):
     user_input = random_string(len('echo $MEANING'))
     result = run_session(runner, 'envvar.session', user_input)
     assert '42' in result.output
+
+def test_custom_speed(runner):
+    user_input = random_string(3)
+    result = run_session(runner, 'speed.session', user_input)
+    assert '123456789' in result.output
