@@ -139,13 +139,13 @@ def format_prompt(prompt):
     )
 
 def run(commands, shell='/bin/bash',
-        check_output=False, prompt=get_default_prompt):
+        check_output=False, prompt=get_default_prompt, speed=1):
     echof("We'll do it live!", fg='red', bold=True)
     echof('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
 
     click.pause()
     click.clear()
-    aliases, envvars, speed = [], [], 1
+    aliases, envvars = [], []
     for line in commands:
         command = line.strip()
         if not command:
@@ -175,12 +175,13 @@ def run(commands, shell='/bin/bash',
     echof("FINISHED SESSION", fg='yellow', bold=True)
 
 @click.option('--check-output', is_flag=True, default=False)
+@click.option('--speed', '-S', default=1, help='Typing speed.')
 @click.option('--shell', '-s', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @click.version_option(__version__, '--version', '-v')
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, check_output):
+def cli(session_file, shell, check_output, speed):
     """The doitlive CLI.
 
     \b
@@ -194,7 +195,8 @@ def cli(session_file, shell, check_output):
     """
     run(session_file.readlines(),
         shell=shell,
-        check_output=check_output)
+        check_output=check_output,
+        speed=speed)
 
 
 @click.option('--check-output', is_flag=True, default=False)
