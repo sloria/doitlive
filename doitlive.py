@@ -43,8 +43,10 @@ class PromptState(object):
     display_dir = ''
 
     def update(self):
-        self.user, self.cwd = getpass.getuser(), os.getcwd()
-        self.display_cwd = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
+        self.user = style(getpass.getuser(), fg='cyan', bold=True)
+        self.cwd = os.getcwd()
+        display_cwd_raw = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
+        self.display_cwd = style(display_cwd_raw, fg='green')
 
 _prompt_state = PromptState()
 
@@ -56,8 +58,8 @@ def get_default_prompt():
         return env['DOITLIVE_PROMPT']
     _prompt_state.update()
     return '{user}@{dir}: $'.format(
-        user=style(_prompt_state.user, fg='cyan', bold=True),
-        dir=style(_prompt_state.display_cwd, fg='green')
+        user=_prompt_state.user,
+        dir=_prompt_state.display_cwd
     )
 
 def ensure_utf(string):
@@ -204,11 +206,12 @@ DEMO = [
 ]
 
 @click.option('--check-output', is_flag=True, default=False)
+@click.option('--speed', '-S', default=1, help='Typing speed.')
 @click.option('--shell', '-i', default='/bin/bash')
 @click.command()
-def demo(shell, check_output):
+def demo(shell, check_output, speed):
     """Run a demo doitlive session."""
-    run(DEMO, shell=shell, check_output=check_output)
+    run(DEMO, shell=shell, check_output=check_output, speed=speed)
 
 
 if __name__ == '__main__':
