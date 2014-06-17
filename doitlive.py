@@ -12,7 +12,6 @@ from __future__ import unicode_literals
 import os
 import sys
 import re
-import io
 import getpass
 import subprocess
 from tempfile import NamedTemporaryFile
@@ -32,7 +31,6 @@ else:
     basestring = (str, bytes)
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-DEMO_FILE = os.path.join(HERE, 'doitlive-demo.sh')
 ESC = u'\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
@@ -198,14 +196,19 @@ def cli(session_file, shell, check_output, speed):
         check_output=check_output,
         speed=speed)
 
+DEMO = [
+    'echo "Greetings"',
+    'echo "This is just a demo session"',
+    'echo "For more info, check out the home page..."',
+    'echo "http://doitlive.rtfd.org"'
+]
 
 @click.option('--check-output', is_flag=True, default=False)
 @click.option('--shell', '-i', default='/bin/bash')
 @click.command()
 def demo(shell, check_output):
     """Run a demo doitlive session."""
-    with io.open(DEMO_FILE, 'r', encoding='utf-8') as fp:
-        run(fp.readlines(), shell=shell, check_output=check_output)
+    run(DEMO, shell=shell, check_output=check_output)
 
 
 if __name__ == '__main__':
