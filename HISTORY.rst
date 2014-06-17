@@ -2,7 +2,7 @@
 Changelog
 *********
 
-0.2.0 (unreleased)
+1.0 (unreleased)
 ------------------
 
 - Add "speed" config option.

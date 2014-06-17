@@ -19,7 +19,7 @@ from tempfile import NamedTemporaryFile
 import click
 from click import echo, style, getchar
 
-__version__ = '0.1.0'
+__version__ = '1.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
@@ -179,7 +179,7 @@ def run(commands, shell='/bin/bash', prompt_func=get_default_prompt, speed=1,
     wait_for(RETURNS)
     echof("FINISHED SESSION", fg='yellow', bold=True)
 
-@click.option('--speed', '-S', default=1, help='Typing speed.')
+@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
 @click.option('--shell', '-s', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))

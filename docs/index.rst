@@ -36,7 +36,12 @@ Comment magic (configuration)
 
 Any line that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
 
-The following options can be included at the top of your session file.
+The following options can be included at the top of your session file (all are optional).
+
+#doitlive speed: <int>
+----------------------
+
+configures "typing" speed. Defaults to 1.
 
 #doitlive prompt: <prompt>
 --------------------------
