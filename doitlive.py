@@ -39,7 +39,8 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '\s*(?P<arg>.+)$')
 
 THEMES = {
-    'default': '{user.cyan.bold}@{hostname.blue}:{cwd.green} $',
+    'default': '{user.cyan.bold}@{hostname.blue}:{dir.green} $',
+    'redhat': '[{user}@{hostname} {dir}'
 }
 
 TESTING = False
@@ -100,10 +101,12 @@ class PromptState(object):
 
     def update(self):
         self.user = TermString(getpass.getuser())
-        self.cwd = TermString(os.getcwd())
+        full_cwd = os.getcwd()
+        cwd_raw = full_cwd.replace(env['HOME'], '~')
+        self.cwd = TermString(cwd_raw)
         self.hostname = TermString(socket.gethostname())
-        display_cwd_raw = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
-        self.display_cwd = TermString(display_cwd_raw)
+        dir_raw = '~' if full_cwd == env['HOME'] else os.path.split(full_cwd)[-1]
+        self.dir = TermString(dir_raw)
 
 _prompt_state = PromptState()
 
@@ -181,8 +184,8 @@ def format_prompt(prompt):
     _prompt_state.update()
     return prompt.format(
         user=_prompt_state.user,
-        cwd=_prompt_state.display_cwd,
-        full_cwd=_prompt_state.cwd,
+        dir=_prompt_state.dir,
+        cwd=_prompt_state.cwd,
         hostname=_prompt_state.hostname
     )
 

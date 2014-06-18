@@ -5,6 +5,8 @@ Changelog
 ******************
 
 - Prompts variables can have ANSI colors and styles.
+- Prompt variable``{{full_cwd}}`` renamed to ``{{cwd}}.
+- Prompt variable ``{cwd}`` renamed to ``{dir}``.
 - ``{hostname}`` can be included in prompt.
 - ``run`` and ``magictype`` receive prompt_template instead of a prompt function.
 
