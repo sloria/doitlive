@@ -4,6 +4,8 @@
   doitlive
   ~~~~~~~~
 
+  A tool for "live" presentations in the terminal.
+
   :copyright: (c) 2014 by Steven Loria.
   :license: MIT, see LICENSE for more details.
 """
@@ -273,10 +275,12 @@ def validate_prompt(ctx, param, value):
 
 
 @click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', callback=validate_prompt, help='Prompt theme.')
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+    default='default', callback=validate_prompt, help='Prompt theme.',
+    show_default=True)
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
+    show_default=True)
 @click.option('--shell', '-S', metavar='<shell>',
-    default='/bin/bash', help='The shell to use.')
+    default='/bin/bash', help='The shell to use.', show_default=True)
 @click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
 @click.option('--preview', '-P', is_flag=True, default=False,
     is_eager=True, help='Preview the available prompt themes.')
@@ -296,13 +300,15 @@ def cli(session_file, shell, speed, prompt, preview):
     """
     if preview:
         preview_themes()
-    else:
+    elif session_file is not None:
         run(session_file.readlines(),
             shell=shell,
             speed=speed,
             test_mode=TESTING,
             prompt_template=prompt)
-
+    else:
+        raise click.UsageError('Must provide a SESSION_FILE. '
+            'Run "doitlive --help" for more options.')
 
 def preview_themes():
     secho('Available themes', bold=True)
@@ -322,14 +328,16 @@ DEMO = [
 ]
 
 @click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', callback=validate_prompt, help='Prompt theme or template.')
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+    default='default', callback=validate_prompt, help='Prompt theme.',
+    show_default=True)
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
+    show_default=True)
 @click.option('--shell', '-S', metavar='<shell>',
-    default='/bin/bash', help='The shell to use.')
+    default='/bin/bash', help='The shell to use.', show_default=True)
 @click.command()
-def demo(shell, speed):
+def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
-    run(DEMO, shell=shell, speed=speed, test_mode=TESTING)
+    run(DEMO, shell=shell, speed=speed, test_mode=TESTING, prompt_template=prompt)
 
 
 if __name__ == '__main__':
