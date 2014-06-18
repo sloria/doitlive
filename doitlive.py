@@ -18,7 +18,7 @@ import subprocess
 from tempfile import NamedTemporaryFile
 
 import click
-from click import echo, style, getchar
+from click import echo, style, secho, getchar
 
 __version__ = '0.3.0-dev'
 __author__ = 'Steven Loria'
@@ -53,9 +53,6 @@ class PromptState(object):
         self.display_cwd = style(display_cwd_raw, fg='green')
 
 _prompt_state = PromptState()
-
-def echof(text, *args, **kwargs):
-    echo(style(text, *args, **kwargs))
 
 
 def ensure_utf(string):
@@ -122,7 +119,7 @@ def magictype(text, shell, prompt_template=DEFAULT_PROMPT, aliases=None,
         echo(char, nl=False)
         i += speed
     wait_for(RETURNS)
-    output = run_command(text, shell,aliases=aliases, envvars=envvars,
+    output = run_command(text, shell, aliases=aliases, envvars=envvars,
         test_mode=test_mode)
     if isinstance(output, basestring):
         echo(output)
@@ -142,8 +139,8 @@ def make_prompt_formatter(template):
 
 def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
         test_mode=False):
-    echof("We'll do it live!", fg='red', bold=True)
-    echof('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
+    secho("We'll do it live!", fg='red', bold=True)
+    secho('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
 
     click.pause()
     click.clear()
@@ -173,7 +170,7 @@ def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
     prompt = make_prompt_formatter(prompt_template)()
     echo(prompt + ' ', nl=False)
     wait_for(RETURNS)
-    echof("FINISHED SESSION", fg='yellow', bold=True)
+    secho("FINISHED SESSION", fg='yellow', bold=True)
 
 @click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
 @click.option('--shell', '-s', metavar='<shell>',
