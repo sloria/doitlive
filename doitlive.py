@@ -19,15 +19,13 @@ from tempfile import NamedTemporaryFile
 import click
 from click import echo, style, getchar
 
-__version__ = '0.2.0'
+__version__ = '0.3.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
 env = os.environ
 PY2 = int(sys.version[0]) == 2
-if PY2:
-    basestring = basestring
-else:
+if not PY2:
     basestring = (str, bytes)
 
 
@@ -37,6 +35,8 @@ RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
+
+DEFAULT_PROMPT = env.get('DOITLIVE_PROMPT') or '{user}@{cwd} $'
 TESTING = False
 
 class PromptState(object):
@@ -55,14 +55,6 @@ _prompt_state = PromptState()
 def echof(text, *args, **kwargs):
     echo(style(text, *args, **kwargs))
 
-def get_default_prompt():
-    if env.get('DOITLIVE_PROMPT'):
-        return env['DOITLIVE_PROMPT']
-    _prompt_state.update()
-    return '{user}@{cwd}: $'.format(
-        user=_prompt_state.user,
-        cwd=_prompt_state.display_cwd
-    )
 
 def ensure_utf(string):
     return string.encode('utf-8') if PY2 else string
@@ -113,8 +105,9 @@ def wait_for(chars):
             echo()
             return in_char
 
-def magictype(text, shell, prompt_func=get_default_prompt, aliases=None,
+def magictype(text, shell, prompt_template=DEFAULT_PROMPT, aliases=None,
         envvars=None, speed=1, test_mode=False):
+    prompt_func = make_prompt_formatter(prompt_template)
     prompt = prompt_func()
     echo(prompt + ' ', nl=False)
     i = 0
@@ -144,7 +137,7 @@ def format_prompt(prompt):
 def make_prompt_formatter(template):
     return lambda: format_prompt(template)
 
-def run(commands, shell='/bin/bash', prompt_func=get_default_prompt, speed=1,
+def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
         test_mode=False):
     echof("We'll do it live!", fg='red', bold=True)
     echof('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
@@ -162,7 +155,7 @@ def run(commands, shell='/bin/bash', prompt_func=get_default_prompt, speed=1,
             if match:
                 option, arg = match.group('option'), match.group('arg')
                 if option == 'prompt':
-                    prompt_func = make_prompt_formatter(arg)
+                    prompt_template = arg
                 elif option == 'shell':
                     shell = arg
                 elif option == 'alias':
@@ -172,9 +165,9 @@ def run(commands, shell='/bin/bash', prompt_func=get_default_prompt, speed=1,
                 elif option == 'speed':
                     speed = int(arg)
             continue
-        magictype(command, shell, prompt_func=prompt_func, aliases=aliases,
+        magictype(command, shell, prompt_template=prompt_template, aliases=aliases,
             envvars=envvars, speed=speed, test_mode=test_mode)
-    prompt = prompt_func()
+    prompt = make_prompt_formatter(prompt_template)()
     echo(prompt + ' ', nl=False)
     wait_for(RETURNS)
     echof("FINISHED SESSION", fg='yellow', bold=True)
