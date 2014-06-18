@@ -40,7 +40,7 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
 
 THEMES = {
     'default': '{user.cyan.bold}@{hostname.blue}:{dir.green} $',
-    'redhat': '[{user}@{hostname} {dir}'
+    'redhat': '[{user}@{hostname} {dir}',
 }
 
 TESTING = False
@@ -93,22 +93,16 @@ class TermString(unicode):
         return self._styled(dim=True)
 
 
-class PromptState(object):
-    user = ''
-    cwd = ''
-    hostname = ''
-    display_cwd = ''
-
-    def update(self):
-        self.user = TermString(getpass.getuser())
-        full_cwd = os.getcwd()
-        cwd_raw = full_cwd.replace(env['HOME'], '~')
-        self.cwd = TermString(cwd_raw)
-        self.hostname = TermString(socket.gethostname())
-        dir_raw = '~' if full_cwd == env['HOME'] else os.path.split(full_cwd)[-1]
-        self.dir = TermString(dir_raw)
-
-_prompt_state = PromptState()
+def get_prompt_state():
+    full_cwd = os.getcwd()
+    cwd_raw = full_cwd.replace(env['HOME'], '~')
+    dir_raw = '~' if full_cwd == env['HOME'] else os.path.split(full_cwd)[-1]
+    return {
+        'user': TermString(getpass.getuser()),
+        'cwd': TermString(cwd_raw),
+        'dir': TermString(dir_raw),
+        'hostname': TermString(socket.gethostname())
+    }
 
 
 def ensure_utf(string):
@@ -120,7 +114,6 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=True):
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
         os.chdir(os.path.expanduser(directory))
-        _prompt_state.update()
     else:
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work
@@ -181,13 +174,7 @@ def magictype(text, shell, prompt_template='default', aliases=None,
         echo(output)
 
 def format_prompt(prompt):
-    _prompt_state.update()
-    return prompt.format(
-        user=_prompt_state.user,
-        dir=_prompt_state.dir,
-        cwd=_prompt_state.cwd,
-        hostname=_prompt_state.hostname
-    )
+    return prompt.format(**get_prompt_state())
 
 
 def make_prompt_formatter(template):

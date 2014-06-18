@@ -9,6 +9,7 @@ Changelog
 - Prompt variable ``{cwd}`` renamed to ``{dir}``.
 - ``{hostname}`` can be included in prompt.
 - ``run`` and ``magictype`` receive prompt_template instead of a prompt function.
+- Remove unnecessary ``PromptState`` class.
 
 0.2.0 (2014-06-16)
 ******************
