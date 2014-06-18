@@ -5,10 +5,12 @@ import random
 import getpass
 
 import pytest
+import click
+from click import style
 from click.testing import CliRunner
 
 import doitlive
-from doitlive import cli
+from doitlive import cli, TermString
 
 doitlive.TESTING = True
 random.seed(42)
@@ -77,3 +79,56 @@ def test_custom_speed(runner):
     user_input = random_string(3)
     result = run_session(runner, 'speed.session', user_input)
     assert '123456789' in result.output
+
+
+def test_bad_theme(runner):
+    result = runner.invoke(cli, ['-p', 'thisisnotatheme'])
+    assert result.exit_code > 0
+
+def test_preview(runner):
+    assert runner.invoke(cli, ['--preview']).exit_code == 0
+    assert runner.invoke(cli, ['-P']).exit_code == 0
+
+class TestTermString:
+
+    @pytest.fixture
+    def ts(self):
+        return TermString('foo')
+
+    @pytest.fixture
+    def ts_blank(self):
+        return TermString('')
+
+    def test_str(self, ts):
+        assert str(ts) == 'foo'
+
+    # Test all the ANSI colors provided by click
+    @pytest.mark.parametrize('color', click.termui._ansi_colors)
+    def test_color(self, color, ts):
+        colored = getattr(ts, color)
+        assert isinstance(colored, TermString)
+        assert str(colored) == style('foo', fg=color)
+
+    def test_bold(self, ts):
+        assert str(ts.bold) == style('foo', bold=True)
+
+    def test_blink(self, ts):
+        assert str(ts.blink) == style('foo', blink=True)
+
+    def test_dim(self, ts):
+        assert str(ts.dim) == style('foo', dim=True)
+
+    def test_underlined(self, ts):
+        assert str(ts.underlined) == style('foo', underline=True)
+
+    def test_paren(self, ts, ts_blank):
+        assert str(ts.paren) == '(foo)'
+        assert str(ts_blank.paren) == ''
+
+    def test_square(self, ts, ts_blank):
+        assert str(ts.square) == '[foo]'
+        assert str(ts_blank.square) == ''
+
+    def test_curly(self, ts, ts_blank):
+        assert str(ts.curly) == '{foo}'
+        assert str(ts_blank.curly) == ''

@@ -16,19 +16,42 @@ import getpass
 import socket
 import subprocess
 from tempfile import NamedTemporaryFile
+from collections import OrderedDict
 
 import click
-from click import echo, style, getchar
+from click import echo, style, secho, getchar
+from click.termui import strip_ansi
 
-__version__ = '0.3.0-dev'
+__version__ = '1.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
 env = os.environ
 PY2 = int(sys.version[0]) == 2
 if not PY2:
+    unicode = str
     basestring = (str, bytes)
 
+THEMES = OrderedDict([
+    ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
+
+    ('sorin', '{cwd.cyan} {git_branch.green.square} ' +
+    ''.join([style('❯', fg='red'),  style('❯', fg='white'), style('❯', fg='green')])),
+
+    ('nicolauj', style('❯', fg='white')),
+
+    ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
+                '{git_branch.cyan.paren}\n$'),
+
+    ('redhat', '[{user}@{hostname} {dir}]$'),
+    ('redhat_color', '[{user.cyan.bold}@{hostname.blue} {dir.green}]$'),
+
+    ('walters', '{user}@{hostname.underlined}>'),
+    ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
+
+    ('minimal', '{dir} {git_branch.square} »'),
+    ('minimal_color', '{dir.cyan} {git_branch.blue.square} »'),
+])
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 ESC = u'\x1b'
@@ -37,25 +60,98 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
 
-DEFAULT_PROMPT = env.get('DOITLIVE_PROMPT') or '{user}@{hostname}:{cwd} $'
+
 TESTING = False
 
-class PromptState(object):
-    user = ''
-    cwd = ''
-    display_dir = ''
 
-    def update(self):
-        self.user = style(getpass.getuser(), fg='cyan', bold=True)
-        self.cwd = os.getcwd()
-        self.hostname = style(socket.gethostname(), fg='blue')
-        display_cwd_raw = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
-        self.display_cwd = style(display_cwd_raw, fg='green')
+class TermString(unicode):
+    """A string-like object that can be formatted with ANSI styles. Useful for
+    styling strings within a string.format "template."
+    """
 
-_prompt_state = PromptState()
+    def _styled(self, **styles):
+        return TermString(style(self, **styles))
 
-def echof(text, *args, **kwargs):
-    echo(style(text, *args, **kwargs))
+    # Colors
+
+    @property
+    def blue(self): return self._styled(fg='blue')
+    @property
+    def magenta(self): return self._styled(fg='magenta')
+    @property
+    def red(self): return self._styled(fg='red')
+    @property
+    def white(self): return self._styled(fg='white')
+    @property
+    def green(self): return self._styled(fg='green')
+    @property
+    def black(self): return self._styled(fg='black')
+    @property
+    def yellow(self): return self._styled(fg='yellow')
+    @property
+    def cyan(self): return self._styled(fg='cyan')
+    @property
+    def reset(self): return self._styled(fg='reset')
+
+    # Styling
+
+    @property
+    def bold(self):
+        return self._styled(bold=True)
+
+    @property
+    def blink(self):
+        return self._styled(blink=True)
+
+    @property
+    def underlined(self):
+        return self._styled(underline=True)
+
+    @property
+    def dim(self):
+        return self._styled(dim=True)
+
+    def _bracketed(self, left, right):
+        if strip_ansi(self):
+            return TermString(''.join([left, self, right]))
+        else:
+            return TermString('')
+
+    @property
+    def paren(self):
+        return self._bracketed('(', ')')
+
+    @property
+    def square(self):
+        return self._bracketed('[', ']')
+
+    @property
+    def curly(self):
+        return self._bracketed('{', '}')
+
+
+def get_current_git_branch():
+    command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
+    try:
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        return out.strip()
+    except subprocess.CalledProcessError:
+        pass
+    return ''
+
+
+def get_prompt_state():
+    full_cwd = os.getcwd()
+    cwd_raw = full_cwd.replace(env['HOME'], '~')
+    dir_raw = '~' if full_cwd == env['HOME'] else os.path.split(full_cwd)[-1]
+    return {
+        'user': TermString(getpass.getuser()),
+        'cwd': TermString(cwd_raw),
+        'dir': TermString(dir_raw),
+        'hostname': TermString(socket.gethostname()),
+        'git_branch': TermString(get_current_git_branch()),
+    }
 
 
 def ensure_utf(string):
@@ -67,7 +163,6 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=True):
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
         os.chdir(os.path.expanduser(directory))
-        _prompt_state.update()
     else:
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work
@@ -107,7 +202,7 @@ def wait_for(chars):
             echo()
             return in_char
 
-def magictype(text, shell, prompt_template=DEFAULT_PROMPT, aliases=None,
+def magictype(text, shell, prompt_template='default', aliases=None,
         envvars=None, speed=1, test_mode=False):
     prompt_func = make_prompt_formatter(prompt_template)
     prompt = prompt_func()
@@ -122,28 +217,24 @@ def magictype(text, shell, prompt_template=DEFAULT_PROMPT, aliases=None,
         echo(char, nl=False)
         i += speed
     wait_for(RETURNS)
-    output = run_command(text, shell,aliases=aliases, envvars=envvars,
+    output = run_command(text, shell, aliases=aliases, envvars=envvars,
         test_mode=test_mode)
     if isinstance(output, basestring):
         echo(output)
 
 def format_prompt(prompt):
-    _prompt_state.update()
-    return prompt.format(
-        user=_prompt_state.user,
-        cwd=_prompt_state.display_cwd,
-        full_cwd=_prompt_state.cwd,
-        hostname=_prompt_state.hostname
-    )
+    return prompt.format(**get_prompt_state())
 
 
 def make_prompt_formatter(template):
-    return lambda: format_prompt(template)
+    tpl = THEMES.get(template) or template
+    return lambda: format_prompt(tpl)
 
-def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
+
+def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
-    echof("We'll do it live!", fg='red', bold=True)
-    echof('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
+    secho("We'll do it live!", fg='red', bold=True)
+    secho('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
 
     click.pause()
     click.clear()
@@ -173,16 +264,26 @@ def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
     prompt = make_prompt_formatter(prompt_template)()
     echo(prompt + ' ', nl=False)
     wait_for(RETURNS)
-    echof("FINISHED SESSION", fg='yellow', bold=True)
+    secho("FINISHED SESSION", fg='yellow', bold=True)
 
-@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
-@click.option('--shell', '-s', metavar='<shell>',
+def validate_prompt(ctx, param, value):
+    if value not in THEMES:
+        raise click.BadParameter('"{0}" is not a valid prompt theme.'.format(value))
+    return value
+
+
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', callback=validate_prompt, help='Prompt theme.')
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+@click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
-@click.argument('session_file', type=click.File('r', encoding='utf-8'))
+@click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
+@click.option('--preview', '-P', is_flag=True, default=False,
+    is_eager=True, help='Preview the available prompt themes.')
 @click.version_option(__version__, '--version', '-v')
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, speed):
-    """The doitlive CLI.
+def cli(session_file, shell, speed, prompt, preview):
+    """doitlive: A tool for "live" presentations in the terminal
 
     \b
     How to use:
@@ -193,10 +294,25 @@ def cli(session_file, shell, speed):
     Press ESC or ^C at any time to exit the session.
     To see a demo session, run "doitlive-demo".
     """
-    run(session_file.readlines(),
-        shell=shell,
-        speed=speed,
-        test_mode=TESTING)
+    if preview:
+        preview_themes()
+    else:
+        run(session_file.readlines(),
+            shell=shell,
+            speed=speed,
+            test_mode=TESTING,
+            prompt_template=prompt)
+
+
+def preview_themes():
+    secho('Available themes', bold=True)
+    echo()
+    for name, template in THEMES.items():
+        echo('"{}" theme:'.format(name))
+        echo(format_prompt(template), nl=False)
+        echo(' command arg1 arg2 ... argn')
+        echo()
+
 
 DEMO = [
     'echo "Greetings"',
@@ -205,8 +321,10 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
-@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
-@click.option('--shell', '-s', metavar='<shell>',
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', callback=validate_prompt, help='Prompt theme or template.')
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+@click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.command()
 def demo(shell, speed):

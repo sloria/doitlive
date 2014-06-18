@@ -45,12 +45,21 @@ configures "typing" speed. Defaults to 1.
 
 Example: ``#doitlive speed: 3``
 
-#doitlive prompt: <prompt>
---------------------------
+#doitlive prompt: <theme_name_or_template>
+------------------------------------------
 
-configures the prompt. To include the user, current working directory, or the absolute path to the current directory, use `{user}`, `{cwd}`, and `{full_cwd}`, respectively.
+configures the prompt. Can be any of the built-in themes or a custom prompt template. To preview a list of available themes, run ``doitlive --themes``.
+
+**Using a custom template**:
+
+To include the user, hostname, current directory, current path to working directory, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, and ``{git_branch}``, respectively.
 
 Example: ``#doitlive prompt: {user} is at {cwd} $``
+
+Any of the prompt variables can be formatted with ANSI styles through special attribute access.
+
+
+Example: ``#doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $``
 
 
 #doitlive shell: <shell>
@@ -75,6 +84,8 @@ Example: ``#doitlive alias: du="du -ach | sort -h"``
 sets an environment variable.
 
 Example: ``#doitlive env: EDITOR=vim``
+
+
 
 
 Project info
