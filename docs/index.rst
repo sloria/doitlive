@@ -48,7 +48,7 @@ Example: ``#doitlive speed: 3``
 #doitlive prompt: <prompt>
 --------------------------
 
-configures the prompt. To include the user, current working directory, or the absolute path to the current directory, use `{user}`, `{cwd}`, and `{full_cwd}`, respectively.
+configures the prompt. To include the user, current working directory, or the absolute path to the current directory, use ``{user}``, ``{cwd}``, and ``{full_cwd}``, respectively.
 
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 

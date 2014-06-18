@@ -1,9 +1,10 @@
 Changelog
 ---------
 
-0.3.0 (unreleased)
+1.0 (unreleased)
 ******************
 
+- Prompts variables can have ANSI colors and styles.
 - ``{hostname}`` can be included in prompt.
 - ``run`` and ``magictype`` receive prompt_template instead of a prompt function.
 

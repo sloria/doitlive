@@ -27,6 +27,7 @@ __license__ = 'MIT'
 env = os.environ
 PY2 = int(sys.version[0]) == 2
 if not PY2:
+    unicode = str
     basestring = (str, bytes)
 
 
@@ -37,20 +38,68 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
 
-DEFAULT_PROMPT = env.get('DOITLIVE_PROMPT') or '{user}@{hostname}:{cwd} $'
+DEFAULT_PROMPT = (env.get('DOITLIVE_PROMPT') or
+    '{user.cyan.bold}@{hostname.blue}:{cwd.green} $')
 TESTING = False
+
+class TermString(unicode):
+    """A string-like object that can be formatted with ANSI styles."""
+
+    def _styled(self, **styles):
+        return TermString(style(self, **styles))
+
+    # Colors
+
+    @property
+    def blue(self): return self._styled(fg='blue')
+    @property
+    def magenta(self): return self._styled(fg='magenta')
+    @property
+    def red(self): return self._styled(fg='red')
+    @property
+    def white(self): return self._styled(fg='white')
+    @property
+    def green(self): return self._styled(fg='green')
+    @property
+    def black(self): return self._styled(fg='black')
+    @property
+    def yellow(self): return self._styled(fg='yellow')
+    @property
+    def cyan(self): return self._styled(fg='cyan')
+    @property
+    def reset(self): return self._styled(fg='reset')
+
+    # Styling
+
+    @property
+    def bold(self):
+        return self._styled(bold=True)
+
+    @property
+    def blink(self):
+        return self._styled(blink=True)
+
+    @property
+    def underline(self):
+        return self._styled(underline=True)
+
+    @property
+    def dim(self):
+        return self._styled(dim=True)
+
 
 class PromptState(object):
     user = ''
     cwd = ''
-    display_dir = ''
+    hostname = ''
+    display_cwd = ''
 
     def update(self):
-        self.user = style(getpass.getuser(), fg='cyan', bold=True)
-        self.cwd = os.getcwd()
-        self.hostname = style(socket.gethostname(), fg='blue')
+        self.user = TermString(getpass.getuser())
+        self.cwd = TermString(os.getcwd())
+        self.hostname = TermString(socket.gethostname())
         display_cwd_raw = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
-        self.display_cwd = style(display_cwd_raw, fg='green')
+        self.display_cwd = TermString(display_cwd_raw)
 
 _prompt_state = PromptState()
 
