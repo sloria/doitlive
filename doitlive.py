@@ -217,8 +217,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
-@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
-@click.option('--shell', '-s', metavar='<shell>',
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+@click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @click.version_option(__version__, '--version', '-v')
@@ -247,8 +247,8 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
-@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
-@click.option('--shell', '-s', metavar='<shell>',
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
+@click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
 @click.command()
 def demo(shell, speed):
