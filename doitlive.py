@@ -209,8 +209,9 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
-@click.option('--speed', '-S', default=1, help='Typing speed.')
-@click.option('--shell', '-i', default='/bin/bash')
+@click.option('--speed', '-S', metavar='<int>', default=1, help='Typing speed.')
+@click.option('--shell', '-s', metavar='<shell>',
+    default='/bin/bash', help='The shell to use.')
 @click.command()
 def demo(shell, speed):
     """Run a demo doitlive session."""

@@ -53,7 +53,7 @@ setup(
     name='doitlive',
     version=__version__,
     description='Because sometimes you need to do it live.',
-    long_description=read("README.rst"),
+    long_description=(read("README.rst") + '\n\n' + read('HISTORY.rst')),
     author='Steven Loria',
     author_email='sloria1@gmail.com',
     url='https://github.com/sloria/doitlive',
