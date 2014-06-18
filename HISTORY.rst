@@ -4,6 +4,7 @@ Changelog
 0.3.0 (unreleased)
 ******************
 
+- ``{hostname}`` can be included in prompt.
 - ``run`` and ``magictype`` receive prompt_template instead of a prompt function.
 
 0.2.0 (2014-06-16)

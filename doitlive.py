@@ -13,6 +13,7 @@ import os
 import sys
 import re
 import getpass
+import socket
 import subprocess
 from tempfile import NamedTemporaryFile
 
@@ -36,7 +37,7 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
 
-DEFAULT_PROMPT = env.get('DOITLIVE_PROMPT') or '{user}@{cwd} $'
+DEFAULT_PROMPT = env.get('DOITLIVE_PROMPT') or '{user}@{hostname}:{cwd} $'
 TESTING = False
 
 class PromptState(object):
@@ -47,6 +48,7 @@ class PromptState(object):
     def update(self):
         self.user = style(getpass.getuser(), fg='cyan', bold=True)
         self.cwd = os.getcwd()
+        self.hostname = style(socket.gethostname(), fg='blue')
         display_cwd_raw = '~' if self.cwd == env['HOME'] else os.path.split(self.cwd)[-1]
         self.display_cwd = style(display_cwd_raw, fg='green')
 
@@ -130,7 +132,8 @@ def format_prompt(prompt):
     return prompt.format(
         user=_prompt_state.user,
         cwd=_prompt_state.display_cwd,
-        full_cwd=_prompt_state.cwd
+        full_cwd=_prompt_state.cwd,
+        hostname=_prompt_state.hostname
     )
 
 
