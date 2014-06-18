@@ -53,6 +53,15 @@ configures the prompt. To include the user, current working directory, or the ab
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 
 
+.. note:: Styling prompts
+
+    Any of the prompt variables can be formatted with ANSI styles through special attribute access.
+
+    For example: ::
+
+        #doitlive prompt: {user.cyan}@{hostname.green}:{cwd.bold.magenta} $
+
+
 #doitlive shell: <shell>
 -------------------------
 

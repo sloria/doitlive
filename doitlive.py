@@ -38,12 +38,16 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
 
-DEFAULT_PROMPT = (env.get('DOITLIVE_PROMPT') or
-    '{user.cyan.bold}@{hostname.blue}:{cwd.green} $')
+THEMES = {
+    'default': '{user.cyan.bold}@{hostname.blue}:{cwd.green} $',
+}
+
 TESTING = False
 
 class TermString(unicode):
-    """A string-like object that can be formatted with ANSI styles."""
+    """A string-like object that can be formatted with ANSI styles. Useful for
+    styling strings within a string.format "template."
+    """
 
     def _styled(self, **styles):
         return TermString(style(self, **styles))
@@ -153,7 +157,7 @@ def wait_for(chars):
             echo()
             return in_char
 
-def magictype(text, shell, prompt_template=DEFAULT_PROMPT, aliases=None,
+def magictype(text, shell, prompt_template='default', aliases=None,
         envvars=None, speed=1, test_mode=False):
     prompt_func = make_prompt_formatter(prompt_template)
     prompt = prompt_func()
@@ -184,9 +188,11 @@ def format_prompt(prompt):
 
 
 def make_prompt_formatter(template):
-    return lambda: format_prompt(template)
+    tpl = THEMES.get(template) or template
+    return lambda: format_prompt(tpl)
 
-def run(commands, shell='/bin/bash', prompt_template=DEFAULT_PROMPT, speed=1,
+
+def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
     secho("We'll do it live!", fg='red', bold=True)
     secho('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
