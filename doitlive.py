@@ -19,8 +19,9 @@ from tempfile import NamedTemporaryFile
 
 import click
 from click import echo, style, secho, getchar
+from click.termui import strip_ansi
 
-__version__ = '0.3.0-dev'
+__version__ = '1.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
@@ -30,6 +31,24 @@ if not PY2:
     unicode = str
     basestring = (str, bytes)
 
+# TODO: make an ordereddict so that they can be listed in order
+THEMES = {
+    'default': '{user.cyan.bold}@{hostname.blue}:{dir.green} $',
+    'sorin': '{cwd.cyan} {git_branch.green.square} ' +
+    ''.join([style('❯', fg='red'),  style('❯', fg='white'), style('❯', fg='green')]),
+    'nicolauj': style('❯', fg='white'),
+    'steeef': '{user.red} at {hostname.yellow} in {cwd.green} {git_branch.cyan.paren}\n$',
+
+    'redhat': '[{user}@{hostname} {dir}]$',
+    'redhat_color': '[{user.cyan.bold}@{hostname.blue} {dir.green}]$',
+
+    'walters': '{user}@{hostname.underlined}>',
+    'walters_color': '{user.cyan.bold}@{hostname.blue.underlined}>',
+
+    'minimal': '{dir} {git_branch.square} »',
+    'minimal_color': '{dir.cyan} {git_branch.blue.square} »',
+
+}
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 ESC = u'\x1b'
@@ -38,12 +57,9 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
             '\s*(?P<arg>.+)$')
 
-THEMES = {
-    'default': '{user.cyan.bold}@{hostname.blue}:{dir.green} $',
-    'redhat': '[{user}@{hostname} {dir}',
-}
 
 TESTING = False
+
 
 class TermString(unicode):
     """A string-like object that can be formatted with ANSI styles. Useful for
@@ -85,12 +101,41 @@ class TermString(unicode):
         return self._styled(blink=True)
 
     @property
-    def underline(self):
+    def underlined(self):
         return self._styled(underline=True)
 
     @property
     def dim(self):
         return self._styled(dim=True)
+
+    def _bracketed(self, left, right):
+        if strip_ansi(self):
+            return TermString(''.join([left, self, right]))
+        else:
+            return TermString('')
+
+    @property
+    def paren(self):
+        return self._bracketed('(', ')')
+
+    @property
+    def square(self):
+        return self._bracketed('[', ']')
+
+    @property
+    def curly(self):
+        return self._bracketed('{', '}')
+
+
+def get_current_git_branch():
+    command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
+    try:
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        return out.strip()
+    except subprocess.CalledProcessError:
+        pass
+    return ''
 
 
 def get_prompt_state():
@@ -101,7 +146,8 @@ def get_prompt_state():
         'user': TermString(getpass.getuser()),
         'cwd': TermString(cwd_raw),
         'dir': TermString(dir_raw),
-        'hostname': TermString(socket.gethostname())
+        'hostname': TermString(socket.gethostname()),
+        'git_branch': TermString(get_current_git_branch()),
     }
 
 
@@ -217,14 +263,24 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
+def validate_prompt(ctx, param, value):
+    if value not in THEMES:
+        raise click.BadParameter('"{0}" is not a valid prompt theme.'.format(value))
+    return value
+
+
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', callback=validate_prompt, help='Prompt theme.')
 @click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
 @click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
-@click.argument('session_file', type=click.File('r', encoding='utf-8'))
+@click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
+@click.option('--preview', '-P', is_flag=True, default=False,
+    is_eager=True, help='Preview the available prompt themes.')
 @click.version_option(__version__, '--version', '-v')
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, speed):
-    """The doitlive CLI.
+def cli(session_file, shell, speed, prompt, preview):
+    """doitlive: A tool for "live" presentations in the terminal
 
     \b
     How to use:
@@ -235,10 +291,25 @@ def cli(session_file, shell, speed):
     Press ESC or ^C at any time to exit the session.
     To see a demo session, run "doitlive-demo".
     """
-    run(session_file.readlines(),
-        shell=shell,
-        speed=speed,
-        test_mode=TESTING)
+    if preview:
+        preview_themes()
+    else:
+        run(session_file.readlines(),
+            shell=shell,
+            speed=speed,
+            test_mode=TESTING,
+            prompt_template=prompt)
+
+
+def preview_themes():
+    secho('Available themes', bold=True)
+    echo()
+    for theme_name in THEMES:
+        echo('"{}" theme:'.format(theme_name))
+        echo(format_prompt(THEMES[theme_name]), nl=False)
+        echo(' command arg1 arg2 ... argn')
+        echo()
+
 
 DEMO = [
     'echo "Greetings"',
@@ -247,6 +318,8 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', callback=validate_prompt, help='Prompt theme or template.')
 @click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.')
 @click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.')
