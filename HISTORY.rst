@@ -2,7 +2,7 @@ Changelog
 ---------
 
 1.0 (unreleased)
-******************
+****************
 
 - Added themes!
 - Prompt variables can have ANSI colors and styles.

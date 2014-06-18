@@ -16,6 +16,7 @@ import getpass
 import socket
 import subprocess
 from tempfile import NamedTemporaryFile
+from collections import OrderedDict
 
 import click
 from click import echo, style, secho, getchar
@@ -31,24 +32,26 @@ if not PY2:
     unicode = str
     basestring = (str, bytes)
 
-# TODO: make an ordereddict so that they can be listed in order
-THEMES = {
-    'default': '{user.cyan.bold}@{hostname.blue}:{dir.green} $',
-    'sorin': '{cwd.cyan} {git_branch.green.square} ' +
-    ''.join([style('❯', fg='red'),  style('❯', fg='white'), style('❯', fg='green')]),
-    'nicolauj': style('❯', fg='white'),
-    'steeef': '{user.red} at {hostname.yellow} in {cwd.green} {git_branch.cyan.paren}\n$',
+THEMES = OrderedDict([
+    ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    'redhat': '[{user}@{hostname} {dir}]$',
-    'redhat_color': '[{user.cyan.bold}@{hostname.blue} {dir.green}]$',
+    ('sorin', '{cwd.cyan} {git_branch.green.square} ' +
+    ''.join([style('❯', fg='red'),  style('❯', fg='white'), style('❯', fg='green')])),
 
-    'walters': '{user}@{hostname.underlined}>',
-    'walters_color': '{user.cyan.bold}@{hostname.blue.underlined}>',
+    ('nicolauj', style('❯', fg='white')),
 
-    'minimal': '{dir} {git_branch.square} »',
-    'minimal_color': '{dir.cyan} {git_branch.blue.square} »',
+    ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
+                '{git_branch.cyan.paren}\n$'),
 
-}
+    ('redhat', '[{user}@{hostname} {dir}]$'),
+    ('redhat_color', '[{user.cyan.bold}@{hostname.blue} {dir.green}]$'),
+
+    ('walters', '{user}@{hostname.underlined}>'),
+    ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
+
+    ('minimal', '{dir} {git_branch.square} »'),
+    ('minimal_color', '{dir.cyan} {git_branch.blue.square} »'),
+])
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 ESC = u'\x1b'
@@ -304,9 +307,9 @@ def cli(session_file, shell, speed, prompt, preview):
 def preview_themes():
     secho('Available themes', bold=True)
     echo()
-    for theme_name in THEMES:
-        echo('"{}" theme:'.format(theme_name))
-        echo(format_prompt(THEMES[theme_name]), nl=False)
+    for name, template in THEMES.items():
+        echo('"{}" theme:'.format(name))
+        echo(format_prompt(template), nl=False)
         echo(' command arg1 arg2 ... argn')
         echo()
 
