@@ -53,6 +53,9 @@ THEMES = OrderedDict([
 
     ('minimal', '{dir} {git_branch.square} »'),
     ('minimal_color', '{dir.cyan} {git_branch.blue.square} »'),
+
+    ('osx', '{hostname}:{dir} {user}$'),
+    ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$')
 ])
 
 HERE = os.path.abspath(os.path.dirname(__file__))
