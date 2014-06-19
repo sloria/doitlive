@@ -61,14 +61,17 @@ configures the prompt. Can be any of the built-in themes or a custom prompt temp
 
 **Using a custom template**:
 
-To include the user, hostname, current directory, current path to working directory, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, and ``{git_branch}``, respectively.
+You can provide the ``prompt`` option with a custom template. To include the user, hostname, current directory, current path to working directory, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, and ``{git_branch}``, respectively.
 
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 
-Any of the prompt variables can be formatted with ANSI styles through special attribute access.
+Any of the prompt variables can be formatted with ANSI styles, like so:
 
 
 Example: ``#doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $``
+
+
+Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, blink, underlined, dim, paren, square, curly.
 
 
 #doitlive shell: <shell>
