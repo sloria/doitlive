@@ -85,9 +85,14 @@ def test_bad_theme(runner):
     result = runner.invoke(cli, ['-p', 'thisisnotatheme'])
     assert result.exit_code > 0
 
-def test_preview(runner):
-    assert runner.invoke(cli, ['--preview']).exit_code == 0
-    assert runner.invoke(cli, ['-P']).exit_code == 0
+
+def test_themes_list(runner):
+    assert runner.invoke(cli, ['--themes']).exit_code == 0
+    assert runner.invoke(cli, ['-t']).exit_code == 0
+
+def test_themes_preview(runner):
+    assert runner.invoke(cli, ['--themes-preview']).exit_code == 0
+    assert runner.invoke(cli, ['-T']).exit_code == 0
 
 class TestTermString:
 

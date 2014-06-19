@@ -8,12 +8,15 @@ doitlive
 
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
+
 Get it now
 ----------
 
 .. code-block:: bash
 
     $ pip install doitlive
+
+Requires Python >= 2.7 or >= 3.3 with pip.
 
 Usage
 -----
@@ -31,12 +34,6 @@ Usage
 
 More at http://doitlive.rtfd.org
 --------------------------------
-
-
-Requirements
-------------
-
-- Python >= 2.7 or >= 3.3
 
 
 Kudos

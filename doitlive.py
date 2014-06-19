@@ -58,7 +58,7 @@ THEMES = OrderedDict([
     ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$')
 ])
 
-HERE = os.path.abspath(os.path.dirname(__file__))
+
 ESC = '\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
@@ -282,25 +282,23 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
-def validate_prompt(ctx, param, value):
-    if value not in THEMES:
-        raise click.BadParameter('"{0}" is not a valid prompt theme.'.format(value))
-    return value
 
-
-@click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', callback=validate_prompt, help='Prompt theme.',
-    show_default=True)
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
-    show_default=True)
+@click.version_option(__version__, '--version', '-v')
 @click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.', show_default=True)
-@click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
-@click.option('--preview', '-P', is_flag=True, default=False,
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
+    show_default=True)
+@click.option('--themes-preview', '-T', is_flag=True, default=False,
     is_eager=True, help='Preview the available prompt themes.')
-@click.version_option(__version__, '--version', '-v')
+@click.option('--themes', '-t', is_flag=True, default=False,
+    is_eager=True, help='List the available prompt themes.')
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', type=click.Choice(THEMES.keys()),
+    help='Prompt theme.',
+    show_default=True)
+@click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
 @click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, speed, prompt, preview):
+def cli(session_file, shell, speed, prompt, themes, themes_preview):
     """doitlive: A tool for "live" presentations in the terminal
 
     \b
@@ -312,8 +310,10 @@ def cli(session_file, shell, speed, prompt, preview):
     Press ESC or ^C at any time to exit the session.
     To see a demo session, run "doitlive-demo".
     """
-    if preview:
+    if themes_preview:
         preview_themes()
+    elif themes:
+        list_themes()
     elif session_file is not None:
         run(session_file.readlines(),
             shell=shell,
@@ -325,13 +325,17 @@ def cli(session_file, shell, speed, prompt, preview):
             'Run "doitlive --help" for more options.')
 
 def preview_themes():
-    secho('Available themes', bold=True)
+    secho('Theme previews:', bold=True)
     echo()
     for name, template in THEMES.items():
         echo('"{}" theme:'.format(name))
         echo(format_prompt(template), nl=False)
         echo(' command arg1 arg2 ... argn')
         echo()
+
+def list_themes():
+    secho('Available themes:', bold=True)
+    echo(' '.join(THEMES.keys()))
 
 
 DEMO = [
@@ -341,13 +345,15 @@ DEMO = [
     'echo "http://doitlive.rtfd.org"'
 ]
 
-@click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', callback=validate_prompt, help='Prompt theme.',
-    show_default=True)
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
-    show_default=True)
+
 @click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.', show_default=True)
+@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
+    show_default=True)
+@click.option('--prompt', '-p', metavar='<prompt_theme>',
+    default='default', type=click.Choice(THEMES.keys()),
+    help='Prompt theme.',
+    show_default=True)
 @click.command()
 def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
