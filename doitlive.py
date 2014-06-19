@@ -37,10 +37,10 @@ if not PY2:
 THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', '{cwd.cyan} {git_branch.green.square} ' +
-    ''.join([style('❯', fg='red'),  style('❯', fg='white'), style('❯', fg='green')])),
+    ('sorin', '{cwd.cyan} {git_branch.green.square} '
+        '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
-    ('nicolauj', style('❯', fg='white')),
+    ('nicolauj', '{r_angle.white}'),
 
     ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
                 '{git_branch.cyan.paren}\n$'),
@@ -59,7 +59,7 @@ THEMES = OrderedDict([
 ])
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-ESC = u'\x1b'
+ESC = '\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
             '(?P<option>prompt|shell|alias|env|speed):'
@@ -146,6 +146,12 @@ def get_current_git_branch():
     return ''
 
 
+# Some common symbols used in prompts
+R_ANGLE = TermString('❯')
+R_ANGLE_DOUBLE = TermString('»')
+DOLLAR = TermString('$')
+PERCENT = TermString('%')
+
 def get_prompt_state():
     full_cwd = os.getcwd()
     cwd_raw = full_cwd.replace(env['HOME'], '~')
@@ -156,6 +162,11 @@ def get_prompt_state():
         'dir': TermString(dir_raw),
         'hostname': TermString(socket.gethostname()),
         'git_branch': TermString(get_current_git_branch()),
+        # Symbols
+        'r_angle': R_ANGLE,
+        'r_angle_double': R_ANGLE_DOUBLE,
+        'dollar': DOLLAR,
+        'percent': PERCENT,
     }
 
 
