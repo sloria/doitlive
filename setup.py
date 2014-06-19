@@ -62,7 +62,7 @@ setup(
     zip_safe=False,
     keywords='doitlive cli live coding presentations shell',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
@@ -72,6 +72,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: Implementation :: CPython',
+        'Environment :: Console',
     ],
     py_modules=["doitlive"],
     entry_points={
