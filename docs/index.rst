@@ -7,6 +7,8 @@ $ doitlive
    Because sometimes you need to do it live
 
 
+Current version: v\ |version|.
+
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
 Get it now
@@ -31,6 +33,12 @@ Usage
 
 3. Type like a madman.
 
+For more options, run:
+
+.. code-block:: bash
+
+    $ doitlive --help
+
 
 Comment magic (configuration)
 =============================
@@ -49,7 +57,7 @@ Example: ``#doitlive speed: 3``
 #doitlive prompt: <theme_name_or_template>
 ------------------------------------------
 
-configures the prompt. Can be any of the built-in themes or a custom prompt template. To preview a list of available themes, run ``doitlive --themes``.
+configures the prompt. Can be any of the built-in themes or a custom prompt template. To preview a list of available themes, run ``doitlive --themes`` or ``doitlive --themes-preview``.
 
 **Using a custom template**:
 
