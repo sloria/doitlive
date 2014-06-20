@@ -27,7 +27,7 @@ def run_session(runner, filename, user_input):
     session = os.path.join(HERE, filename)
     # Press ENTER at beginning of session and ENTER twice at end
     user_in = ''.join(['\r', user_input, '\r\r'])
-    return runner.invoke(cli, [session], input=user_in)
+    return runner.invoke(cli, ['play', session], input=user_in)
 
 
 def test_basic_session(runner):
@@ -87,12 +87,25 @@ def test_bad_theme(runner):
 
 
 def test_themes_list(runner):
-    assert runner.invoke(cli, ['--themes']).exit_code == 0
-    assert runner.invoke(cli, ['-t']).exit_code == 0
+    result1 = runner.invoke(cli, ['themes'])
+    assert result1.exit_code == 0
+    result2 = runner.invoke(cli, ['themes', '--list'])
+    result3 = runner.invoke(cli, ['themes', '-l'])
+    assert result1.output == result2.output == result3.output
 
 def test_themes_preview(runner):
-    assert runner.invoke(cli, ['--themes-preview']).exit_code == 0
-    assert runner.invoke(cli, ['-T']).exit_code == 0
+    result1 = runner.invoke(cli, ['themes', '--preview'])
+    assert result1.exit_code == 0
+    result2 = runner.invoke(cli, ['themes', '-p'])
+    assert result2.exit_code == 0
+    assert result1.output == result2.output
+
+
+def test_version(runner):
+    result = runner.invoke(cli, ['--version'])
+    assert doitlive.__version__ in result.output
+    result2 = runner.invoke(cli, ['-v'])
+    assert result.output == result2.output
 
 class TestTermString:
 

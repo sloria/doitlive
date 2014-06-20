@@ -24,7 +24,7 @@ import click
 from click import echo, style, secho, getchar
 from click.termui import strip_ansi
 
-__version__ = '1.0'
+__version__ = '2.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
@@ -284,45 +284,57 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
 
 
 @click.version_option(__version__, '--version', '-v')
+@click.group(context_settings={'help_option_names': ('-h', '--help')})
+def cli():
+    """doitlive: A tool for "live" presentations in the terminal
+
+    \b
+    Basic:
+        1. Create a file called session.sh. Fill it with bash commands.
+        2. Run "doitlive play session.sh"
+        3. Type like a madman.
+
+    Press Ctrl-C at any time to exit a session.
+    To see a demo session, run "doitlive demo".
+
+    You can use --help to get help with subcommands.
+
+    Example: doitlive play --help
+    """
+    pass
+
+
+@click.option('--preview', '-p', is_flag=True, default=False,
+    is_eager=True, help='Preview the available prompt themes.')
+@click.option('--list', '-l', is_flag=True, default=False,
+    is_eager=True, help='List the available prompt themes.')
+@cli.command()
+def themes(preview, list):
+    """Preview the available prompt themes."""
+    if preview:
+        preview_themes()
+    else:
+        list_themes()
+
+
 @click.option('--shell', '-S', metavar='<shell>',
     default='/bin/bash', help='The shell to use.', show_default=True)
 @click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
     show_default=True)
-@click.option('--themes-preview', '-T', is_flag=True, default=False,
-    is_eager=True, help='Preview the available prompt themes.')
-@click.option('--themes', '-t', is_flag=True, default=False,
-    is_eager=True, help='List the available prompt themes.')
 @click.option('--prompt', '-p', metavar='<prompt_theme>',
     default='default', type=click.Choice(THEMES.keys()),
     help='Prompt theme.',
     show_default=True)
 @click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
-@click.command(context_settings={'help_option_names': ('-h', '--help')})
-def cli(session_file, shell, speed, prompt, themes, themes_preview):
-    """doitlive: A tool for "live" presentations in the terminal
+@cli.command()
+def play(session_file, shell, speed, prompt):
+    """Play a session file."""
+    run(session_file.readlines(),
+        shell=shell,
+        speed=speed,
+        test_mode=TESTING,
+        prompt_template=prompt)
 
-    \b
-    How to use:
-        1. Create a file called session.sh. Fill it with bash commands.
-        2. Run "doitlive session.sh"
-        3. Type like a madman.
-
-    Press ESC or ^C at any time to exit the session.
-    To see a demo session, run "doitlive-demo".
-    """
-    if themes_preview:
-        preview_themes()
-    elif themes:
-        list_themes()
-    elif session_file is not None:
-        run(session_file.readlines(),
-            shell=shell,
-            speed=speed,
-            test_mode=TESTING,
-            prompt_template=prompt)
-    else:
-        raise click.UsageError('Must provide a SESSION_FILE. '
-            'Run "doitlive --help" for more options.')
 
 def preview_themes():
     secho('Theme previews:', bold=True)
@@ -354,7 +366,7 @@ DEMO = [
     default='default', type=click.Choice(THEMES.keys()),
     help='Prompt theme.',
     show_default=True)
-@click.command()
+@cli.command()
 def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
     run(DEMO, shell=shell, speed=speed, test_mode=TESTING, prompt_template=prompt)

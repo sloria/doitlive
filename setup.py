@@ -77,8 +77,7 @@ setup(
     py_modules=["doitlive"],
     entry_points={
         'console_scripts': [
-            'doitlive = doitlive:cli',
-            'doitlive-demo = doitlive:demo'
+            'doitlive = doitlive:cli'
         ]
     },
     package_data={
