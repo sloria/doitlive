@@ -2,6 +2,9 @@
 doitlive
 ========
 
+.. image:: https://badge.fury.io/py/doitlive.png
+  :target: http://badge.fury.io/py/doitlive
+
 .. image:: https://travis-ci.org/sloria/doitlive.png?branch=master
   :target: https://travis-ci.org/sloria/doitlive
 
@@ -26,7 +29,7 @@ Usage
 
 .. code-block:: bash
 
-    $ doitlive session.sh
+    $ doitlive play session.sh
 
 
 3. Type like a madman.
@@ -37,6 +40,10 @@ For more options, run:
 .. code-block:: bash
 
     $ doitlive --help
+
+You can also get help with subcommands.
+
+    $ doitlive play --help
 
 
 More at http://doitlive.rtfd.org

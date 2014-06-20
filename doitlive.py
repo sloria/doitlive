@@ -34,6 +34,9 @@ PY2 = int(sys.version[0]) == 2
 if not PY2:
     unicode = str
     basestring = (str, bytes)
+else:
+    from io import open
+    open = open
 
 THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
@@ -162,7 +165,7 @@ def ensure_utf(string):
     return string.encode('utf-8') if PY2 else string
 
 
-def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=True):
+def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or env.get('DOITLIVE_INTERPRETER') or '/bin/bash'
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
@@ -271,6 +274,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
 
+# Les CLI
+
 @click.version_option(__version__, '--version', '-v')
 @click.group(context_settings={'help_option_names': ('-h', '--help')})
 def cli():
@@ -362,6 +367,41 @@ def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
     run(DEMO, shell=shell, speed=speed, test_mode=TESTING, prompt_template=prompt)
 
+
+@click.argument('session_file', default='session.sh',
+    type=click.Path(dir_okay=False, writable=True))
+@cli.command()
+def record(session_file):
+    if os.path.exists(session_file):
+        click.confirm(
+            'File "{}" already exists. Overwrite?'.format(session_file),
+            abort=True, default=False)
+
+    secho("We'll do it live!", fg='red', bold=True)
+    filename = click.format_filename(session_file)
+    secho('RECORDING SESSION ({})'.format(filename),
+        fg='yellow', bold=True)
+
+    echo('Type ' + style('"finish"', bold=True, fg='green') + ' when you are done recording.')
+
+    click.pause()
+    click.clear()
+    commands = []
+    while True:
+        prompt = format_prompt(THEMES['default'])
+        command = click.prompt(prompt + ' ', prompt_suffix='')
+        if command == 'finish':
+            break
+        commands.append(command)
+        output = run_command(command)
+        if isinstance(output, basestring):
+            echo(output, nl=False)
+
+    secho("FINISHED RECORDING SESSION", fg='yellow', bold=True)
+    secho('Writing to {0}'.format(filename), fg='cyan')
+    with open(session_file, 'w', encoding='utf-8') as fp:
+        fp.write('\n\n'.join(commands) + '\n')
+    secho('Done.', fg='cyan')
 
 if __name__ == '__main__':
     cli()
