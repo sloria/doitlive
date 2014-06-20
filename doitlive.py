@@ -69,52 +69,38 @@ OPTION_RE = re.compile(r'^#\s?doitlive\s+'
 TESTING = False
 
 
+class Style(object):
+    
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
+    def __get__(self, instance, owner):
+        return TermString(style(instance, **self.kwargs))
+
+
 class TermString(unicode):
     """A string-like object that can be formatted with ANSI styles. Useful for
     styling strings within a string.format "template."
     """
 
-    def _styled(self, **styles):
-        return TermString(style(self, **styles))
-
     # Colors
-
-    @property
-    def blue(self): return self._styled(fg='blue')
-    @property
-    def magenta(self): return self._styled(fg='magenta')
-    @property
-    def red(self): return self._styled(fg='red')
-    @property
-    def white(self): return self._styled(fg='white')
-    @property
-    def green(self): return self._styled(fg='green')
-    @property
-    def black(self): return self._styled(fg='black')
-    @property
-    def yellow(self): return self._styled(fg='yellow')
-    @property
-    def cyan(self): return self._styled(fg='cyan')
-    @property
-    def reset(self): return self._styled(fg='reset')
+    
+    blue = Style(fg='blue')
+    magenta = Style(fg='magenta')
+    red = Style(fg='red')
+    white = Style(fg='white')
+    green = Style(fg='green')
+    black = Style(fg='black')
+    yellow = Style(fg='yellow')
+    cyan = Style(fg='cyan')
+    reset = Style(fg='reset')
 
     # Styling
 
-    @property
-    def bold(self):
-        return self._styled(bold=True)
-
-    @property
-    def blink(self):
-        return self._styled(blink=True)
-
-    @property
-    def underlined(self):
-        return self._styled(underline=True)
-
-    @property
-    def dim(self):
-        return self._styled(dim=True)
+    bold = Style(bold=True)
+    blink = Style(blink=True)
+    underlined = Style(underline=True)
+    dim = Style(dim=True)
 
     def _bracketed(self, left, right):
         if strip_ansi(self):
