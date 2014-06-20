@@ -241,7 +241,7 @@ def make_prompt_formatter(template):
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
     secho("We'll do it live!", fg='red', bold=True)
-    secho('STARTING SESSION: Press ESC at any time to exit.', fg='yellow', bold=True)
+    secho('STARTING SESSION: Press Ctrl-C at any time to exit.', fg='yellow', bold=True)
 
     click.pause()
     click.clear()
@@ -328,19 +328,21 @@ def _compose(*functions):
         return lambda x: func1(func2(x))
     return functools.reduce(inner, functions)
 
-# Compose the player decorators into a single decorator
-player_command = _compose(
-    click.option('--shell', '-S', metavar='<shell>',
-        default='/bin/bash', help='The shell to use.', show_default=True),
+# Compose the decorators into "bundled" decorators
 
-    click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
-        show_default=True),
+SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
+        default='/bin/bash', help='The shell to use.', show_default=True)
 
-    click.option('--prompt', '-p', metavar='<prompt_theme>',
+SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', default=1,
+        help='Typing speed.', show_default=True)
+
+PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
         default='default', type=click.Choice(THEMES.keys()),
         help='Prompt theme.',
         show_default=True)
-)
+
+player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
+recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION)
 
 @player_command
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
@@ -368,39 +370,64 @@ def demo(shell, speed, prompt):
     run(DEMO, shell=shell, speed=speed, test_mode=TESTING, prompt_template=prompt)
 
 
+HEADER_TEMPLATE = """# Recorded with the doitlive recorder
+#doitlive shell: {shell}
+#doitlive prompt: {prompt}
+"""
+
+
+def run_recorder(shell, prompt):
+    commands = []
+    prefix = '(' + style('REC', fg='red') + ') '
+    while True:
+        formatted_prompt = prefix + format_prompt(THEMES[prompt]) + ' '
+        command = click.prompt(formatted_prompt, prompt_suffix='')
+        if command == 'finish':
+            break
+        commands.append(command)
+        output = run_command(command, shell=shell, test_mode=TESTING)
+        if isinstance(output, basestring):
+            echo(output, nl=False)
+    return commands
+
+
+@recorder_command
 @click.argument('session_file', default='session.sh',
     type=click.Path(dir_okay=False, writable=True))
 @cli.command()
-def record(session_file):
+def record(session_file, shell, prompt):
+    """Record a session file. If no path is passed, commands are written to
+    ./session.sh.
+
+    When you are finished recording, run the "finish" command.
+    """
     if os.path.exists(session_file):
         click.confirm(
-            'File "{}" already exists. Overwrite?'.format(session_file),
+            'File "{0}" already exists. Overwrite?'.format(session_file),
             abort=True, default=False)
 
     secho("We'll do it live!", fg='red', bold=True)
     filename = click.format_filename(session_file)
-    secho('RECORDING SESSION ({})'.format(filename),
+    secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
-    echo('Type ' + style('"finish"', bold=True, fg='green') + ' when you are done recording.')
+    echo('Type ' + style('"finish"', bold=True, fg='green') +
+        ' when you are done recording.')
 
     click.pause()
     click.clear()
-    commands = []
-    while True:
-        prompt = format_prompt(THEMES['default'])
-        command = click.prompt(prompt + ' ', prompt_suffix='')
-        if command == 'finish':
-            break
-        commands.append(command)
-        output = run_command(command)
-        if isinstance(output, basestring):
-            echo(output, nl=False)
+    cwd = os.getcwd()
+
+    commands = run_recorder(shell, prompt)
+
+    os.chdir(cwd)
 
     secho("FINISHED RECORDING SESSION", fg='yellow', bold=True)
     secho('Writing to {0}'.format(filename), fg='cyan')
     with open(session_file, 'w', encoding='utf-8') as fp:
-        fp.write('\n\n'.join(commands) + '\n')
+        fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
+        fp.write('\n\n'.join(commands))
+        fp.write('\n')
     secho('Done.', fg='cyan')
 
 if __name__ == '__main__':
