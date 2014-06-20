@@ -7,7 +7,9 @@ Changelog
 - Improved interface.
 - Sessions are played with ``doitlive play <session_file>``.
 - Deprecated ``doitlive-demo``. Run ``doitlive demo`` instead.
-- Deprecated ``doitlive --themes`` and ``doitlive --themes-preview``. Run ``doitlive themes`` and ``doitlive themes --preview`` instead..
+- Deprecated ``doitlive --themes`` and ``doitlive --themes-preview``. Run ``doitlive themes`` and ``doitlive themes --preview`` instead.
+- Added session recorder (``doitlive record``).
+- Fix bug that raised an error when cd'ing into a non-existent directory.
 
 
 1.0 (2014-06-18)

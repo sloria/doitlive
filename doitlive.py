@@ -169,7 +169,11 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or env.get('DOITLIVE_INTERPRETER') or '/bin/bash'
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
-        os.chdir(os.path.expanduser(directory))
+        try:
+            os.chdir(os.path.expanduser(directory))
+        except OSError:
+            echo('No such file or directory: {}'.format(directory))
+
     else:
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work

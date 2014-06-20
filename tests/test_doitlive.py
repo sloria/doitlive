@@ -24,7 +24,7 @@ def runner():
     return CliRunner()
 
 def run_session(runner, filename, user_input):
-    session = os.path.join(HERE, filename)
+    session = os.path.join(HERE, 'sessions', filename)
     # Press ENTER at beginning of session and ENTER twice at end
     user_in = ''.join(['\r', user_input, '\r\r'])
     return runner.invoke(cli, ['play', session], input=user_in)
@@ -84,6 +84,22 @@ def test_custom_speed(runner):
 def test_bad_theme(runner):
     result = runner.invoke(cli, ['-p', 'thisisnotatheme'])
     assert result.exit_code > 0
+
+
+def test_cd(runner):
+    user_input = (random_string(len('cd ~')) + '\n' +
+        random_string(len('pwd')) + '\n')
+    result = run_session(runner, 'cd.session', user_input)
+
+    assert result.exit_code == 0
+    assert os.environ['HOME'] in result.output
+
+def test_cd_bad(runner):
+    user_input = (random_string(len('cd /thisisnotadirectory')) + '\n' +
+        random_string(len('pwd')) + '\n')
+    result = run_session(runner, 'cd_bad.session', user_input)
+
+    assert result.exit_code == 0
 
 
 def test_themes_list(runner):
