@@ -11,6 +11,7 @@
 """
 
 from __future__ import unicode_literals
+import functools
 import os
 import sys
 import re
@@ -70,7 +71,8 @@ TESTING = False
 
 
 class Style(object):
-    
+    """Descriptor that adds ANSI styling when accessed."""
+
     def __init__(self, **kwargs):
         self.kwargs = kwargs
 
@@ -84,7 +86,7 @@ class TermString(unicode):
     """
 
     # Colors
-    
+
     blue = Style(fg='blue')
     magenta = Style(fg='magenta')
     red = Style(fg='red')
@@ -290,38 +292,6 @@ def cli():
     pass
 
 
-@click.option('--preview', '-p', is_flag=True, default=False,
-    is_eager=True, help='Preview the available prompt themes.')
-@click.option('--list', '-l', is_flag=True, default=False,
-    is_eager=True, help='List the available prompt themes.')
-@cli.command()
-def themes(preview, list):
-    """Preview the available prompt themes."""
-    if preview:
-        preview_themes()
-    else:
-        list_themes()
-
-
-@click.option('--shell', '-S', metavar='<shell>',
-    default='/bin/bash', help='The shell to use.', show_default=True)
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
-    show_default=True)
-@click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', type=click.Choice(THEMES.keys()),
-    help='Prompt theme.',
-    show_default=True)
-@click.argument('session_file', required=False, type=click.File('r', encoding='utf-8'))
-@cli.command()
-def play(session_file, shell, speed, prompt):
-    """Play a session file."""
-    run(session_file.readlines(),
-        shell=shell,
-        speed=speed,
-        test_mode=TESTING,
-        prompt_template=prompt)
-
-
 def preview_themes():
     secho('Theme previews:', bold=True)
     echo()
@@ -336,6 +306,48 @@ def list_themes():
     echo(' '.join(THEMES.keys()))
 
 
+@click.option('--preview', '-p', is_flag=True, default=False,
+    help='Preview the available prompt themes.')
+@click.option('--list', '-l', is_flag=True, default=False,
+    help='List the available prompt themes.')
+@cli.command()
+def themes(preview, list):
+    """Preview the available prompt themes."""
+    if preview:
+        preview_themes()
+    else:
+        list_themes()
+
+def _compose(*functions):
+    def inner(func1, func2):
+        return lambda x: func1(func2(x))
+    return functools.reduce(inner, functions)
+
+# Compose the player decorators into a single decorator
+player_command = _compose(
+    click.option('--shell', '-S', metavar='<shell>',
+        default='/bin/bash', help='The shell to use.', show_default=True),
+
+    click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
+        show_default=True),
+
+    click.option('--prompt', '-p', metavar='<prompt_theme>',
+        default='default', type=click.Choice(THEMES.keys()),
+        help='Prompt theme.',
+        show_default=True)
+)
+
+@player_command
+@click.argument('session_file', type=click.File('r', encoding='utf-8'))
+@cli.command()
+def play(session_file, shell, speed, prompt):
+    """Play a session file."""
+    run(session_file.readlines(),
+        shell=shell,
+        speed=speed,
+        test_mode=TESTING,
+        prompt_template=prompt)
+
 DEMO = [
     'echo "Greetings"',
     'echo "This is just a demo session"',
@@ -344,14 +356,7 @@ DEMO = [
 ]
 
 
-@click.option('--shell', '-S', metavar='<shell>',
-    default='/bin/bash', help='The shell to use.', show_default=True)
-@click.option('--speed', '-s', metavar='<int>', default=1, help='Typing speed.',
-    show_default=True)
-@click.option('--prompt', '-p', metavar='<prompt_theme>',
-    default='default', type=click.Choice(THEMES.keys()),
-    help='Prompt theme.',
-    show_default=True)
+@player_command
 @cli.command()
 def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
