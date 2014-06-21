@@ -50,7 +50,7 @@ THEMES = OrderedDict([
                 '{git_branch.cyan.paren}\n$'),
 
     ('redhat', '[{user}@{hostname} {dir}]$'),
-    ('redhat_color', '[{user.cyan.bold}@{hostname.blue} {dir.green}]$'),
+    ('redhat_color', '[{user.red.bold}@{hostname.red} {dir.blue}]$'),
 
     ('walters', '{user}@{hostname.underlined}>'),
     ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
@@ -256,7 +256,8 @@ def make_prompt_formatter(template):
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
     secho("We'll do it live!", fg='red', bold=True)
-    secho('STARTING SESSION: Press Ctrl-C at any time to exit.', fg='yellow', bold=True)
+    secho('STARTING SESSION: Press Ctrl-C at any time to exit.',
+        fg='yellow', bold=True)
 
     click.pause()
     click.clear()
@@ -281,8 +282,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 elif option == 'speed':
                     speed = int(arg)
             continue
-        magictype(command, shell, prompt_template=prompt_template, aliases=aliases,
-            envvars=envvars, speed=speed, test_mode=test_mode)
+        magictype(command, shell, prompt_template=prompt_template,
+            aliases=aliases, envvars=envvars, speed=speed, test_mode=test_mode)
     prompt = make_prompt_formatter(prompt_template)()
     echo(prompt + ' ', nl=False)
     wait_for(RETURNS)
@@ -428,7 +429,7 @@ def record(session_file, shell, prompt):
     secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
-    echo('Type ' + style('"{}"'.format(STOP_COMMAND), bold=True, fg='green') +
+    echo('Type ' + style('"{}"'.format(STOP_COMMAND), bold=True) +
         ' when you are done recording.')
 
     click.pause()
