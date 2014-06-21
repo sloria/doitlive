@@ -61,7 +61,7 @@ THEMES = OrderedDict([
     ('osx', '{hostname}:{dir} {user}$'),
     ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
 
-    ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}')
+    ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}'),
 ])
 
 
@@ -139,7 +139,7 @@ def get_current_git_branch():
     command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
     try:
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()
+        out, _ = proc.communicate()
         return out.strip()
     except subprocess.CalledProcessError:
         pass
@@ -391,6 +391,7 @@ HEADER_TEMPLATE = """# Recorded with the doitlive recorder
 
 """
 
+STOP_COMMAND = 'stop'
 
 def run_recorder(shell, prompt):
     commands = []
@@ -398,7 +399,7 @@ def run_recorder(shell, prompt):
     while True:
         formatted_prompt = prefix + format_prompt(THEMES[prompt]) + ' '
         command = click.prompt(formatted_prompt, prompt_suffix='')
-        if command == 'finish':
+        if command == STOP_COMMAND:
             break
         commands.append(command)
         output = run_command(command, shell=shell, test_mode=TESTING)
@@ -412,10 +413,10 @@ def run_recorder(shell, prompt):
     type=click.Path(dir_okay=False, writable=True))
 @cli.command()
 def record(session_file, shell, prompt):
-    """Record a session file. If no path is passed, commands are written to
+    """Record a session file. If no argument is passed, commands are written to
     ./session.sh.
 
-    When you are finished recording, run the "finish" command.
+    When you are finished recording, run the "stop" command.
     """
     if os.path.exists(session_file):
         click.confirm(
@@ -427,7 +428,7 @@ def record(session_file, shell, prompt):
     secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
-    echo('Type ' + style('"finish"', bold=True, fg='green') +
+    echo('Type ' + style('"{}"'.format(STOP_COMMAND), bold=True, fg='green') +
         ' when you are done recording.')
 
     click.pause()
@@ -444,7 +445,9 @@ def record(session_file, shell, prompt):
         fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
         fp.write('\n\n'.join(commands))
         fp.write('\n')
-    echo('Done. Run "doitlive play {0}" to play back your session.'.format(filename))
+
+    play_cmd = style('doitlive play {}'.format(filename), bold=True)
+    echo('Done. Run {} to play back your session.'.format(play_cmd))
 
 if __name__ == '__main__':
     cli()

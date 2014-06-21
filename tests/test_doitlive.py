@@ -182,7 +182,7 @@ def recording_session(runner, commands=None, args=None):
 
     with runner.isolated_filesystem():
         command_input = '\n'.join(commands)
-        user_input = ''.join(['\n', command_input, '\nfinish\n'])
+        user_input = ''.join(['\n', command_input, '\nstop\n'])
         runner.invoke(cli, ['record'] + args, input=user_input)
         yield
 
@@ -190,7 +190,7 @@ class TestRecorder:
 
     def test_record_creates_session_file(self, runner):
         with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['record'], input='\necho "Hello"\nfinish\n')
+            result = runner.invoke(cli, ['record'], input='\necho "Hello"\nstop\n')
             assert result.exit_code == 0, result.output
             assert os.path.exists('session.sh')
 
@@ -231,7 +231,7 @@ class TestRecorder:
             cd_to = os.path.join(initial_dir, 'mydir')
             os.mkdir(cd_to)
             user_input = ''.join([
-                '\n', 'cd mydir', '\n', 'pwd', '\n', '\nfinish\n'
+                '\n', 'cd mydir', '\n', 'pwd', '\n', '\nstop\n'
             ])
             result = runner.invoke(cli, ['record'], input=user_input)
             assert result.exit_code == 0
