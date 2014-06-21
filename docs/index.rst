@@ -20,30 +20,63 @@ Get it now
 
 Requires Python >= 2.7 or >= 3.3 with pip.
 
-Usage
-=====
+Quickstart
+==========
 
 1. Create a file called ``session.sh``. Fill it with bash commands.
-2. Run ``doitlive session.sh``
+2. Run ``doitlive play session.sh``.
 
 .. code-block:: bash
 
-    $ doitlive session.sh
+    $ doitlive play session.sh
 
 
 3. Type like a madman.
 
-For more options, run:
+
+Examples
+========
 
 .. code-block:: bash
 
-    $ doitlive --help
+    # Use the "sorin" prompt theme
+    $ doitlive play session.sh -p sorin
+
+    # Increase speed
+    $ doitlive play session.sh -s 3
+
+    # Use zsh
+    $ doitlive play session.sh --shell /bin/zsh
+
+Themes
+======
+
+doitlive comes with many prompt themes. To use a theme:
+
+.. code-block:: bash
+
+    $ doitlive play session.sh -p <theme_name>
+
+
+To view a list of available themes, run ``doitlive themes`` or ``doitlive themes --preview``.
+
+
+Using the recorder
+==================
+
+You can record session files using the built-in recorder command.
+
+.. code-block:: bash
+
+    $ doitlive record
+
+This will start a recording session. When you are finished recording, run the ``stop`` command. All commands will be written to a ``session.sh`` file.
 
 
 Comment magic (configuration)
 =============================
 
-Any line that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
+Any line in a session file that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
 
 The following options can be included at the top of your session file (all are optional).
 
@@ -57,7 +90,7 @@ Example: ``#doitlive speed: 3``
 #doitlive prompt: <theme_name_or_template>
 ------------------------------------------
 
-configures the prompt. Can be any of the built-in themes or a custom prompt template. To preview a list of available themes, run ``doitlive --themes`` or ``doitlive --themes-preview``.
+configures the prompt. Can be any of the built-in themes or a custom prompt template.
 
 **Using a custom template**:
 
@@ -77,7 +110,7 @@ Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, b
 #doitlive shell: <shell>
 -------------------------
 
-configures which shell is used to run subsequent commands.
+configures which shell is use.
 
 
 Example: ``#doitlive shell: /bin/zsh``
@@ -98,6 +131,34 @@ sets an environment variable.
 Example: ``#doitlive env: EDITOR=vim``
 
 
+Bash completion
+===============
+
+To enable bash completion, add the following to your ``.bashrc`` or ``.bash_profile``.
+
+.. code-block:: bash
+
+    eval "$(_DOITLIVE_COMPLETE=source doitlive)"
+
+
+Completion is currently only supported for ``bash``.
+
+
+More
+====
+
+For more options, run
+
+.. code-block:: bash
+
+    $ doitlive --help
+
+
+You can also get help with subcommands.
+
+.. code-block:: bash
+
+    $ doitlive play --help
 
 
 Project info
@@ -108,5 +169,6 @@ Project info
 
    changelog
    license
+   authors
    kudos
 

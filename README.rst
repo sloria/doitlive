@@ -21,11 +21,11 @@ Get it now
 
 Requires Python >= 2.7 or >= 3.3 with pip.
 
-Usage
------
+Quickstart
+----------
 
 1. Create a file called ``session.sh``. Fill it with bash commands.
-2. Run ``doitlive session.sh``
+2. Run ``doitlive play session.sh``.
 
 .. code-block:: bash
 
@@ -33,19 +33,6 @@ Usage
 
 
 3. Type like a madman.
-
-
-For more options, run:
-
-.. code-block:: bash
-
-    $ doitlive --help
-
-You can also get help with subcommands.
-
-.. code-block:: bash
-
-    $ doitlive play --help
 
 
 More at http://doitlive.rtfd.org
