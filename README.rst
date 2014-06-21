@@ -43,6 +43,8 @@ For more options, run:
 
 You can also get help with subcommands.
 
+.. code-block:: bash
+
     $ doitlive play --help
 
 

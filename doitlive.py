@@ -327,13 +327,6 @@ def themes(preview, list):
     else:
         list_themes()
 
-def _compose(*functions):
-    def inner(func1, func2):
-        return lambda x: func1(func2(x))
-    return functools.reduce(inner, functions)
-
-# Compose the decorators into "bundled" decorators
-
 SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
         default='/bin/bash', help='The shell to use.', show_default=True)
 
@@ -345,6 +338,13 @@ PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
         help='Prompt theme.',
         show_default=True)
 
+
+def _compose(*functions):
+    def inner(func1, func2):
+        return lambda x: func1(func2(x))
+    return functools.reduce(inner, functions)
+
+# Compose the decorators into "bundled" decorators
 player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
 recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION)
 
