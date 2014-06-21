@@ -41,7 +41,7 @@ else:
 THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', '{cwd.cyan} {git_branch.green.square} '
+    ('sorin', '{cwd.cyan} {git_branch.green.git} '
         '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
     ('nicolauj', '{r_angle.white}'),
@@ -59,7 +59,9 @@ THEMES = OrderedDict([
     ('minimal_color', '{dir.cyan} {git_branch.blue.square} »'),
 
     ('osx', '{hostname}:{dir} {user}$'),
-    ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$')
+    ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
+
+    ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}')
 ])
 
 
@@ -125,6 +127,13 @@ class TermString(unicode):
     def curly(self):
         return self._bracketed('{', '}')
 
+    @property
+    def git(self):
+        if strip_ansi(self):
+            return TermString('{}:{}'.format(style('git', fg='blue'), self))
+        else:
+            return TermString('')
+
 
 def get_current_git_branch():
     command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
@@ -140,6 +149,7 @@ def get_current_git_branch():
 # Some common symbols used in prompts
 R_ANGLE = TermString('❯')
 R_ANGLE_DOUBLE = TermString('»')
+R_ARROW = TermString('➔')
 DOLLAR = TermString('$')
 PERCENT = TermString('%')
 
@@ -156,6 +166,7 @@ def get_prompt_state():
         # Symbols
         'r_angle': R_ANGLE,
         'r_angle_double': R_ANGLE_DOUBLE,
+        'r_arrow': R_ARROW,
         'dollar': DOLLAR,
         'percent': PERCENT,
     }
@@ -377,6 +388,7 @@ def demo(shell, speed, prompt):
 HEADER_TEMPLATE = """# Recorded with the doitlive recorder
 #doitlive shell: {shell}
 #doitlive prompt: {prompt}
+
 """
 
 
@@ -427,12 +439,12 @@ def record(session_file, shell, prompt):
     os.chdir(cwd)
 
     secho("FINISHED RECORDING SESSION", fg='yellow', bold=True)
-    secho('Writing to {0}'.format(filename), fg='cyan')
+    secho('Writing to {0}...'.format(filename), fg='cyan')
     with open(session_file, 'w', encoding='utf-8') as fp:
         fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
         fp.write('\n\n'.join(commands))
         fp.write('\n')
-    secho('Done.', fg='cyan')
+    echo('Done. Run "doitlive play {0}" to play back your session.'.format(filename))
 
 if __name__ == '__main__':
     cli()

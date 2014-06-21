@@ -170,6 +170,10 @@ class TestTermString:
         assert str(ts.curly) == '{foo}'
         assert str(ts_blank.curly) == ''
 
+    def test_git(self, ts, ts_blank):
+        assert str(ts.git) == ':'.join([style('git', fg='blue'), 'foo'])
+        assert str(ts_blank.git) == ''
+
 
 @contextmanager
 def recording_session(runner, commands=None, args=None):
