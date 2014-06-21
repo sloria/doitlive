@@ -113,7 +113,7 @@ class TermString(unicode):
         if strip_ansi(self):
             return TermString(''.join([left, self, right]))
         else:
-            return TermString('')
+            return TermString('\b')
 
     @property
     def paren(self):
@@ -132,7 +132,7 @@ class TermString(unicode):
         if strip_ansi(self):
             return TermString('{}:{}'.format(style('git', fg='blue'), self))
         else:
-            return TermString('')
+            return TermString('\b')
 
 
 def get_current_git_branch():
@@ -299,7 +299,7 @@ def cli():
     \b
     Basic:
         1. Create a file called session.sh. Fill it with bash commands.
-        2. Run "doitlive play session.sh"
+        2. Run "doitlive play session.sh".
         3. Type like a madman.
 
     Press Ctrl-C at any time to exit a session.

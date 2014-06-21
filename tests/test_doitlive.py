@@ -160,19 +160,19 @@ class TestTermString:
 
     def test_paren(self, ts, ts_blank):
         assert str(ts.paren) == '(foo)'
-        assert str(ts_blank.paren) == ''
+        assert str(ts_blank.paren) == '\b'
 
     def test_square(self, ts, ts_blank):
         assert str(ts.square) == '[foo]'
-        assert str(ts_blank.square) == ''
+        assert str(ts_blank.square) == '\b'
 
     def test_curly(self, ts, ts_blank):
         assert str(ts.curly) == '{foo}'
-        assert str(ts_blank.curly) == ''
+        assert str(ts_blank.curly) == '\b'
 
     def test_git(self, ts, ts_blank):
         assert str(ts.git) == ':'.join([style('git', fg='blue'), 'foo'])
-        assert str(ts_blank.git) == ''
+        assert str(ts_blank.git) == '\b'
 
 
 @contextmanager

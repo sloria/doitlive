@@ -10,7 +10,8 @@ Changelog
 - Deprecated ``doitlive-demo``. Run ``doitlive demo`` instead.
 - Deprecated ``doitlive --themes`` and ``doitlive --themes-preview``. Run ``doitlive themes`` and ``doitlive themes --preview`` instead.
 - Fix bug that raised an error when cd'ing into a non-existent directory.
-- Add 'robbyrussell' theme.
+- Remove extra spacing in prompt when not in a git directory.
+- Added 'robbyrussell' theme.
 
 
 1.0 (2014-06-18)
