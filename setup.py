@@ -80,9 +80,6 @@ setup(
             'doitlive = doitlive:cli'
         ]
     },
-    package_data={
-        'doitlive': ['doitlive-demo.sh']
-    },
     tests_require=['pytest'],
     cmdclass={'test': PyTest}
 )
