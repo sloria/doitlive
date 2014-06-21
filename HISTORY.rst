@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.0 (unreleased)
+2.0 (2014-06-21)
 ****************
 
 - Added session recorder (``doitlive record``).
