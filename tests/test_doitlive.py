@@ -83,11 +83,9 @@ class TestPlayer:
         result = run_session(runner, 'speed.session', user_input)
         assert '123456789' in result.output
 
-
     def test_bad_theme(self, runner):
         result = runner.invoke(cli, ['-p', 'thisisnotatheme'])
         assert result.exit_code > 0
-
 
     def test_cd(self, runner):
         user_input = (random_string(len('cd ~')) + '\n' +
@@ -181,10 +179,14 @@ def recording_session(runner, commands=None, args=None):
     args = args or []
 
     with runner.isolated_filesystem():
-        command_input = '\n'.join(commands)
-        user_input = ''.join(['\n', command_input, '\nstop\n'])
-        runner.invoke(cli, ['record'] + args, input=user_input)
-        yield
+        user_input = recorder_input(commands)
+        result = runner.invoke(cli, ['record'] + args, input=user_input)
+        yield result
+
+def recorder_input(commands):
+    command_input = '\n'.join(commands)
+    user_input = ''.join(['\n', command_input, '\nstop\n'])
+    return user_input
 
 class TestRecorder:
 
@@ -230,9 +232,7 @@ class TestRecorder:
             initial_dir = os.getcwd()
             cd_to = os.path.join(initial_dir, 'mydir')
             os.mkdir(cd_to)
-            user_input = ''.join([
-                '\n', 'cd mydir', '\n', 'pwd', '\n', '\nstop\n'
-            ])
+            user_input = recorder_input(['cd mydir', 'pwd'])
             result = runner.invoke(cli, ['record'], input=user_input)
             assert result.exit_code == 0
             # cwd was reset
@@ -244,3 +244,18 @@ class TestRecorder:
             os.mkdir('mydir')
             result = runner.invoke(cli, ['record', 'mydir'])
             assert result.exit_code > 0
+
+    def test_preview_buffer(self, runner):
+        with recording_session(runner, commands=['echo foo', 'P']) as result:
+            assert 'Current commands in buffer:\n\n  echo foo' in result.output
+
+    def test_preview_buffer_empty(self, runner):
+        with recording_session(runner, commands=['P']) as result:
+            assert 'No commands in buffer.' in result.output
+
+    def test_undo_command(self, runner):
+        with recording_session(runner, ['echo foo', 'echo bar', 'U\ny']):
+            with open('session.sh', 'r') as fp:
+                content = fp.read()
+                assert 'echo bar' not in content
+                assert 'echo foo' in content

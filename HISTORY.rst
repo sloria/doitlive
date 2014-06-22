@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+2.1.0 (unreleased)
+******************
+
+- Added ability to preview and undo commands during a recorder session.
+
+
 2.0 (2014-06-21)
 ****************
 

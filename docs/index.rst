@@ -48,6 +48,17 @@ Examples
     # Use zsh
     $ doitlive play session.sh --shell /bin/zsh
 
+Using the recorder
+==================
+
+You can record session files using the built-in recorder command.
+
+.. code-block:: bash
+
+    $ doitlive record
+
+This will start a recording session. When you are finished recording, run the ``stop`` command. All commands will be written to a ``session.sh`` file.
+
 Themes
 ======
 
@@ -59,18 +70,6 @@ doitlive comes with many prompt themes. To use a theme:
 
 
 To view a list of available themes, run ``doitlive themes`` or ``doitlive themes --preview``.
-
-
-Using the recorder
-==================
-
-You can record session files using the built-in recorder command.
-
-.. code-block:: bash
-
-    $ doitlive record
-
-This will start a recording session. When you are finished recording, run the ``stop`` command. All commands will be written to a ``session.sh`` file.
 
 
 Comment magic (configuration)

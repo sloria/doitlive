@@ -25,7 +25,7 @@ import click
 from click import echo, style, secho, getchar
 from click.termui import strip_ansi
 
-__version__ = '2.0'
+__version__ = '2.1.0-dev'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
@@ -393,19 +393,40 @@ HEADER_TEMPLATE = """# Recorded with the doitlive recorder
 """
 
 STOP_COMMAND = 'stop'
+PREVIEW_COMMAND = 'P'
+UNDO_COMMAND = 'U'
+
+def echo_rec_buffer(commands):
+    if commands:
+        echo('Current commands in buffer:\n')
+        for cmd in commands:
+            echo('  ' + cmd)
+    else:
+        echo('No commands in buffer.')
 
 def run_recorder(shell, prompt):
     commands = []
     prefix = '(' + style('REC', fg='red') + ') '
     while True:
         formatted_prompt = prefix + format_prompt(THEMES[prompt]) + ' '
-        command = click.prompt(formatted_prompt, prompt_suffix='')
+        command = click.prompt(formatted_prompt, prompt_suffix='').strip()
+
         if command == STOP_COMMAND:
             break
-        commands.append(command)
-        output = run_command(command, shell=shell, test_mode=TESTING)
-        if isinstance(output, basestring):
-            echo(output, nl=False)
+        elif command == PREVIEW_COMMAND:
+            echo_rec_buffer(commands)
+        elif command == UNDO_COMMAND:
+            if commands and click.confirm('Remove command? "{}"'.format(commands[-1])):
+                commands.pop()
+                secho('Removed command.', bold=True, nl=False)
+                echo_rec_buffer(commands)
+            else:
+                echo('No commands in buffer. Doing nothing.')
+        else:
+            commands.append(command)
+            output = run_command(command, shell=shell, test_mode=TESTING)
+            if isinstance(output, basestring):
+                echo(output, nl=False)
     return commands
 
 
@@ -429,8 +450,15 @@ def record(session_file, shell, prompt):
     secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
-    echo('Type ' + style('"{}"'.format(STOP_COMMAND), bold=True) +
+    echo()
+    echo('INSTRUCTIONS:')
+    echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
         ' when you are done recording.')
+    echo('To preview the commands in the buffer, enter {}.'
+        .format(style(PREVIEW_COMMAND, bold=True)))
+    echo('To undo the last command in the buffer, enter {}.'
+        .format(style(UNDO_COMMAND, bold=True)))
+    echo()
 
     click.pause()
     click.clear()
