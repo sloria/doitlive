@@ -11,6 +11,7 @@
 """
 
 from __future__ import unicode_literals
+import datetime as dt
 import functools
 import os
 import sys
@@ -61,7 +62,10 @@ THEMES = OrderedDict([
     ('osx', '{hostname}:{dir} {user}$'),
     ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
 
+    ('pws', '+{now:%I:%M}%'),
+
     ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}'),
+
 ])
 
 
@@ -169,6 +173,7 @@ def get_prompt_state():
         'r_arrow': R_ARROW,
         'dollar': DOLLAR,
         'percent': PERCENT,
+        'now': dt.datetime.now(),
     }
 
 
@@ -418,7 +423,7 @@ def run_recorder(shell, prompt):
         elif command == UNDO_COMMAND:
             if commands and click.confirm('Remove command? "{}"'.format(commands[-1])):
                 commands.pop()
-                secho('Removed command.', bold=True, nl=False)
+                secho('Removed command.', bold=True)
                 echo_rec_buffer(commands)
             else:
                 echo('No commands in buffer. Doing nothing.')
@@ -450,6 +455,7 @@ def record(session_file, shell, prompt):
     secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
+    # Instructions
     echo()
     echo('INSTRUCTIONS:')
     echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
@@ -462,11 +468,12 @@ def record(session_file, shell, prompt):
 
     click.pause()
     click.clear()
-    cwd = os.getcwd()
+    cwd = os.getcwd()  # Save cwd
 
+    # Run the recorder
     commands = run_recorder(shell, prompt)
 
-    os.chdir(cwd)
+    os.chdir(cwd)  # Reset cwd
 
     secho("FINISHED RECORDING SESSION", fg='yellow', bold=True)
     secho('Writing to {0}...'.format(filename), fg='cyan')
@@ -477,6 +484,7 @@ def record(session_file, shell, prompt):
 
     play_cmd = style('doitlive play {}'.format(filename), bold=True)
     echo('Done. Run {} to play back your session.'.format(play_cmd))
+
 
 if __name__ == '__main__':
     cli()

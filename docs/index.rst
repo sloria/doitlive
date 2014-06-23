@@ -93,7 +93,7 @@ configures the prompt. Can be any of the built-in themes or a custom prompt temp
 
 **Using a custom template**:
 
-You can provide the ``prompt`` option with a custom template. To include the user, hostname, current directory, current path to working directory, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, and ``{git_branch}``, respectively.
+You can provide the ``prompt`` option with a custom template. To include the user, hostname, current directory, current path to working directory, current datetime, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, ``{now}``, and ``{git_branch}``, respectively.
 
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 
