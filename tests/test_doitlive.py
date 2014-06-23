@@ -259,3 +259,10 @@ class TestRecorder:
                 content = fp.read()
                 assert 'echo bar' not in content
                 assert 'echo foo' in content
+
+    def test_aliases(self, runner):
+        with recording_session(runner, args=['-a', 'g=git', '-a', 'c=clear']):
+            with open('session.sh', 'r') as fp:
+                content = fp.read()
+                assert '#doitlive alias: g=git\n' in content
+                assert '#doitlive alias: c=clear\n' in content

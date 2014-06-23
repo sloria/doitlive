@@ -36,7 +36,7 @@ if not PY2:
     unicode = str
     basestring = (str, bytes)
 else:
-    from io import open
+    from codecs import open
     open = open
 
 THEMES = OrderedDict([
@@ -181,11 +181,19 @@ def ensure_utf(string):
     return string.encode('utf-8') if PY2 else string
 
 
-def write_directives(fp, command, args):
+def write_commands(fp, command, args):
     if args:
         for arg in args:
-            line = ensure_utf('{command} {arg}\n'.format(**locals()))
-            fp.write(line)
+            line = '{command} {arg}\n'.format(**locals())
+            fp.write(ensure_utf(line))
+    return None
+
+
+def write_directives(fp, directive, args):
+    if args:
+        for arg in args:
+            line = '#doitlive {directive}: {arg}\n'.format(**locals())
+            fp.write(ensure_utf(line))
     return None
 
 
@@ -209,8 +217,8 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
                 fp.write("shopt -s expand_aliases\n")
 
             # Write envvars and aliases
-            write_directives(fp, 'export', envvars)
-            write_directives(fp, 'alias', aliases)
+            write_commands(fp, 'export', envvars)
+            write_commands(fp, 'alias', aliases)
 
             cmd_line = cmd + '\n'
             fp.write(ensure_utf(cmd_line))
@@ -356,6 +364,9 @@ PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
         help='Prompt theme.',
         show_default=True)
 
+ALIAS_OPTION = click.option('--alias', '-a', metavar='<alias>',
+    multiple=True, help='Add a session alias.')
+
 
 def _compose(*functions):
     def inner(func1, func2):
@@ -364,7 +375,7 @@ def _compose(*functions):
 
 # Compose the decorators into "bundled" decorators
 player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
-recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION)
+recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION)
 
 @player_command
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
@@ -395,7 +406,6 @@ def demo(shell, speed, prompt):
 HEADER_TEMPLATE = """# Recorded with the doitlive recorder
 #doitlive shell: {shell}
 #doitlive prompt: {prompt}
-
 """
 
 STOP_COMMAND = 'stop'
@@ -410,7 +420,7 @@ def echo_rec_buffer(commands):
     else:
         echo('No commands in buffer.')
 
-def run_recorder(shell, prompt):
+def run_recorder(shell, prompt, aliases=None):
     commands = []
     prefix = '(' + style('REC', fg='red') + ') '
     while True:
@@ -430,7 +440,8 @@ def run_recorder(shell, prompt):
                 echo('No commands in buffer. Doing nothing.')
         else:
             commands.append(command)
-            output = run_command(command, shell=shell, test_mode=TESTING)
+            output = run_command(command, shell=shell,
+                aliases=aliases, test_mode=TESTING)
             if isinstance(output, basestring):
                 echo(output, nl=False)
     return commands
@@ -440,7 +451,7 @@ def run_recorder(shell, prompt):
 @click.argument('session_file', default='session.sh',
     type=click.Path(dir_okay=False, writable=True))
 @cli.command()
-def record(session_file, shell, prompt):
+def record(session_file, shell, prompt, alias):
     """Record a session file. If no argument is passed, commands are written to
     ./session.sh.
 
@@ -472,7 +483,7 @@ def record(session_file, shell, prompt):
     cwd = os.getcwd()  # Save cwd
 
     # Run the recorder
-    commands = run_recorder(shell, prompt)
+    commands = run_recorder(shell, prompt, aliases=alias)
 
     os.chdir(cwd)  # Reset cwd
 
@@ -480,6 +491,8 @@ def record(session_file, shell, prompt):
     secho('Writing to {0}...'.format(filename), fg='cyan')
     with open(session_file, 'w', encoding='utf-8') as fp:
         fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
+        write_directives(fp, 'alias', alias)
+        fp.write('\n')
         fp.write('\n\n'.join(commands))
         fp.write('\n')
 
