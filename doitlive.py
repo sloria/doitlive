@@ -224,7 +224,8 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             fp.write(ensure_utf(cmd_line))
             fp.flush()
             if test_mode:
-                return subprocess.check_output([shell, fp.name])
+                output = subprocess.check_output([shell, fp.name])
+                echo(output)
             else:
                 return subprocess.call([shell, fp.name])
 
@@ -253,10 +254,9 @@ def magictype(text, shell, prompt_template='default', aliases=None,
         echo(char, nl=False)
         i += speed
     wait_for(RETURNS)
-    output = run_command(text, shell, aliases=aliases, envvars=envvars,
+    run_command(text, shell, aliases=aliases, envvars=envvars,
         test_mode=test_mode)
-    if isinstance(output, basestring):
-        echo(output)
+
 
 def format_prompt(prompt):
     return prompt.format(**get_prompt_state())
@@ -443,10 +443,8 @@ def run_recorder(shell, prompt, aliases=None, envvars=None):
                 echo('No commands in buffer. Doing nothing.')
         else:
             commands.append(command)
-            output = run_command(command, shell=shell,
+            run_command(command, shell=shell,
                 aliases=aliases, envvars=envvars, test_mode=TESTING)
-            if isinstance(output, basestring):
-                echo(output, nl=False)
     return commands
 
 
