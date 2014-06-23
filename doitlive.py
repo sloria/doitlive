@@ -181,6 +181,14 @@ def ensure_utf(string):
     return string.encode('utf-8') if PY2 else string
 
 
+def write_directives(fp, command, args):
+    if args:
+        for arg in args:
+            line = ensure_utf('{command} {arg}\n'.format(**locals()))
+            fp.write(line)
+    return None
+
+
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or env.get('DOITLIVE_INTERPRETER') or '/bin/bash'
     if cmd.startswith("cd "):
@@ -200,17 +208,10 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             if 'bash' in shell:
                 fp.write("shopt -s expand_aliases\n")
 
-            if envvars:
-                # Write envvars
-                for envvar in envvars:
-                    envvar_line = 'export {0}\n'.format(envvar)
-                    fp.write(ensure_utf(envvar_line))
+            # Write envvars and aliases
+            write_directives(fp, 'export', envvars)
+            write_directives(fp, 'alias', aliases)
 
-            if aliases:
-                # Write aliases
-                for alias in aliases:
-                    alias_line = 'alias {0}\n'.format(alias)
-                    fp.write(ensure_utf(alias_line))
             cmd_line = cmd + '\n'
             fp.write(ensure_utf(cmd_line))
             fp.flush()

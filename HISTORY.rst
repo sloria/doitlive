@@ -5,7 +5,7 @@ Changelog
 ******************
 
 - Added ability to preview and undo commands during a recorder session.
-- ``{now}`` can be included in prompt.
+- Current datetime (``{now}``) can be included in prompt.
 - Added 'pws' theme.
 
 
