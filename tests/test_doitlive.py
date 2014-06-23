@@ -261,8 +261,25 @@ class TestRecorder:
                 assert 'echo foo' in content
 
     def test_aliases(self, runner):
+        with recording_session(runner,
+                ['e'], args=['--alias', 'e="echo foo"']) as result:
+            assert 'foo' in result.output
+
+    def test_aliases_are_written(self, runner):
         with recording_session(runner, args=['-a', 'g=git', '-a', 'c=clear']):
             with open('session.sh', 'r') as fp:
                 content = fp.read()
                 assert '#doitlive alias: g=git\n' in content
                 assert '#doitlive alias: c=clear\n' in content
+
+    def test_envvar(self, runner):
+        with recording_session(runner, ['echo $NAME'],
+                ['-e', 'NAME=Steve']) as result:
+            assert 'Steve' in result.output
+
+    def test_envvars_are_written(self, runner):
+        with recording_session(runner, args=['-e', 'FIRST=Steve', '-e', 'LAST=Loria']):
+            with open('session.sh', 'r') as fp:
+                content = fp.read()
+                assert '#doitlive env: FIRST=Steve\n' in content
+                assert '#doitlive env: LAST=Loria\n' in content

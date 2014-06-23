@@ -367,6 +367,9 @@ PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
 ALIAS_OPTION = click.option('--alias', '-a', metavar='<alias>',
     multiple=True, help='Add a session alias.')
 
+ENVVAR_OPTION = click.option('--envvar', '-e', metavar='<envvar>',
+    multiple=True, help='Adds a session variable.')
+
 
 def _compose(*functions):
     def inner(func1, func2):
@@ -375,7 +378,7 @@ def _compose(*functions):
 
 # Compose the decorators into "bundled" decorators
 player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
-recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION)
+recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OPTION)
 
 @player_command
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
@@ -420,7 +423,7 @@ def echo_rec_buffer(commands):
     else:
         echo('No commands in buffer.')
 
-def run_recorder(shell, prompt, aliases=None):
+def run_recorder(shell, prompt, aliases=None, envvars=None):
     commands = []
     prefix = '(' + style('REC', fg='red') + ') '
     while True:
@@ -441,7 +444,7 @@ def run_recorder(shell, prompt, aliases=None):
         else:
             commands.append(command)
             output = run_command(command, shell=shell,
-                aliases=aliases, test_mode=TESTING)
+                aliases=aliases, envvars=envvars, test_mode=TESTING)
             if isinstance(output, basestring):
                 echo(output, nl=False)
     return commands
@@ -451,7 +454,7 @@ def run_recorder(shell, prompt, aliases=None):
 @click.argument('session_file', default='session.sh',
     type=click.Path(dir_okay=False, writable=True))
 @cli.command()
-def record(session_file, shell, prompt, alias):
+def record(session_file, shell, prompt, alias, envvar):
     """Record a session file. If no argument is passed, commands are written to
     ./session.sh.
 
@@ -483,7 +486,7 @@ def record(session_file, shell, prompt, alias):
     cwd = os.getcwd()  # Save cwd
 
     # Run the recorder
-    commands = run_recorder(shell, prompt, aliases=alias)
+    commands = run_recorder(shell, prompt, aliases=alias, envvars=envvar)
 
     os.chdir(cwd)  # Reset cwd
 
@@ -492,6 +495,7 @@ def record(session_file, shell, prompt, alias):
     with open(session_file, 'w', encoding='utf-8') as fp:
         fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
         write_directives(fp, 'alias', alias)
+        write_directives(fp, 'env', envvar)
         fp.write('\n')
         fp.write('\n\n'.join(commands))
         fp.write('\n')

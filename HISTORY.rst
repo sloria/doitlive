@@ -7,6 +7,7 @@ Changelog
 - Added ability to preview and undo commands during a recorder session.
 - Current datetime (``{now}``) can be included in prompt.
 - Added 'pws' theme.
+- Added ``--envvar`` and ``--alias`` options to ``record`` command.
 
 
 2.0 (2014-06-21)
