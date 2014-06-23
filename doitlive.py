@@ -241,9 +241,7 @@ def wait_for(chars):
 
 def magictype(text, shell, prompt_template='default', aliases=None,
         envvars=None, speed=1, test_mode=False):
-    prompt_func = make_prompt_formatter(prompt_template)
-    prompt = prompt_func()
-    echo(prompt + ' ', nl=False)
+    echo_prompt(prompt_template)
     i = 0
     while i < len(text):
         char = text[i:i + speed]
@@ -266,6 +264,10 @@ def make_prompt_formatter(template):
     tpl = THEMES.get(template) or template
     return lambda: format_prompt(tpl)
 
+
+def echo_prompt(template):
+    prompt = make_prompt_formatter(template)()
+    echo(prompt + ' ', nl=False)
 
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
@@ -298,8 +300,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
             continue
         magictype(command, shell, prompt_template=prompt_template,
             aliases=aliases, envvars=envvars, speed=speed, test_mode=test_mode)
-    prompt = make_prompt_formatter(prompt_template)()
-    echo(prompt + ' ', nl=False)
+    echo_prompt(prompt_template)
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
