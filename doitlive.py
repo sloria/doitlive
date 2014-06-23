@@ -214,7 +214,7 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             fp.write('# -*- coding: utf-8 -*-\n')
             # Make aliases work in bash:
             if 'bash' in shell:
-                fp.write("shopt -s expand_aliases\n")
+                fp.write('shopt -s expand_aliases\n')
 
             # Write envvars and aliases
             write_commands(fp, 'export', envvars)
@@ -269,6 +269,41 @@ def echo_prompt(template):
     prompt = make_prompt_formatter(template)()
     echo(prompt + ' ', nl=False)
 
+class SessionState(dict):
+    """Stores information about a fake terminal session."""
+
+    def __init__(self, shell, prompt_template, speed,
+                aliases=None, envvars=None,
+                test_mode=False):
+        aliases = aliases or []
+        envvars = envvars or []
+        dict.__init__(self, shell=shell, prompt_template=prompt_template,
+            speed=speed, aliases=aliases, envvars=envvars, test_mode=test_mode)
+
+    def add_alias(self, alias):
+        self['aliases'].append(alias)
+
+    def add_envvar(self, envvar):
+        self['envvars'].append(envvar)
+
+    def set_speed(self, speed):
+        self['speed'] = int(speed)
+
+    def set_template(self, template):
+        self['prompt_template'] = template
+
+    def set_shell(self, shell):
+        self['shell'] = shell
+
+# Map of option names => function that modifies session state
+OPTION_MAP = {
+    'prompt': lambda state, arg: state.set_template(arg),
+    'shell': lambda state, arg: state.set_shell(arg),
+    'alias': lambda state, arg: state.add_alias(arg),
+    'env': lambda state, arg: state.add_envvar(arg),
+    'speed': lambda state, arg: state.set_speed(arg),
+}
+
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):
     secho("We'll do it live!", fg='red', bold=True)
@@ -277,7 +312,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
 
     click.pause()
     click.clear()
-    aliases, envvars = [], []
+    state = SessionState(shell=shell, prompt_template=prompt_template,
+        speed=speed, test_mode=test_mode)
     for line in commands:
         command = line.strip()
         if not command:
@@ -287,19 +323,10 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
             match = OPTION_RE.match(command)
             if match:
                 option, arg = match.group('option'), match.group('arg')
-                if option == 'prompt':
-                    prompt_template = arg
-                elif option == 'shell':
-                    shell = arg
-                elif option == 'alias':
-                    aliases.append(arg)
-                elif option == 'env':
-                    envvars.append(arg)
-                elif option == 'speed':
-                    speed = int(arg)
+                func = OPTION_MAP[option]
+                func(state, arg)
             continue
-        magictype(command, shell, prompt_template=prompt_template,
-            aliases=aliases, envvars=envvars, speed=speed, test_mode=test_mode)
+        magictype(command, **state)
     echo_prompt(prompt_template)
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
