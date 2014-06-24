@@ -390,7 +390,10 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
             py_commands = []
             more = True
             while more:
-                py_command = commands[i].rstrip()
+                try:
+                    py_command = commands[i].rstrip()
+                except IndexError:
+                    raise RuntimeError('Unmatched python code block in session file.')
                 i += 1
                 if py_command.startswith('```'):
                     i += 1
