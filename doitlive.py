@@ -19,6 +19,7 @@ import re
 import getpass
 import socket
 import subprocess
+from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
 
@@ -274,6 +275,57 @@ def echo_prompt(template):
     prompt = make_prompt_formatter(template)()
     echo(prompt + ' ', nl=False)
 
+
+class DoItLiveConsole(InteractiveConsole):
+
+    def __init__(self, commands, speed=1, *args, **kwargs):
+        self.commands = commands
+        self.speed = speed
+        InteractiveConsole.__init__(self, *args, **kwargs)
+
+    def run_commands(self, prompt='>>> '):
+        more = 0
+        for command in self.commands:
+            try:
+                if more:
+                    prompt = sys.ps2
+                else:
+                    prompt = sys.ps1
+                try:
+                    magictype(command, prompt_template=prompt, speed=self.speed)
+                except EOFError:
+                    self.write("\n")
+                    break
+                else:
+                    more = self.push(command)
+            except KeyboardInterrupt:
+                self.write("\nKeyboardInterrupt\n")
+                self.resetbuffer()
+                more = 0
+                sys.exit(1)
+        echo(prompt, nl=False)
+        wait_for(RETURNS)
+
+    def interact(self, banner=None):
+        try:
+            sys.ps1
+        except AttributeError:
+            sys.ps1 = ">>> "
+        try:
+            sys.ps2
+        except AttributeError:
+            sys.ps2 = "... "
+        cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
+        if banner is None:
+            self.write("Python %s on %s\n%s\n" %
+                       (sys.version, sys.platform, cprt))
+        else:
+            self.write("%s\n" % str(banner))
+        self.run_commands()
+
+    def write(self, data):
+        echo(data, nl=False)
+
 class SessionState(dict):
     """Stores information about a fake terminal session."""
 
@@ -319,8 +371,11 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
     click.clear()
     state = SessionState(shell=shell, prompt_template=prompt_template,
         speed=speed, test_mode=test_mode)
-    for line in commands:
-        command = line.strip()
+
+    i = 0
+    while i < len(commands):
+        command = commands[i].strip()
+        i += 1
         if not command:
             continue
         if command.startswith('#'):
@@ -331,7 +386,23 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 func = OPTION_MAP[option]
                 func(state, arg)
             continue
-        magicrun(command, **state)
+        elif command.startswith('```python'):
+            py_commands = []
+            more = True
+            while more:
+                py_command = commands[i].rstrip()
+                i += 1
+                if py_command.startswith('```'):
+                    i += 1
+                    more = False
+                else:
+                    py_commands.append(py_command)
+            magictype('python',
+                prompt_template=state['prompt_template'],
+                speed=state['speed'])
+            DoItLiveConsole(py_commands, speed=state['speed']).interact()
+        else:
+            magicrun(command, **state)
     echo_prompt(prompt_template)
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)

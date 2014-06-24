@@ -4,6 +4,7 @@ Changelog
 2.1.0 (unreleased)
 ******************
 
+- Python mode!
 - Added ability to preview and undo commands during a recorder session.
 - Current datetime (``{now}``) can be included in prompt.
 - Added 'pws' theme.
