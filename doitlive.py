@@ -278,13 +278,15 @@ def echo_prompt(template):
 
 class DoItLiveConsole(InteractiveConsole):
 
-    def __init__(self, commands, speed=1, *args, **kwargs):
-        self.commands = commands
+    def __init__(self, commands=None, speed=1, *args, **kwargs):
+        self.commands = commands or []
         self.speed = speed
         InteractiveConsole.__init__(self, *args, **kwargs)
 
-    def run_commands(self, prompt='>>> '):
+    def run_commands(self):
+        """Automatically type and execute all commands."""
         more = 0
+        prompt = sys.ps1
         for command in self.commands:
             try:
                 if more:
@@ -307,10 +309,11 @@ class DoItLiveConsole(InteractiveConsole):
         wait_for(RETURNS)
 
     def interact(self, banner=None):
+        """Run an interactive session."""
         try:
             sys.ps1
         except AttributeError:
-            sys.ps1 = ">>> "
+            sys.ps1 = '>>>'
         try:
             sys.ps2
         except AttributeError:
@@ -323,8 +326,6 @@ class DoItLiveConsole(InteractiveConsole):
             self.write("%s\n" % str(banner))
         self.run_commands()
 
-    def write(self, data):
-        echo(data, nl=False)
 
 class SessionState(dict):
     """Stores information about a fake terminal session."""

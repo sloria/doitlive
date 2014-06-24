@@ -283,3 +283,27 @@ class TestRecorder:
                 content = fp.read()
                 assert '#doitlive env: FIRST=Steve\n' in content
                 assert '#doitlive env: LAST=Loria\n' in content
+
+
+class TestPythonConsole:
+
+    @pytest.fixture
+    def console(self):
+        return doitlive.DoItLiveConsole()
+
+    @pytest.mark.parametrize('command,expected', [
+        ('1 + 1', b'2'),
+        ('print("f" + "o" + "o")', b"foo"),
+        ('import math; math.sqrt(144)', b'12'),
+    ])
+    def test_interact(self, runner, console, command, expected):
+        console.commands = [command]
+        with runner.isolation(input='{}\n\n'.format(command)) as output:
+            console.interact()
+        assert expected in output.getvalue()
+
+    def test_python_session(self, runner):
+        user_input = '\npython\nprint("f" + "o" + "o")\n'
+        result = run_session(runner, 'python.session', user_input)
+        assert result.exit_code == 0
+        assert 'foo' in result.output
