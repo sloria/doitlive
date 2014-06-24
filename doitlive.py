@@ -239,8 +239,8 @@ def wait_for(chars):
             echo()
             return in_char
 
-def magictype(text, shell, prompt_template='default', aliases=None,
-        envvars=None, speed=1, test_mode=False):
+
+def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
     i = 0
     while i < len(text):
@@ -252,6 +252,11 @@ def magictype(text, shell, prompt_template='default', aliases=None,
         echo(char, nl=False)
         i += speed
     wait_for(RETURNS)
+
+
+def magicrun(text, shell, prompt_template='default', aliases=None,
+        envvars=None, speed=1, test_mode=False):
+    magictype(text, prompt_template, speed)
     run_command(text, shell, aliases=aliases, envvars=envvars,
         test_mode=test_mode)
 
@@ -326,7 +331,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 func = OPTION_MAP[option]
                 func(state, arg)
             continue
-        magictype(command, **state)
+        magicrun(command, **state)
     echo_prompt(prompt_template)
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
