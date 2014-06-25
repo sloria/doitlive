@@ -294,7 +294,8 @@ class TestRecorder:
         with recording_session(runner, ['python', 'print("hello")', 'exit()']):
             with open('session.sh', 'r') as fp:
                 content = fp.read()
-                assert '```python' in content
+                assert '```python\n' in content
+                assert 'print("hello")\n' in content
 
 
 class TestPlayerConsole:
