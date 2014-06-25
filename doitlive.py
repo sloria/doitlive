@@ -276,7 +276,8 @@ def echo_prompt(template):
     echo(prompt + ' ', nl=False)
 
 
-class DoItLiveConsole(InteractiveConsole):
+class PythonPlayerConsole(InteractiveConsole):
+    """A magic python console."""
 
     def __init__(self, commands=None, speed=1, *args, **kwargs):
         self.commands = commands or []
@@ -299,13 +300,15 @@ class DoItLiveConsole(InteractiveConsole):
                     self.write("\n")
                     break
                 else:
+                    if command.strip() == 'exit()':
+                        return
                     more = self.push(command)
             except KeyboardInterrupt:
                 self.write("\nKeyboardInterrupt\n")
                 self.resetbuffer()
                 more = 0
                 sys.exit(1)
-        echo(prompt, nl=False)
+        echo_prompt(prompt)
         wait_for(RETURNS)
 
     def interact(self, banner=None):
@@ -325,6 +328,21 @@ class DoItLiveConsole(InteractiveConsole):
         else:
             self.write("%s\n" % str(banner))
         self.run_commands()
+
+
+class PythonRecorderConsole(InteractiveConsole):
+    """An interactive Python console that stores user input in a list."""
+
+    def __init__(self, *args, **kwargs):
+        self.commands = []
+        InteractiveConsole.__init__(self, *args, **kwargs)
+
+    def raw_input(self, *args, **kwargs):
+        ret = InteractiveConsole.raw_input(self, *args, **kwargs)
+        self.commands.append(ret + '\n')
+        if ret.strip() == 'exit()':
+            raise EOFError()
+        return ret
 
 
 class SessionState(dict):
@@ -390,7 +408,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         elif command.startswith('```python'):
             py_commands = []
             more = True
-            while more:
+            while more:  # slurp up all the python code
                 try:
                     py_command = commands[i].rstrip()
                 except IndexError:
@@ -401,10 +419,11 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                     more = False
                 else:
                     py_commands.append(py_command)
+            # Run the player console
             magictype('python',
                 prompt_template=state['prompt_template'],
                 speed=state['speed'])
-            DoItLiveConsole(py_commands, speed=state['speed']).interact()
+            PythonPlayerConsole(py_commands, speed=state['speed']).interact()
         else:
             magicrun(command, **state)
     echo_prompt(prompt_template)
@@ -527,7 +546,7 @@ def echo_rec_buffer(commands):
     if commands:
         echo('Current commands in buffer:\n')
         for cmd in commands:
-            echo('  ' + cmd)
+            echo('  ' + cmd, nl=False)  # commands already have newlines
     else:
         echo('No commands in buffer.')
 
@@ -543,14 +562,20 @@ def run_recorder(shell, prompt, aliases=None, envvars=None):
         elif command == PREVIEW_COMMAND:
             echo_rec_buffer(commands)
         elif command == UNDO_COMMAND:
-            if commands and click.confirm('Remove command? "{}"'.format(commands[-1])):
+            if commands and click.confirm('Remove command? "{}"'.format(commands[-1].strip())):
                 commands.pop()
                 secho('Removed command.', bold=True)
                 echo_rec_buffer(commands)
             else:
                 echo('No commands in buffer. Doing nothing.')
+        elif command == 'python':
+            commands.append('```python\n')
+            console = PythonRecorderConsole()
+            console.interact()
+            commands.extend(console.commands)
+            commands.append('```\n\n')
         else:
-            commands.append(command)
+            commands.append(command + '\n\n')
             run_command(command, shell=shell,
                 aliases=aliases, envvars=envvars, test_mode=TESTING)
     return commands
@@ -603,7 +628,7 @@ def record(session_file, shell, prompt, alias, envvar):
         write_directives(fp, 'alias', alias)
         write_directives(fp, 'env', envvar)
         fp.write('\n')
-        fp.write('\n\n'.join(commands))
+        fp.write(''.join(commands))
         fp.write('\n')
 
     play_cmd = style('doitlive play {}'.format(filename), bold=True)

@@ -102,6 +102,12 @@ class TestPlayer:
 
         assert result.exit_code == 0
 
+    def test_python_session(self, runner):
+        user_input = '\npython\nprint("f" + "o" + "o")\n'
+        result = run_session(runner, 'python.session', user_input)
+        assert result.exit_code == 0
+        assert 'foo' in result.output
+
 
 def test_themes_list(runner):
     result1 = runner.invoke(cli, ['themes'])
@@ -284,12 +290,18 @@ class TestRecorder:
                 assert '#doitlive env: FIRST=Steve\n' in content
                 assert '#doitlive env: LAST=Loria\n' in content
 
+    def test_python_mode(self, runner):
+        with recording_session(runner, ['python', 'print("hello")', 'exit()']):
+            with open('session.sh', 'r') as fp:
+                content = fp.read()
+                assert '```python' in content
 
-class TestPythonConsole:
+
+class TestPlayerConsole:
 
     @pytest.fixture
     def console(self):
-        return doitlive.DoItLiveConsole()
+        return doitlive.PythonPlayerConsole()
 
     @pytest.mark.parametrize('command,expected', [
         ('1 + 1', b'2'),
@@ -302,8 +314,13 @@ class TestPythonConsole:
             console.interact()
         assert expected in output.getvalue()
 
-    def test_python_session(self, runner):
-        user_input = '\npython\nprint("f" + "o" + "o")\n'
-        result = run_session(runner, 'python.session', user_input)
-        assert result.exit_code == 0
-        assert 'foo' in result.output
+
+class TestRecorderConsole:
+
+    def test_interact_stores_commands(self, runner):
+        cons = doitlive.PythonRecorderConsole()
+        commands = ['print("foo")', 'import math']
+        with runner.isolation(input='\n'.join(commands)):
+            cons.interact()
+        for command in commands:
+            assert (command + '\n') in cons.commands
