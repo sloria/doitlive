@@ -73,7 +73,7 @@ THEMES = OrderedDict([
 ESC = '\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
-            '(?P<option>prompt|shell|alias|env|speed):'
+            '(?P<option>prompt|shell|alias|env|speed|unalias|unset):'
             '\s*(?P<arg>.+)$')
 
 
@@ -371,6 +371,20 @@ class SessionState(dict):
     def set_shell(self, shell):
         self['shell'] = shell
 
+    def _remove_var(self, key, variable):
+        for each in self[key]:
+            value, cmd = each.split('=')
+            if variable == value.strip():
+                self[key].remove(each)
+                return True
+        return None
+
+    def remove_alias(self, alias):
+        return self._remove_var('aliases', alias)
+
+    def remove_envvar(self, envvar):
+        return self._remove_var('envvars', envvar)
+
 # Map of option names => function that modifies session state
 OPTION_MAP = {
     'prompt': lambda state, arg: state.set_template(arg),
@@ -378,6 +392,8 @@ OPTION_MAP = {
     'alias': lambda state, arg: state.add_alias(arg),
     'env': lambda state, arg: state.add_envvar(arg),
     'speed': lambda state, arg: state.set_speed(arg),
+    'unalias': lambda state, arg: state.remove_alias(arg),
+    'unset': lambda state, arg: state.remove_envvar(arg),
 }
 
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,

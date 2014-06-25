@@ -108,6 +108,24 @@ class TestPlayer:
         assert result.exit_code == 0
         assert 'foo' in result.output
 
+    def test_alias(self, runner):
+        user_input = random_string(len('foo'))
+        result = run_session(runner, 'alias.session', user_input)
+        assert result.exit_code == 0
+        assert '42' in result.output
+
+    def test_unalias(self, runner):
+        user_input = random_string(len('foo'))
+        result = run_session(runner, 'unalias.session', user_input)
+        # nonzero exit code becuase 'foo' is no longer aliased
+        assert result.exit_code != 0
+        assert '42' not in result.output
+
+    def test_unset_envvar(self, runner):
+        user_input = random_string(len('echo $MEANING'))
+        result = run_session(runner, 'unset.session', user_input)
+        assert '42' not in result.output
+
 
 def test_themes_list(runner):
     result1 = runner.invoke(cli, ['themes'])
@@ -177,6 +195,35 @@ class TestTermString:
     def test_git(self, ts, ts_blank):
         assert str(ts.git) == ':'.join([style('git', fg='blue'), 'foo'])
         assert str(ts_blank.git) == '\b'
+
+class TestSessionState:
+
+    @pytest.fixture
+    def state(self):
+        return doitlive.SessionState(
+            shell='/bin/zsh',
+            prompt_template='default',
+            speed=1
+        )
+
+    def test_remove_alias(self, state):
+        state.add_alias('g=git')
+        assert 'g=git' in state['aliases']  # sanity check
+        state.remove_alias('g')
+        assert 'g=git' not in state['aliases']
+
+    def test_remove_envvar(self, state):
+        state.add_envvar('EDITOR=vim')
+        assert 'EDITOR=vim' in state['envvars']
+        state.remove_envvar('EDITOR')
+        assert 'EDITOR=vim' not in state['envvars']
+
+    def test_add_alias(self):
+        state = doitlive.SessionState('/bin/zsh', 'default', speed=1)
+        assert len(state['aliases']) == 0
+        state.add_alias('g=git')
+        assert 'g=git' in state['aliases']
+
 
 
 @contextmanager

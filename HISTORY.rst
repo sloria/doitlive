@@ -4,11 +4,12 @@ Changelog
 2.1.0 (unreleased)
 ******************
 
-- Python mode!
+- Python mode: Fenced code blocks can be played back in a fake Python console.
 - Added ability to preview and undo commands during a recorder session.
 - Current datetime (``{now}``) can be included in prompt.
 - Added 'pws' theme.
 - Added ``--envvar`` and ``--alias`` options to ``record`` command.
+- Added ``unalias`` and ``unset`` commend directives
 
 
 2.0 (2014-06-21)

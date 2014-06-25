@@ -1,0 +1,3 @@
+#doitlive alias: foo="echo 42"
+
+foo

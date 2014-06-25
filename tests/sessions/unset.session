@@ -1,0 +1,5 @@
+#doitlive env: MEANING=42
+
+#doitlive unset: MEANING
+
+echo $MEANING
