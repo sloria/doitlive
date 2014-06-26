@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.1.0 (unreleased)
+2.1.0 (2014-06-25)
 ******************
 
 - Python mode: Fenced code blocks can be played back in a fake Python console.
