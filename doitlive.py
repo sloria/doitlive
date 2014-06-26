@@ -263,7 +263,10 @@ def magicrun(text, shell, prompt_template='default', aliases=None,
 
 
 def format_prompt(prompt):
-    return prompt.format(**get_prompt_state())
+    try:
+        return prompt.format(**get_prompt_state())
+    except KeyError:
+        raise ConfigurationError('Invalid variable in prompt template.')
 
 
 def make_prompt_formatter(template):
@@ -275,6 +278,24 @@ def echo_prompt(template):
     prompt = make_prompt_formatter(template)()
     echo(prompt + ' ', nl=False)
 
+# Exceptions
+# ##########
+
+class DoItLiveError(Exception):
+    """Base exception class for all doitlive-related errors."""
+    pass
+
+
+class ConfigurationError(DoItLiveError):
+    pass
+
+
+class SessionError(DoItLiveError):
+    pass
+
+
+# Custom Python consoles
+# ######################
 
 class PythonPlayerConsole(InteractiveConsole):
     """A magic python console."""
@@ -428,7 +449,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 try:
                     py_command = commands[i].rstrip()
                 except IndexError:
-                    raise RuntimeError('Unmatched python code block in session file.')
+                    raise SessionError('Unmatched python code block in session file.')
                 i += 1
                 if py_command.startswith('```'):
                     i += 1
@@ -448,6 +469,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
 
 
 # Les CLI
+# #######
 
 @click.version_option(__version__, '--version', '-v')
 @click.group(context_settings={'help_option_names': ('-h', '--help')})

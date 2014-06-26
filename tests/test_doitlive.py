@@ -148,6 +148,11 @@ def test_version(runner):
     result2 = runner.invoke(cli, ['-v'])
     assert result.output == result2.output
 
+def test_bad_format_prompt():
+    with pytest.raises(doitlive.ConfigurationError):
+        doitlive.format_prompt('{notfound}')
+
+
 class TestTermString:
 
     @pytest.fixture
