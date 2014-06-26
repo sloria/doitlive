@@ -152,9 +152,11 @@ unsets an environment variable.
 Python mode
 ===========
 
-doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks (```python), like so:
+doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks within your ``session.sh`` file, like so:
 
 .. code-block:: bash
+
+    # in session.sh
 
     echo "And now for something completely different"
 
