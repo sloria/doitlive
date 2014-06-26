@@ -6,10 +6,14 @@ $ doitlive
 
    Because sometimes you need to do it live
 
-
 Current version: v\ |version|.
 
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
+
+.. contents::
+   :local:
+   :depth: 1
+
 
 Get it now
 ==========
@@ -69,8 +73,12 @@ doitlive comes with many prompt themes. To use a theme:
     $ doitlive play session.sh -p <theme_name>
 
 
+You can also change a session's theme by using a comment directive (see :ref:`Comment magic <comment_magic>` below).
+
 To view a list of available themes, run ``doitlive themes`` or ``doitlive themes --preview``.
 
+
+.. _comment_magic:
 
 Comment magic (configuration)
 =============================
@@ -115,12 +123,13 @@ configures which shell is use.
 Example: ``#doitlive shell: /bin/zsh``
 
 
-#doitlive alias: <name>=<command>
----------------------------------
+#doitlive alias: <alias>=<command>
+----------------------------------
 
 adds an alias to the session.
 
 Example: ``#doitlive alias: du="du -ach | sort -h"``
+
 
 #doitlive env: <envvar>=<value>
 -------------------------------
@@ -129,6 +138,34 @@ sets an environment variable.
 
 Example: ``#doitlive env: EDITOR=vim``
 
+#doitlive unalias: <alias>
+--------------------------
+
+removes an alias.
+
+#doitlive unset: <envvar>
+-------------------------
+
+unsets an environment variable.
+
+
+Python mode
+===========
+
+doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks (```python), like so:
+
+.. code-block:: bash
+
+    echo "And now for something completely different"
+
+    ```python
+    list = [2, 4, 6, 8]
+    sum = 0
+    for num in list:
+        sum = sum + num
+
+    print("The sum is: {sum}".format(sum=sum))
+    ```
 
 Bash completion
 ===============

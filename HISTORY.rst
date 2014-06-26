@@ -9,7 +9,7 @@ Changelog
 - Current datetime (``{now}``) can be included in prompt.
 - Added 'pws' theme.
 - Added ``--envvar`` and ``--alias`` options to ``record`` command.
-- Added ``unalias`` and ``unset`` commend directives
+- Added ``unalias`` and ``unset`` comment directives.
 
 
 2.0 (2014-06-21)
