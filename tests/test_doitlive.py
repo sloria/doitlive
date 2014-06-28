@@ -11,10 +11,12 @@ from click import style
 from click.testing import CliRunner
 
 import doitlive
-from doitlive import cli, TermString
+from doitlive import cli, TermString, TTY
 
 random.seed(42)
 HERE = os.path.abspath(os.path.dirname(__file__))
+
+
 
 def random_string(n, alphabet='abcdefghijklmnopqrstuvwxyz1234567890;\'\\][=-+_`'):
     return ''.join([random.choice(alphabet) for _ in range(n)])
@@ -200,6 +202,29 @@ class TestTermString:
     def test_git(self, ts, ts_blank):
         assert str(ts.git) == ':'.join([style('git', fg='blue'), 'foo'])
         assert str(ts_blank.git) == '\b'
+
+
+class TestTTY:
+
+    @pytest.mark.parametrize('color', [
+        'blue', 'red', 'magenta', 'white', 'green', 'black', 'yellow', 'cyan'
+    ])
+    def test_colors(self, color):
+        code = getattr(TTY, color.upper())
+        assert code == style('', fg=color, reset=False)
+
+    def test_bold(self):
+        assert TTY.BOLD == style('', bold=True, reset=False)
+
+    def test_blink(self):
+        assert TTY.BLINK == style('', blink=True, reset=False)
+
+    def test_underline(self):
+        assert TTY.UNDERLINE == style('', underline=True, reset=False)
+
+    def test_dim(self):
+        assert TTY.DIM == style('', dim=True, reset=False)
+
 
 class TestSessionState:
 

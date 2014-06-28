@@ -63,9 +63,12 @@ THEMES = OrderedDict([
     ('osx', '{hostname}:{dir} {user}$'),
     ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
 
-    ('pws', '+{now:%I:%M}%'),
+    ('pws', '{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
 
     ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}'),
+
+    ('giddie', '{user.magenta}@{hostname.yellow}|{cwd.green} '
+                'on {git_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
 
 ])
 
@@ -81,7 +84,7 @@ TESTING = False
 
 
 class Style(object):
-    """Descriptor that adds ANSI styling when accessed."""
+    """Descriptor that adds ANSI styling to a string when accessed."""
 
     def __init__(self, **kwargs):
         self.kwargs = kwargs
@@ -139,6 +142,37 @@ class TermString(unicode):
         else:
             return TermString('\b')
 
+class ANSICode(object):
+    """Descriptor that returns the ANSI code the given styles passed to
+    the constructor.
+    """
+
+    def __init__(self, **styles):
+        self.styles = styles
+
+    def __get__(self, instance, owner):
+        reset = self.styles.pop('reset', False)
+        return style('', reset=reset, **self.styles)
+
+
+class TTY(object):
+    """Namespace for all ANSI escape sequences provided by click."""
+
+    BLUE = ANSICode(fg='blue')
+    MAGENTA = ANSICode(fg='magenta')
+    RED = ANSICode(fg='red')
+    WHITE = ANSICode(fg='white')
+    GREEN = ANSICode(fg='green')
+    BLACK = ANSICode(fg='black')
+    YELLOW = ANSICode(fg='yellow')
+    CYAN = ANSICode(fg='cyan')
+    RESET = click.termui._ansi_reset_all
+
+    BOLD = ANSICode(bold=True)
+    BLINK = ANSICode(blink=True)
+    UNDERLINE = ANSICode(underline=True)
+    DIM = ANSICode(dim=True)
+
 
 def get_current_git_branch():
     command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
@@ -175,6 +209,8 @@ def get_prompt_state():
         'dollar': DOLLAR,
         'percent': PERCENT,
         'now': dt.datetime.now(),
+        # ANSI values object
+        'TTY': TTY,
     }
 
 
@@ -311,10 +347,7 @@ class PythonPlayerConsole(InteractiveConsole):
         prompt = sys.ps1
         for command in self.commands:
             try:
-                if more:
-                    prompt = sys.ps2
-                else:
-                    prompt = sys.ps1
+                prompt = sys.ps2 if more else sys.ps1
                 try:
                     magictype(command, prompt_template=prompt, speed=self.speed)
                 except EOFError:
