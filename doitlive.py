@@ -27,7 +27,7 @@ import click
 from click import echo, style, secho, getchar
 from click.termui import strip_ansi
 
-__version__ = '2.1.0'
+__version__ = '2.2.0'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
@@ -141,6 +141,7 @@ class TermString(unicode):
             return TermString('{}:{}'.format(style('git', fg='blue'), self))
         else:
             return TermString('\b')
+
 
 class ANSICode(object):
     """Descriptor that returns the ANSI code the given styles passed to
@@ -534,6 +535,7 @@ def preview_themes():
         echo(' command arg1 arg2 ... argn')
         echo()
 
+
 def list_themes():
     secho('Available themes:', bold=True)
     echo(' '.join(THEMES.keys()))
@@ -578,6 +580,7 @@ def _compose(*functions):
 player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
 recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OPTION)
 
+
 @player_command
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @cli.command()
@@ -612,6 +615,8 @@ HEADER_TEMPLATE = """# Recorded with the doitlive recorder
 STOP_COMMAND = 'stop'
 PREVIEW_COMMAND = 'P'
 UNDO_COMMAND = 'U'
+HELP_COMMANDS = ['H', 'help']
+
 
 def echo_rec_buffer(commands):
     if commands:
@@ -620,6 +625,7 @@ def echo_rec_buffer(commands):
             echo('  ' + cmd, nl=False)  # commands already have newlines
     else:
         echo('No commands in buffer.')
+
 
 def run_recorder(shell, prompt, aliases=None, envvars=None):
     commands = []
@@ -645,11 +651,27 @@ def run_recorder(shell, prompt, aliases=None, envvars=None):
             console.interact()
             commands.extend(console.commands)
             commands.append('```\n\n')
+        elif command in HELP_COMMANDS:
+            print_recorder_instructions()
         else:
             commands.append(command + '\n\n')
             run_command(command, shell=shell,
-                aliases=aliases, envvars=envvars, test_mode=TESTING)
+                        aliases=aliases, envvars=envvars, test_mode=TESTING)
     return commands
+
+
+def print_recorder_instructions():
+    echo()
+    echo('INSTRUCTIONS:')
+    echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
+        ' when you are done recording.')
+    echo('To preview the commands in the buffer, enter {}.'
+        .format(style(PREVIEW_COMMAND, bold=True)))
+    echo('To undo the last command in the buffer, enter {}.'
+        .format(style(UNDO_COMMAND, bold=True)))
+    echo('To view this help message again, enter {}.'
+        .format(style(HELP_COMMANDS[0], bold=True)))
+    echo()
 
 
 @recorder_command
@@ -672,16 +694,7 @@ def record(session_file, shell, prompt, alias, envvar):
     secho('RECORDING SESSION: {}'.format(filename),
         fg='yellow', bold=True)
 
-    # Instructions
-    echo()
-    echo('INSTRUCTIONS:')
-    echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
-        ' when you are done recording.')
-    echo('To preview the commands in the buffer, enter {}.'
-        .format(style(PREVIEW_COMMAND, bold=True)))
-    echo('To undo the last command in the buffer, enter {}.'
-        .format(style(UNDO_COMMAND, bold=True)))
-    echo()
+    print_recorder_instructions()
 
     click.pause()
     click.clear()

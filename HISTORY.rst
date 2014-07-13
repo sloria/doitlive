@@ -6,6 +6,7 @@ Changelog
 
 - Add ``{TTY}`` prompt variable that contains named constants for ANSI escape sequences.
 - Add "giddie" theme.
+- Add ``help/H`` command to the recorder console.
 
 2.1.0 (2014-06-25)
 ******************
