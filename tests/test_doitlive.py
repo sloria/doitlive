@@ -17,14 +17,15 @@ random.seed(42)
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 
-
 def random_string(n, alphabet='abcdefghijklmnopqrstuvwxyz1234567890;\'\\][=-+_`'):
     return ''.join([random.choice(alphabet) for _ in range(n)])
+
 
 @pytest.fixture(scope='session')
 def runner():
     doitlive.TESTING = True
     return CliRunner()
+
 
 def run_session(runner, filename, user_input):
     session = os.path.join(HERE, 'sessions', filename)
@@ -136,6 +137,7 @@ def test_themes_list(runner):
     result3 = runner.invoke(cli, ['themes', '-l'])
     assert result1.output == result2.output == result3.output
 
+
 def test_themes_preview(runner):
     result1 = runner.invoke(cli, ['themes', '--preview'])
     assert result1.exit_code == 0
@@ -149,6 +151,7 @@ def test_version(runner):
     assert doitlive.__version__ in result.output
     result2 = runner.invoke(cli, ['-v'])
     assert result.output == result2.output
+
 
 def test_bad_format_prompt():
     with pytest.raises(doitlive.ConfigurationError):
@@ -255,7 +258,6 @@ class TestSessionState:
         assert 'g=git' in state['aliases']
 
 
-
 @contextmanager
 def recording_session(runner, commands=None, args=None):
     commands = commands or ['echo "foo"']
@@ -266,10 +268,12 @@ def recording_session(runner, commands=None, args=None):
         result = runner.invoke(cli, ['record'] + args, input=user_input)
         yield result
 
+
 def recorder_input(commands):
     command_input = '\n'.join(commands)
     user_input = ''.join(['\n', command_input, '\nstop\n'])
     return user_input
+
 
 class TestRecorder:
 
