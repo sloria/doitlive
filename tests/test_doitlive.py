@@ -79,7 +79,7 @@ class TestPlayer:
     def test_custom_var(self, runner):
         user_input = random_string(len('echo $MEANING'))
         result = run_session(runner, 'envvar.session', user_input)
-        assert '42' in result.output
+        assert 'fortytwo' in result.output
 
     def test_custom_speed(self, runner):
         user_input = random_string(3)
@@ -127,7 +127,7 @@ class TestPlayer:
     def test_unset_envvar(self, runner):
         user_input = random_string(len('echo $MEANING'))
         result = run_session(runner, 'unset.session', user_input)
-        assert '42' not in result.output
+        assert 'fortytwo' not in result.output
 
 
 def test_themes_list(runner):
