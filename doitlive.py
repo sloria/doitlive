@@ -180,7 +180,7 @@ def get_current_git_branch():
     try:
         proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, _ = proc.communicate()
-        return out.strip()
+        return out.strip().decode('utf-8')
     except subprocess.CalledProcessError:
         pass
     return ''
