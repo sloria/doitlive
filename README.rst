@@ -14,14 +14,17 @@ doitlive
 
 Get it now
 ----------
-With brew:
+
+MacOSX with `Homebrew <http://brew.sh/>`_:
+******************************************
 
 .. code-block:: bash
 
     $ brew update
     $ brew install doitlive
-    
+
 With pip:
+*********
 
 .. code-block:: bash
 

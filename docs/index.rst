@@ -1,7 +1,6 @@
-**********
-$ doitlive
-**********
-
+========
+doitlive
+========
 ..
 
    Because sometimes you need to do it live
@@ -16,16 +15,28 @@ Current version: v\ |version|.
 
 
 Get it now
-==========
+----------
+
+MacOSX with `Homebrew <http://brew.sh/>`_:
+******************************************
+
+.. code-block:: bash
+
+    $ brew update
+    $ brew install doitlive
+
+With pip:
+*********
 
 .. code-block:: bash
 
     $ pip install doitlive
 
+
 Requires Python >= 2.7 or >= 3.3 with pip.
 
 Quickstart
-==========
+----------
 
 1. Create a file called ``session.sh``. Fill it with bash commands.
 2. Run ``doitlive play session.sh``.
@@ -39,7 +50,7 @@ Quickstart
 
 
 Examples
-========
+--------
 
 .. code-block:: bash
 
@@ -53,7 +64,7 @@ Examples
     $ doitlive play session.sh --shell /bin/zsh
 
 Using the recorder
-==================
+------------------
 
 You can record session files using the built-in recorder command.
 
@@ -64,7 +75,7 @@ You can record session files using the built-in recorder command.
 This will start a recording session. When you are finished recording, run the ``stop`` command. All commands will be written to a ``session.sh`` file.
 
 Themes
-======
+------
 
 doitlive comes with many prompt themes. To use a theme:
 
@@ -81,21 +92,21 @@ To view a list of available themes, run ``doitlive themes`` or ``doitlive themes
 .. _comment_magic:
 
 Comment magic (configuration)
-=============================
+-----------------------------
 
 Any line in a session file that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
 
 The following options can be included at the top of your session file (all are optional).
 
 #doitlive speed: <int>
-----------------------
+**********************
 
 configures "typing" speed. Defaults to 1.
 
 Example: ``#doitlive speed: 3``
 
 #doitlive prompt: <theme_name_or_template>
-------------------------------------------
+******************************************
 
 configures the prompt. Can be any of the built-in themes or a custom prompt template.
 
@@ -115,7 +126,7 @@ Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, b
 
 
 #doitlive shell: <shell>
--------------------------
+************************
 
 configures which shell is use.
 
@@ -124,7 +135,7 @@ Example: ``#doitlive shell: /bin/zsh``
 
 
 #doitlive alias: <alias>=<command>
-----------------------------------
+**********************************
 
 adds an alias to the session.
 
@@ -132,25 +143,25 @@ Example: ``#doitlive alias: du="du -ach | sort -h"``
 
 
 #doitlive env: <envvar>=<value>
--------------------------------
+*******************************
 
 sets an environment variable.
 
 Example: ``#doitlive env: EDITOR=vim``
 
 #doitlive unalias: <alias>
---------------------------
+**************************
 
 removes an alias.
 
 #doitlive unset: <envvar>
--------------------------
+*************************
 
 unsets an environment variable.
 
 
 Python mode
-===========
+-----------
 
 doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks within your ``session.sh`` file, like so:
 
@@ -170,7 +181,7 @@ doitlive supports autotyping in a Python console. You can enter Python mode in a
     ```
 
 Bash completion
-===============
+---------------
 
 To enable bash completion, add the following to your ``.bashrc`` or ``.bash_profile``.
 
@@ -183,7 +194,7 @@ Completion is currently only supported for ``bash``.
 
 
 More
-====
+----
 
 For more options, run
 
@@ -200,7 +211,7 @@ You can also get help with subcommands.
 
 
 Project info
-============
+------------
 
 .. toctree::
    :maxdepth: 1
