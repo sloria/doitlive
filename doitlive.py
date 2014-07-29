@@ -193,6 +193,7 @@ R_ARROW = TermString('➔')
 DOLLAR = TermString('$')
 PERCENT = TermString('%')
 
+
 def get_prompt_state():
     full_cwd = os.getcwd()
     cwd_raw = full_cwd.replace(env['HOME'], '~')
@@ -267,6 +268,7 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             else:
                 return subprocess.call([shell, fp.name])
 
+
 def wait_for(chars):
     while True:
         in_char = getchar()
@@ -317,6 +319,7 @@ def echo_prompt(template):
 
 # Exceptions
 # ##########
+
 
 class DoItLiveError(Exception):
     """Base exception class for all doitlive-related errors."""
@@ -450,6 +453,7 @@ OPTION_MAP = {
     'unalias': lambda state, arg: state.remove_alias(arg),
     'unset': lambda state, arg: state.remove_envvar(arg),
 }
+
 
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         test_mode=False):

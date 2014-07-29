@@ -4,6 +4,7 @@ import os
 import random
 import getpass
 from contextlib import contextmanager
+import subprocess
 
 import pytest
 import click
@@ -12,6 +13,14 @@ from click.testing import CliRunner
 
 import doitlive
 from doitlive import cli, TermString, TTY
+
+
+# Check if git is installed
+git_available = None
+if subprocess.call(['which', 'git']) == 0:
+    git_available = True
+else:
+    git_available = False
 
 random.seed(42)
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -156,6 +165,18 @@ def test_version(runner):
 def test_bad_format_prompt():
     with pytest.raises(doitlive.ConfigurationError):
         doitlive.format_prompt('{notfound}')
+
+
+@pytest.mark.skipif(not git_available, reason='Git is not available')
+def test_get_git_branch(runner):
+    with runner.isolated_filesystem():
+        with open('junk.txt', 'w') as fp:
+            fp.write('doin it live')
+        subprocess.call(['git', 'init'])
+        subprocess.call(['git', 'add', '.'])
+        subprocess.call(['git', 'commit', '-c', '"initial commit"'])
+        branch = doitlive.get_current_git_branch()
+        assert branch == 'master'
 
 
 class TestTermString:
