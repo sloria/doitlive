@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.2.1 (unreleased)
+2.2.1 (2014-08-02)
 ******************
 
 - Fix display of git branches on Python 3 (don't show ``b`` prefix).
