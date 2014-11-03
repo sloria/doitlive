@@ -525,12 +525,13 @@ OPTION_MAP = {
 
 
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
-        test_mode=False):
-    secho("We'll do it live!", fg='red', bold=True)
-    secho('STARTING SESSION: Press Ctrl-C at any time to exit.',
-        fg='yellow', bold=True)
+        quiet=False, test_mode=False):
+    if not quiet:
+        secho("We'll do it live!", fg='red', bold=True)
+        secho('STARTING SESSION: Press Ctrl-C at any time to exit.',
+              fg='yellow', bold=True)
+        click.pause()
 
-    click.pause()
     click.clear()
     state = SessionState(shell=shell, prompt_template=prompt_template,
         speed=speed, test_mode=test_mode)
@@ -626,6 +627,9 @@ def themes(preview, list):
     else:
         list_themes()
 
+QUIET_OPTION = click.option('--quiet', '-q', help='Suppress startup message.',
+                            is_flag=True, default=False, show_default=False)
+
 SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
         default='/bin/bash', help='The shell to use.', show_default=True)
 
@@ -650,18 +654,20 @@ def _compose(*functions):
     return functools.reduce(inner, functions)
 
 # Compose the decorators into "bundled" decorators
-player_command = _compose(SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION)
+player_command = _compose(QUIET_OPTION, SHELL_OPTION, SPEED_OPTION,
+                          PROMPT_OPTION)
 recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OPTION)
 
 
 @player_command
 @click.argument('session_file', type=click.File('r', encoding='utf-8'))
 @cli.command()
-def play(session_file, shell, speed, prompt):
+def play(quiet, session_file, shell, speed, prompt):
     """Play a session file."""
     run(session_file.readlines(),
         shell=shell,
         speed=speed,
+        quiet=quiet,
         test_mode=TESTING,
         prompt_template=prompt)
 
