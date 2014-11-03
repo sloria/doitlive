@@ -76,9 +76,8 @@ THEMES = OrderedDict([
 ESC = '\x1b'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
-            '(?P<option>prompt|shell|alias|env|speed|unalias|unset):'
-            '\s*(?P<arg>.+)$')
-
+                       '(?P<option>prompt|shell|alias|env|speed'
+                       '|unalias|unset|commentecho):\s*(?P<arg>.+)$')
 
 TESTING = False
 
@@ -364,7 +363,7 @@ def magictype(text, prompt_template='default', speed=1):
 
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
-        envvars=None, speed=1, test_mode=False):
+             envvars=None, speed=1, test_mode=False, commentecho=False):
     magictype(text, prompt_template, speed)
     run_command(text, shell, aliases=aliases, envvars=envvars,
         test_mode=test_mode)
@@ -477,11 +476,12 @@ class SessionState(dict):
 
     def __init__(self, shell, prompt_template, speed,
                 aliases=None, envvars=None,
-                test_mode=False):
+                 test_mode=False, commentecho=False):
         aliases = aliases or []
         envvars = envvars or []
         dict.__init__(self, shell=shell, prompt_template=prompt_template,
-            speed=speed, aliases=aliases, envvars=envvars, test_mode=test_mode)
+                      speed=speed, aliases=aliases, envvars=envvars,
+                      test_mode=test_mode, commentecho=commentecho)
 
     def add_alias(self, alias):
         self['aliases'].append(alias)
@@ -512,6 +512,13 @@ class SessionState(dict):
     def remove_envvar(self, envvar):
         return self._remove_var('envvars', envvar)
 
+    def commentecho(self, doit=None):
+        if doit is not None:
+            doit = doit.lower()
+            self['commentecho'] = (doit == 'true' or doit == 'yes'
+                                     or doit == '1')
+        return self['commentecho']
+
 # Map of option names => function that modifies session state
 OPTION_MAP = {
     'prompt': lambda state, arg: state.set_template(arg),
@@ -521,6 +528,7 @@ OPTION_MAP = {
     'speed': lambda state, arg: state.set_speed(arg),
     'unalias': lambda state, arg: state.remove_alias(arg),
     'unset': lambda state, arg: state.remove_envvar(arg),
+    'commentecho': lambda state, arg: state.commentecho(arg),
 }
 
 
@@ -549,6 +557,9 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 option, arg = match.group('option'), match.group('arg')
                 func = OPTION_MAP[option]
                 func(state, arg)
+            elif state.commentecho():
+                comment = command.lstrip("#")
+                secho(comment, fg='yellow', bold=True)
             continue
         elif command.startswith('```python'):
             py_commands = []

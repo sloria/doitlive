@@ -161,6 +161,11 @@ removes an alias.
 
 unsets an environment variable.
 
+#doitlive commentecho: [true|false]
+************************************
+
+Whether to echo comments or not. If enabled, non-magic comments will be echoed back in bold yellow before each prompt. This can be useful for providing some annotations for yourself and the audience.
+
 
 Python mode
 -----------
