@@ -135,12 +135,19 @@ class TermString(unicode):
     def curly(self):
         return self._bracketed('{', '}')
 
-    @property
-    def git(self):
+    def _vcs(self, vcsname):
         if strip_ansi(self):
-            return TermString('{}:{}'.format(style('git', fg='blue'), self))
+            return TermString('{}:{}'.format(style(vcsname, fg='blue'), self))
         else:
             return TermString('\b')
+
+    @property
+    def git(self):
+        return self._vcs('git')
+
+    @property
+    def hg(self):
+        return self._vcs('hg')
 
 
 class ANSICode(object):

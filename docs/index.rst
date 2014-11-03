@@ -124,7 +124,7 @@ Any of the prompt variables can be formatted with ANSI styles, like so:
 Example: ``#doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $``
 
 
-Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, blink, underlined, dim, paren, square, curly.
+Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, blink, underlined, dim, paren, square, curly, git, and hg.
 
 
 #doitlive shell: <shell>
