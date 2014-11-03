@@ -44,12 +44,12 @@ THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
     ('sorin', '{cwd.cyan} {vcs_branch.green.git} '
-        '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
+     '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
     ('nicolauj', '{r_angle.white}'),
 
     ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
-                '{vcs_branch.cyan.paren}\n$'),
+               '{vcs_branch.cyan.paren}\n$'),
 
     ('redhat', '[{user}@{hostname} {dir}]$'),
     ('redhat_color', '[{user.red.bold}@{hostname.red} {dir.blue}]$'),
@@ -184,7 +184,8 @@ class TTY(object):
 def get_current_git_branch():
     command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
     try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
         out, _ = proc.communicate()
         return out.strip().decode('utf-8')
     except subprocess.CalledProcessError:
@@ -366,7 +367,7 @@ def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):
     magictype(text, prompt_template, speed)
     run_command(text, shell, aliases=aliases, envvars=envvars,
-        test_mode=test_mode)
+                test_mode=test_mode)
 
 
 def format_prompt(prompt):
@@ -447,7 +448,8 @@ class PythonPlayerConsole(InteractiveConsole):
             sys.ps2
         except AttributeError:
             sys.ps2 = "... "
-        cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
+        cprt = ('Type "help", "copyright", "credits" or "license" for '
+                'more information.')
         if banner is None:
             self.write("Python %s on %s\n%s\n" %
                        (sys.version, sys.platform, cprt))
@@ -475,7 +477,7 @@ class SessionState(dict):
     """Stores information about a fake terminal session."""
 
     def __init__(self, shell, prompt_template, speed,
-                aliases=None, envvars=None,
+                 aliases=None, envvars=None,
                  test_mode=False, commentecho=False):
         aliases = aliases or []
         envvars = envvars or []
@@ -569,7 +571,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 try:
                     py_command = commands[i].rstrip()
                 except IndexError:
-                    raise SessionError('Unmatched python code block in session file.')
+                    raise SessionError('Unmatched python code block in '
+                                       'session file.')
                 i += 1
                 if py_command.startswith('```'):
                     i += 1
@@ -647,15 +650,17 @@ ECHO_OPTION = click.option('--commentecho', '-e',
                            default=False, show_default=False)
 
 SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
-        default='/bin/bash', help='The shell to use.', show_default=True)
+                            default='/bin/bash', help='The shell to use.',
+                            show_default=True)
 
 SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', default=1,
-        help='Typing speed.', show_default=True)
+                            help='Typing speed.', show_default=True)
 
 PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
-        default='default', type=click.Choice(THEMES.keys()),
-        help='Prompt theme.',
-        show_default=True)
+                             default='default',
+                             type=click.Choice(THEMES.keys()),
+                             help='Prompt theme.',
+                             show_default=True)
 
 ALIAS_OPTION = click.option('--alias', '-a', metavar='<alias>',
     multiple=True, help='Add a session alias.')
@@ -672,7 +677,8 @@ def _compose(*functions):
 # Compose the decorators into "bundled" decorators
 player_command = _compose(QUIET_OPTION, SHELL_OPTION, SPEED_OPTION,
                           PROMPT_OPTION, ECHO_OPTION)
-recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OPTION)
+recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION,
+                            ENVVAR_OPTION)
 
 
 @player_command
@@ -700,7 +706,8 @@ DEMO = [
 @cli.command()
 def demo(shell, speed, prompt):
     """Run a demo doitlive session."""
-    run(DEMO, shell=shell, speed=speed, test_mode=TESTING, prompt_template=prompt)
+    run(DEMO, shell=shell, speed=speed, test_mode=TESTING,
+        prompt_template=prompt)
 
 
 HEADER_TEMPLATE = """# Recorded with the doitlive recorder
@@ -735,7 +742,8 @@ def run_recorder(shell, prompt, aliases=None, envvars=None):
         elif command == PREVIEW_COMMAND:
             echo_rec_buffer(commands)
         elif command == UNDO_COMMAND:
-            if commands and click.confirm('Remove command? "{}"'.format(commands[-1].strip())):
+            if commands and click.confirm(
+                    'Remove command? "{}"'.format(commands[-1].strip())):
                 commands.pop()
                 secho('Removed command.', bold=True)
                 echo_rec_buffer(commands)
@@ -788,7 +796,7 @@ def record(session_file, shell, prompt, alias, envvar):
     secho("We'll do it live!", fg='red', bold=True)
     filename = click.format_filename(session_file)
     secho('RECORDING SESSION: {}'.format(filename),
-        fg='yellow', bold=True)
+          fg='yellow', bold=True)
 
     print_recorder_instructions()
 
