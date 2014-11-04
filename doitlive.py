@@ -43,13 +43,13 @@ else:
 THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', '{cwd.cyan} {git_branch.green.git} '
+    ('sorin', '{cwd.cyan} {vcs_branch.green.git} '
         '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
     ('nicolauj', '{r_angle.white}'),
 
     ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
-                '{git_branch.cyan.paren}\n$'),
+                '{vcs_branch.cyan.paren}\n$'),
 
     ('redhat', '[{user}@{hostname} {dir}]$'),
     ('redhat_color', '[{user.red.bold}@{hostname.red} {dir.blue}]$'),
@@ -57,18 +57,18 @@ THEMES = OrderedDict([
     ('walters', '{user}@{hostname.underlined}>'),
     ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
 
-    ('minimal', '{dir} {git_branch.square} »'),
-    ('minimal_color', '{dir.cyan} {git_branch.blue.square} »'),
+    ('minimal', '{dir} {vcs_branch.square} »'),
+    ('minimal_color', '{dir.cyan} {vcs_branch.blue.square} »'),
 
     ('osx', '{hostname}:{dir} {user}$'),
     ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
 
     ('pws', '{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
 
-    ('robbyrussell', '{r_arrow.red} {dir.cyan} {git_branch.red.paren.git}'),
+    ('robbyrussell', '{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
 
     ('giddie', '{user.magenta}@{hostname.yellow}|{cwd.green} '
-                'on {git_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
+                'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
 
 ])
 
@@ -186,6 +186,64 @@ def get_current_git_branch():
     return ''
 
 
+# We'll avoid shelling out to hg for speed.
+def find_hg_root():
+    def get_parent_dir(d):
+        return os.path.abspath(os.path.join(d, os.pardir))
+
+    cwd = os.getcwd()
+    while True:
+        pardir = get_parent_dir(cwd)
+
+        hgroot = os.path.join(cwd, '.hg')
+        if os.path.isdir(hgroot):
+            return hgroot
+
+        if cwd == pardir:
+            break
+
+        cwd = pardir
+
+    return ''
+
+
+def get_current_hg_branch():
+    try:
+        hgroot = find_hg_root()
+        with open(os.path.join(hgroot, 'branch')) as f:
+            branch = f.read().rstrip()
+    except IOError:
+        branch = ''
+
+    return branch
+
+
+def get_current_hg_bookmark():
+    try:
+        hgroot = find_hg_root()
+        with open(os.path.join(hgroot, 'bookmarks.current')) as f:
+            bookmark = f.read()
+    except IOError:
+        bookmark = ''
+    return bookmark
+
+
+def get_current_hg_id():
+    branch = get_current_hg_branch()
+    bookmark = get_current_hg_bookmark()
+    if bookmark:
+        # If we have a bookmark, the default branch is no longer
+        # an interesting name.
+        if branch == "default":
+            branch = ""
+        branch += " " + bookmark
+    return branch
+
+
+def get_current_vcs_branch():
+    return get_current_git_branch() + get_current_hg_id()
+
+
 # Some common symbols used in prompts
 R_ANGLE = TermString('❯')
 R_ANGLE_DOUBLE = TermString('»')
@@ -204,6 +262,10 @@ def get_prompt_state():
         'dir': TermString(dir_raw),
         'hostname': TermString(socket.gethostname()),
         'git_branch': TermString(get_current_git_branch()),
+        'hg_id': TermString(get_current_hg_id()),
+        'hg_branch': TermString(get_current_hg_branch()),
+        'hg_bookmark': TermString(get_current_hg_bookmark()),
+        'vcs_branch': TermString(get_current_vcs_branch()),
         # Symbols
         'r_angle': R_ANGLE,
         'r_angle_double': R_ANGLE_DOUBLE,

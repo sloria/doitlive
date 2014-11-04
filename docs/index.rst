@@ -112,7 +112,9 @@ configures the prompt. Can be any of the built-in themes or a custom prompt temp
 
 **Using a custom template**:
 
-You can provide the ``prompt`` option with a custom template. To include the user, hostname, current directory, current path to working directory, current datetime, or git branch, use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, ``{now}``, and ``{git_branch}``, respectively.
+You can provide the ``prompt`` option with a custom template. To include the user, hostname, current directory, current path to working directory, current datetime, or vcs branch (git or Mercurial), use ``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, ``{now}``, and ``{vcs_branch}``, respectively. 
+
+For git, ``{vcs_branch}`` just shows the branch. For Mercurial, this shows the branch name + the bookmark, except it omits the default branch name if there is a bookmark. This is equivalent to ``{git_branch}{hg_id}``. There are also specialised ``{hg_branch}``, and ``{hg_bookmark}`` keywords that only show that information, without the combined logic of ``{hg_id}``.
 
 Example: ``#doitlive prompt: {user} is at {cwd} $``
 
