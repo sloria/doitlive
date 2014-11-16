@@ -704,10 +704,10 @@ DEMO = [
 
 @player_command
 @cli.command()
-def demo(shell, speed, prompt):
+def demo(quiet, shell, speed, prompt, commentecho):
     """Run a demo doitlive session."""
     run(DEMO, shell=shell, speed=speed, test_mode=TESTING,
-        prompt_template=prompt)
+        prompt_template=prompt, quiet=quiet, commentecho=commentecho)
 
 
 HEADER_TEMPLATE = """# Recorded with the doitlive recorder
