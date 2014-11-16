@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.3.0 (unreleased)
+2.3.0 (2014-11-16)
 ******************
 
 - Add support for displaying Mercurial VCS info (current branch, bookmark)
