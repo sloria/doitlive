@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+2.3.0 (unreleased)
+******************
+
+- Add support for displaying Mercurial VCS info (current branch, bookmark)
+- Add ``commentecho`` CLI option and magic comment.
+- Add ``--quiet`` CLI option for suppressing the startup message.
+
 2.2.1 (2014-08-02)
 ******************
 
