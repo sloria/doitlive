@@ -36,11 +36,12 @@ def runner():
     return CliRunner()
 
 
-def run_session(runner, filename, user_input):
+def run_session(runner, filename, user_input, args=None):
+    args = args or []
     session = os.path.join(HERE, 'sessions', filename)
     # Press ENTER at beginning of session and ENTER twice at end
     user_in = ''.join(['\n', user_input, '\n\n'])
-    return runner.invoke(cli, ['play', session], input=user_in)
+    return runner.invoke(cli, ['play', session] + args, input=user_in)
 
 
 class TestPlayer:
@@ -70,6 +71,27 @@ class TestPlayer:
         assert result.exit_code == 0
         assert 'foo' not in result.output, 'comment was not skipped'
         assert 'bar' in result.output
+
+    def test_commentecho_option(self, runner):
+        user_input = random_string(len('echo foo'))
+        result = run_session(runner,
+                             'comment.session',
+                             user_input,
+                             args=['--commentecho'])
+        assert result.exit_code == 0
+        assert 'foo' in result.output, 'comment was not echoed'
+        assert 'bar' in result.output
+
+    def test_commentecho_magic_comment(self, runner):
+        user_input = random_string(len('echo'))
+        result = run_session(runner,
+                             'commentecho.session',
+                             user_input,
+                             )
+        assert result.exit_code == 0
+        assert 'foo' not in result.output
+        assert 'bar' in result.output
+        assert 'baz' not in result.output
 
     def test_esc_key_aborts(self, runner):
         result = run_session(runner, 'basic.session', 'echo' + doitlive.ESC)
