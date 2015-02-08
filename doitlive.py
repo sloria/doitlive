@@ -586,7 +586,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
             PythonPlayerConsole(py_commands, speed=state['speed']).interact()
         else:
             magicrun(command, **state)
-    echo_prompt(prompt_template)
+    echo_prompt(state['prompt_template'])
     wait_for(RETURNS)
     secho("FINISHED SESSION", fg='yellow', bold=True)
 
