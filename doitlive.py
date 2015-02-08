@@ -27,7 +27,7 @@ import click
 from click import echo, style, secho, getchar
 from click.termui import strip_ansi
 
-__version__ = '2.3.0'
+__version__ = '2.3.1'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 

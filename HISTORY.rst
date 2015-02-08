@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-2.3.1 (unreleased)
+2.3.1 (2015-02-08)
 ******************
 
 - Fix bug that showed the incorrect prompt on the last slide if the theme was set using the ``#doitlive prompt:`` directive.
