@@ -41,3 +41,6 @@ README.html
 .konchrc
 sandbox/*
 
+#virtualenv
+include/
+.cache/
