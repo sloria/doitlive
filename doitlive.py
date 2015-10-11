@@ -22,9 +22,11 @@ import subprocess
 from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
+from termutils import raw_mode
 
 import click
-from click import echo, style, secho, getchar
+from click import style, secho, getchar
+from click import echo as click_echo  # patch the click echo function to solve https://github.com/mitsuhiko/click/issues/438
 from click.termui import strip_ansi
 
 __version__ = '2.3.1'
@@ -179,6 +181,18 @@ class TTY(object):
     BLINK = ANSICode(blink=True)
     UNDERLINE = ANSICode(underline=True)
     DIM = ANSICode(dim=True)
+
+
+def echo(message=None, file=None, nl=True, err=False, color=None, carriage_return=False):
+    """
+    Patched click echo function.
+    """
+    if carriage_return and nl:
+        click_echo(message + '\r\n', file, False, err, color)
+    elif carriage_return and not nl:
+        click_echo(message + '\r', file, False, err, color)
+    else:
+        click_echo(message, file, nl, err, color)
 
 
 def get_current_git_branch():
@@ -352,15 +366,19 @@ def wait_for(chars):
 def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
     i = 0
-    while i < len(text):
-        char = text[i:i + speed]
-        in_char = getchar()
-        if in_char == ESC:
-            echo()
-            raise click.Abort()
-        echo(char, nl=False)
-        i += speed
-    wait_for(RETURNS)
+    with raw_mode():
+        #print("enabling raw mode\r")
+        while i < len(text):
+            char = text[i:i + speed]
+            in_char = getchar()
+            if in_char == ESC:
+                echo()
+                raise click.Abort()
+            echo(char, nl=False)
+            i += speed
+        wait_for(RETURNS)
+        echo("\r", nl=False)
+        #("\rexiting raw mode\r")
 
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
