@@ -1,5 +1,7 @@
-import tty
-import termios
+"""
+This module provides a context manager for setting the (Linux) terminal to raw mode.
+Author: https://github.com/Stefan-Code
+"""
 import sys
 from contextlib import contextmanager
 
@@ -27,6 +29,9 @@ def raw_mode():
         # No implementation for windows yet.
         yield  # needed for the empty context manager to work
     else:
+        #  imports are placed here because this will fail under Windows
+        import tty
+        import termios
         if not isatty(sys.stdin):
             f = open('/dev/tty')
             fd = f.fileno()
@@ -40,7 +45,7 @@ def raw_mode():
             pass
         try:
             yield
-        finally:
+        finally:  # this block sets the terminal to sane mode again, also in case an exception occured in the context manager
             try:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
                 # sys.stdout.flush()  # not needed I think.
