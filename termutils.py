@@ -3,6 +3,8 @@ import termios
 import sys
 from contextlib import contextmanager
 
+WIN = sys.platform.startswith('win')
+
 def isatty(stream):
     """
     Shamelessly stolen from https://github.com/mitsuhiko/click/
@@ -21,24 +23,28 @@ def raw_mode():
     with raw_mode():
         do_some_stuff()
     """
-    if not isatty(sys.stdin):
-        f = open('/dev/tty')
-        fd = f.fileno()
+    if WIN:
+        # No implementation for windows yet.
+        yield  # needed for the empty context manager to work
     else:
-        fd = sys.stdin.fileno()
-        f = None
-    try:
-        old_settings = termios.tcgetattr(fd)
-        tty.setraw(fd)
-    except termios.error:
-        pass
-    try:
-        yield
-    finally:
+        if not isatty(sys.stdin):
+            f = open('/dev/tty')
+            fd = f.fileno()
+        else:
+            fd = sys.stdin.fileno()
+            f = None
         try:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-            # sys.stdout.flush()  # not needed I think.
-            if f is not None:
-                f.close()
+            old_settings = termios.tcgetattr(fd)
+            tty.setraw(fd)
         except termios.error:
             pass
+        try:
+            yield
+        finally:
+            try:
+                termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+                # sys.stdout.flush()  # not needed I think.
+                if f is not None:
+                    f.close()
+            except termios.error:
+                pass
