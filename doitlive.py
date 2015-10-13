@@ -359,7 +359,7 @@ def wait_for(chars):
     while True:
         in_char = getchar()
         if in_char == ESC:
-            echo()
+            echo(carriage_return=True)
             raise click.Abort()
         if in_char in chars:
             echo()
