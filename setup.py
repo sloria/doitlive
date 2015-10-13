@@ -6,7 +6,7 @@ from setuptools.command.test import test as TestCommand
 
 
 REQUIRES = [
-    'click>=2.0',
+    'click>=4.0',
 ]
 
 if 'win32' in str(sys.platform).lower():
