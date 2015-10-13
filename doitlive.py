@@ -25,7 +25,8 @@ from collections import OrderedDict
 from termutils import raw_mode
 
 import click
-click.disable_unicode_literals_warning = True  # this fixes #12
+if int(click.__version__[0]) >= 5:
+    click.disable_unicode_literals_warning = True  # this fixes #12
 from click import style, secho, getchar
 from click import echo as click_echo  # patch the click echo function to solve https://github.com/mitsuhiko/click/issues/438
 from click.termui import strip_ansi
