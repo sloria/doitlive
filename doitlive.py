@@ -369,7 +369,6 @@ def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
     i = 0
     with raw_mode():
-        #print("enabling raw mode\r")
         while i < len(text):
             char = text[i:i + speed]
             in_char = getchar()
@@ -380,7 +379,6 @@ def magictype(text, prompt_template='default', speed=1):
             i += speed
         wait_for(RETURNS)
         echo("\r", nl=False)
-        #("\rexiting raw mode\r")
 
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
