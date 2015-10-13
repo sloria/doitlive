@@ -189,6 +189,7 @@ def echo(message=None, file=None, nl=True, err=False, color=None, carriage_retur
     """
     Patched click echo function.
     """
+    message = message or ''
     if carriage_return and nl:
         click_echo(message + '\r\n', file, False, err, color)
     elif carriage_return and not nl:
@@ -373,7 +374,7 @@ def magictype(text, prompt_template='default', speed=1):
             char = text[i:i + speed]
             in_char = getchar()
             if in_char == ESC:
-                echo()
+                echo(carriage_return=True)
                 raise click.Abort()
             echo(char, nl=False)
             i += speed
