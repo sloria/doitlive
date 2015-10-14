@@ -1,20 +1,11 @@
 """
 This module provides a context manager for setting the (Linux) terminal to raw mode.
-Author: https://github.com/Stefan-Code
 """
 import sys
 from contextlib import contextmanager
-
+from click._compat import isatty
 WIN = sys.platform.startswith('win')
 
-def isatty(stream):
-    """
-    Shamelessly stolen from https://github.com/mitsuhiko/click/
-    """
-    try:
-        return stream.isatty()
-    except Exception:
-        return False
 
 @contextmanager
 def raw_mode():
