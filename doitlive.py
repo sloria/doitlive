@@ -371,7 +371,6 @@ def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
     cursor_position = 0
     with raw_mode():
-        #while cursor_position <= len(text):
         while True:
             char = text[cursor_position:cursor_position + speed]
             in_char = getchar()
@@ -383,9 +382,7 @@ def magictype(text, prompt_template='default', speed=1):
                     echo("\b \b", nl=False)
                     cursor_position -= 1  # go only one char back when backspace is pressed, regardless of speed
             elif in_char in RETURNS:
-                print("cursor:", cursor_position, "len", len(text))
                 if cursor_position >= len(text):
-
                     echo("\r", nl=True)
                     break
             else:
