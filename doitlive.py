@@ -78,6 +78,7 @@ THEMES = OrderedDict([
 
 
 ESC = '\x1b'
+BACKSPACE = '\x7f'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
                        '(?P<option>prompt|shell|alias|env|speed'
@@ -370,17 +371,24 @@ def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
     i = 0
     with raw_mode():
-        while i < len(text):
+        while i <= len(text):
             char = text[i:i + speed]
             in_char = getchar()
             if in_char == ESC:
                 echo(carriage_return=True)
                 raise click.Abort()
-            echo(char, nl=False)
-            i += speed
-        wait_for(RETURNS)
-        echo("\r", nl=False)
-
+            elif in_char == BACKSPACE:
+                if i > 0:
+                    echo("\b \b", nl=False)
+                    i -= 1  # go only one char back when backspace is pressed, regardless of speed
+            elif in_char in RETURNS:
+                if i == len(text):
+                    echo("\r", nl=True)
+                    i +=1
+            else:
+                if i < len(text):
+                    echo(char, nl=False)
+                    i += speed
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):
