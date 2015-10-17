@@ -19,6 +19,7 @@ import re
 import getpass
 import socket
 import subprocess
+import click
 from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
@@ -28,13 +29,7 @@ from version_control import (get_current_git_branch,
                              get_current_hg_branch,
                              get_current_hg_id,
                              get_current_vcs_branch)
-
-
-import click
-if int(click.__version__[0]) >= 5:
-    click.disable_unicode_literals_warning = True  # this fixes #12
 from click import style, secho, getchar
-# patch the click echo function to solve https://github.com/mitsuhiko/click/issues/438
 from click import echo as click_echo
 from click.termui import strip_ansi
 
@@ -50,6 +45,9 @@ if not PY2:
 else:
     from codecs import open  # pylint: disable=W0622
     open = open
+
+if int(click.__version__[0]) >= 5:
+    click.disable_unicode_literals_warning = True  # this fixes #12
 
 THEMES = OrderedDict([
     ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
