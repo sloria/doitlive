@@ -23,12 +23,19 @@ from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
 from termutils import raw_mode
+from version_control import (get_current_git_branch,
+                             get_current_hg_bookmark,
+                             get_current_hg_branch,
+                             get_current_hg_id,
+                             get_current_vcs_branch)
+
 
 import click
 if int(click.__version__[0]) >= 5:
     click.disable_unicode_literals_warning = True  # this fixes #12
 from click import style, secho, getchar
-from click import echo as click_echo  # patch the click echo function to solve https://github.com/mitsuhiko/click/issues/438
+# patch the click echo function to solve https://github.com/mitsuhiko/click/issues/438
+from click import echo as click_echo
 from click.termui import strip_ansi
 
 __version__ = '2.3.1'
@@ -41,7 +48,7 @@ if not PY2:
     unicode = str
     basestring = (str, bytes)
 else:
-    from codecs import open
+    from codecs import open  # pylint: disable=W0622
     open = open
 
 THEMES = OrderedDict([
@@ -81,8 +88,8 @@ ESC = '\x1b'
 BACKSPACE = '\x7f'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
-                       '(?P<option>prompt|shell|alias|env|speed'
-                       '|unalias|unset|commentecho):\s*(?P<arg>.+)$')
+                       r'(?P<option>prompt|shell|alias|env|speed'
+                       r'|unalias|unset|commentecho):\s*(?P<arg>.+)$')
 
 TESTING = False
 
@@ -178,8 +185,7 @@ class TTY(object):
     BLACK = ANSICode(fg='black')
     YELLOW = ANSICode(fg='yellow')
     CYAN = ANSICode(fg='cyan')
-    RESET = click.termui._ansi_reset_all
-
+    RESET = click.termui._ansi_reset_all  # pylint: disable=W0212
     BOLD = ANSICode(bold=True)
     BLINK = ANSICode(blink=True)
     UNDERLINE = ANSICode(underline=True)
@@ -197,76 +203,6 @@ def echo(message=None, file=None, nl=True, err=False, color=None, carriage_retur
         click_echo(message + '\r', file, False, err, color)
     else:
         click_echo(message, file, nl, err, color)
-
-
-def get_current_git_branch():
-    command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
-    try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        out, _ = proc.communicate()
-        return out.strip().decode('utf-8')
-    except subprocess.CalledProcessError:
-        pass
-    return ''
-
-
-# We'll avoid shelling out to hg for speed.
-def find_hg_root():
-    def get_parent_dir(d):
-        return os.path.abspath(os.path.join(d, os.pardir))
-
-    cwd = os.getcwd()
-    while True:
-        pardir = get_parent_dir(cwd)
-
-        hgroot = os.path.join(cwd, '.hg')
-        if os.path.isdir(hgroot):
-            return hgroot
-
-        if cwd == pardir:
-            break
-
-        cwd = pardir
-
-    return ''
-
-
-def get_current_hg_branch():
-    try:
-        hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'branch')) as f:
-            branch = f.read().rstrip()
-    except IOError:
-        branch = ''
-
-    return branch
-
-
-def get_current_hg_bookmark():
-    try:
-        hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'bookmarks.current')) as f:
-            bookmark = f.read()
-    except IOError:
-        bookmark = ''
-    return bookmark
-
-
-def get_current_hg_id():
-    branch = get_current_hg_branch()
-    bookmark = get_current_hg_bookmark()
-    if bookmark:
-        # If we have a bookmark, the default branch is no longer
-        # an interesting name.
-        if branch == "default":
-            branch = ""
-        branch += " " + bookmark
-    return branch
-
-
-def get_current_vcs_branch():
-    return get_current_git_branch() + get_current_hg_id()
 
 
 # Some common symbols used in prompts
