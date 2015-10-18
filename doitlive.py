@@ -45,8 +45,6 @@ else:
     from codecs import open  # pylint: disable=W0622
     open = open
 
-if int(click.__version__[0]) >= 5:
-    click.disable_unicode_literals_warning = True  # this fixes #12
 
 THEMES = OrderedDict([
     ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
