@@ -10,7 +10,7 @@
   :license: MIT, see LICENSE for more details.
 """
 
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 import datetime as dt
 import functools
 import os
@@ -50,34 +50,34 @@ if int(click.__version__[0]) >= 5:
     click.disable_unicode_literals_warning = True  # this fixes #12
 
 THEMES = OrderedDict([
-    ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
+    ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', '{cwd.cyan} {vcs_branch.green.git} '
+    ('sorin', u'{cwd.cyan} {vcs_branch.green.git} '
      '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
-    ('nicolauj', '{r_angle.white}'),
+    ('nicolauj', u'{r_angle.white}'),
 
-    ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
-               '{vcs_branch.cyan.paren}\n$'),
+    ('steeef', u'{user.red} at {hostname.yellow} in {cwd.green} '
+               u'{vcs_branch.cyan.paren}\n$'),
 
-    ('redhat', '[{user}@{hostname} {dir}]$'),
-    ('redhat_color', '[{user.red.bold}@{hostname.red} {dir.blue}]$'),
+    ('redhat', u'[{user}@{hostname} {dir}]$'),
+    ('redhat_color', u'[{user.red.bold}@{hostname.red} {dir.blue}]$'),
 
-    ('walters', '{user}@{hostname.underlined}>'),
-    ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
+    ('walters', u'{user}@{hostname.underlined}>'),
+    ('walters_color', u'{user.cyan.bold}@{hostname.blue.underlined}>'),
 
-    ('minimal', '{dir} {vcs_branch.square} »'),
-    ('minimal_color', '{dir.cyan} {vcs_branch.blue.square} »'),
+    ('minimal', u'{dir} {vcs_branch.square} »'),
+    ('minimal_color', u'{dir.cyan} {vcs_branch.blue.square} »'),
 
-    ('osx', '{hostname}:{dir} {user}$'),
-    ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
+    ('osx', u'{hostname}:{dir} {user}$'),
+    ('osx_color', u'{hostname.blue}:{dir.green} {user.cyan}$'),
 
-    ('pws', '{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
+    ('pws', u'{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
 
-    ('robbyrussell', '{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
+    ('robbyrussell', u'{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
 
-    ('giddie', '{user.magenta}@{hostname.yellow}|{cwd.green} '
-                'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
+    ('giddie', u'{user.magenta}@{hostname.yellow}|{cwd.green} '
+               u'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
 
 ])
 
@@ -128,35 +128,35 @@ class TermString(unicode):
 
     def _bracketed(self, left, right):
         if strip_ansi(self):
-            return TermString(''.join([left, self, right]))
+            return TermString(u''.join([left, self, right]))
         else:
-            return TermString('\b')
+            return TermString(u'\b')
 
     @property
     def paren(self):
-        return self._bracketed('(', ')')
+        return self._bracketed(u'(', u')')
 
     @property
     def square(self):
-        return self._bracketed('[', ']')
+        return self._bracketed(u'[', u']')
 
     @property
     def curly(self):
-        return self._bracketed('{', '}')
+        return self._bracketed(u'{', u'}')
 
     def _vcs(self, vcsname):
         if strip_ansi(self):
-            return TermString('{}:{}'.format(style(vcsname, fg='blue'), self))
+            return TermString(u'{}:{}'.format(style(vcsname, fg='blue'), self))
         else:
-            return TermString('\b')
+            return TermString(u'\b')
 
     @property
     def git(self):
-        return self._vcs('git')
+        return self._vcs(u'git')
 
     @property
     def hg(self):
-        return self._vcs('hg')
+        return self._vcs(u'hg')
 
 
 class ANSICode(object):
@@ -204,11 +204,11 @@ def echo(message=None, file=None, nl=True, err=False, color=None, carriage_retur
 
 
 # Some common symbols used in prompts
-R_ANGLE = TermString('❯')
-R_ANGLE_DOUBLE = TermString('»')
-R_ARROW = TermString('➔')
-DOLLAR = TermString('$')
-PERCENT = TermString('%')
+R_ANGLE = TermString(u'❯')
+R_ANGLE_DOUBLE = TermString(u'»')
+R_ARROW = TermString(u'➔')
+DOLLAR = TermString(u'$')
+PERCENT = TermString(u'%')
 
 
 def get_prompt_state():
