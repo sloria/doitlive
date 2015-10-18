@@ -6,7 +6,7 @@ from setuptools.command.test import test as TestCommand
 
 
 REQUIRES = [
-    'click>=2.0',
+    'click>=4.0',
 ]
 
 if 'win32' in str(sys.platform).lower():
@@ -16,7 +16,7 @@ if 'win32' in str(sys.platform).lower():
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ['--verbose']
+        self.test_args = ['--verbose', "tests"]
         self.test_suite = True
 
     def run_tests(self):
@@ -41,7 +41,7 @@ def find_version(fname):
         raise RuntimeError('Cannot find version information')
     return version
 
-__version__ = find_version("doitlive.py")
+__version__ = find_version("doitlive/__init__.py")
 
 
 def read(fname):
@@ -74,7 +74,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Environment :: Console',
     ],
-    py_modules=["doitlive"],
+    packages=["doitlive"],
     entry_points={
         'console_scripts': [
             'doitlive = doitlive:cli'

@@ -41,3 +41,12 @@ README.html
 .konchrc
 sandbox/*
 
+#virtualenv
+include/
+.cache/
+
+#pip
+.eggs/
+pip-selfcheck.json
+#other
+local/

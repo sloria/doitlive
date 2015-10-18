@@ -10,22 +10,30 @@
   :license: MIT, see LICENSE for more details.
 """
 
-from __future__ import unicode_literals
 import datetime as dt
 import functools
-import os
-import sys
-import re
 import getpass
+import os
+import re
 import socket
 import subprocess
+import sys
 from code import InteractiveConsole
-from tempfile import NamedTemporaryFile
 from collections import OrderedDict
+from tempfile import NamedTemporaryFile
 
 import click
-from click import echo, style, secho, getchar
+from click import style, secho, getchar
+from click import echo as click_echo
 from click.termui import strip_ansi
+
+from doitlive.termutils import raw_mode
+from doitlive.version_control import (get_current_git_branch,
+                                      get_current_hg_bookmark,
+                                      get_current_hg_branch,
+                                      get_current_hg_id,
+                                      get_current_vcs_branch)
+
 
 __version__ = '2.3.1'
 __author__ = 'Steven Loria'
@@ -37,47 +45,49 @@ if not PY2:
     unicode = str
     basestring = (str, bytes)
 else:
-    from codecs import open
+    from codecs import open  # pylint: disable=W0622
     open = open
 
-THEMES = OrderedDict([
-    ('default', '{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', '{cwd.cyan} {vcs_branch.green.git} '
+THEMES = OrderedDict([
+    ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
+
+    ('sorin', u'{cwd.cyan} {vcs_branch.green.git} '
      '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
-    ('nicolauj', '{r_angle.white}'),
+    ('nicolauj', u'{r_angle.white}'),
 
-    ('steeef', '{user.red} at {hostname.yellow} in {cwd.green} '
-               '{vcs_branch.cyan.paren}\n$'),
+    ('steeef', u'{user.red} at {hostname.yellow} in {cwd.green} '
+               u'{vcs_branch.cyan.paren}\n$'),
 
-    ('redhat', '[{user}@{hostname} {dir}]$'),
-    ('redhat_color', '[{user.red.bold}@{hostname.red} {dir.blue}]$'),
+    ('redhat', u'[{user}@{hostname} {dir}]$'),
+    ('redhat_color', u'[{user.red.bold}@{hostname.red} {dir.blue}]$'),
 
-    ('walters', '{user}@{hostname.underlined}>'),
-    ('walters_color', '{user.cyan.bold}@{hostname.blue.underlined}>'),
+    ('walters', u'{user}@{hostname.underlined}>'),
+    ('walters_color', u'{user.cyan.bold}@{hostname.blue.underlined}>'),
 
-    ('minimal', '{dir} {vcs_branch.square} »'),
-    ('minimal_color', '{dir.cyan} {vcs_branch.blue.square} »'),
+    ('minimal', u'{dir} {vcs_branch.square} »'),
+    ('minimal_color', u'{dir.cyan} {vcs_branch.blue.square} »'),
 
-    ('osx', '{hostname}:{dir} {user}$'),
-    ('osx_color', '{hostname.blue}:{dir.green} {user.cyan}$'),
+    ('osx', u'{hostname}:{dir} {user}$'),
+    ('osx_color', u'{hostname.blue}:{dir.green} {user.cyan}$'),
 
-    ('pws', '{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
+    ('pws', u'{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%'),
 
-    ('robbyrussell', '{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
+    ('robbyrussell', u'{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
 
-    ('giddie', '{user.magenta}@{hostname.yellow}|{cwd.green} '
-                'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
+    ('giddie', u'{user.magenta}@{hostname.yellow}|{cwd.green} '
+               u'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
 
 ])
 
 
 ESC = '\x1b'
+BACKSPACE = '\x7f'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
-                       '(?P<option>prompt|shell|alias|env|speed'
-                       '|unalias|unset|commentecho):\s*(?P<arg>.+)$')
+                       r'(?P<option>prompt|shell|alias|env|speed'
+                       r'|unalias|unset|commentecho):\s*(?P<arg>.+)$')
 
 TESTING = False
 
@@ -118,35 +128,35 @@ class TermString(unicode):
 
     def _bracketed(self, left, right):
         if strip_ansi(self):
-            return TermString(''.join([left, self, right]))
+            return TermString(u''.join([left, self, right]))
         else:
-            return TermString('\b')
+            return TermString(u'\b')
 
     @property
     def paren(self):
-        return self._bracketed('(', ')')
+        return self._bracketed(u'(', u')')
 
     @property
     def square(self):
-        return self._bracketed('[', ']')
+        return self._bracketed(u'[', u']')
 
     @property
     def curly(self):
-        return self._bracketed('{', '}')
+        return self._bracketed(u'{', u'}')
 
     def _vcs(self, vcsname):
         if strip_ansi(self):
-            return TermString('{}:{}'.format(style(vcsname, fg='blue'), self))
+            return TermString(u'{}:{}'.format(style(vcsname, fg='blue'), self))
         else:
-            return TermString('\b')
+            return TermString(u'\b')
 
     @property
     def git(self):
-        return self._vcs('git')
+        return self._vcs(u'git')
 
     @property
     def hg(self):
-        return self._vcs('hg')
+        return self._vcs(u'hg')
 
 
 class ANSICode(object):
@@ -173,90 +183,32 @@ class TTY(object):
     BLACK = ANSICode(fg='black')
     YELLOW = ANSICode(fg='yellow')
     CYAN = ANSICode(fg='cyan')
-    RESET = click.termui._ansi_reset_all
-
+    RESET = click.termui._ansi_reset_all  # pylint: disable=W0212
     BOLD = ANSICode(bold=True)
     BLINK = ANSICode(blink=True)
     UNDERLINE = ANSICode(underline=True)
     DIM = ANSICode(dim=True)
 
 
-def get_current_git_branch():
-    command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
-    try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        out, _ = proc.communicate()
-        return out.strip().decode('utf-8')
-    except subprocess.CalledProcessError:
-        pass
-    return ''
-
-
-# We'll avoid shelling out to hg for speed.
-def find_hg_root():
-    def get_parent_dir(d):
-        return os.path.abspath(os.path.join(d, os.pardir))
-
-    cwd = os.getcwd()
-    while True:
-        pardir = get_parent_dir(cwd)
-
-        hgroot = os.path.join(cwd, '.hg')
-        if os.path.isdir(hgroot):
-            return hgroot
-
-        if cwd == pardir:
-            break
-
-        cwd = pardir
-
-    return ''
-
-
-def get_current_hg_branch():
-    try:
-        hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'branch')) as f:
-            branch = f.read().rstrip()
-    except IOError:
-        branch = ''
-
-    return branch
-
-
-def get_current_hg_bookmark():
-    try:
-        hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'bookmarks.current')) as f:
-            bookmark = f.read()
-    except IOError:
-        bookmark = ''
-    return bookmark
-
-
-def get_current_hg_id():
-    branch = get_current_hg_branch()
-    bookmark = get_current_hg_bookmark()
-    if bookmark:
-        # If we have a bookmark, the default branch is no longer
-        # an interesting name.
-        if branch == "default":
-            branch = ""
-        branch += " " + bookmark
-    return branch
-
-
-def get_current_vcs_branch():
-    return get_current_git_branch() + get_current_hg_id()
+def echo(message=None, file=None, nl=True, err=False, color=None, carriage_return=False):
+    """
+    Patched click echo function.
+    """
+    message = message or ''
+    if carriage_return and nl:
+        click_echo(message + '\r\n', file, False, err, color)
+    elif carriage_return and not nl:
+        click_echo(message + '\r', file, False, err, color)
+    else:
+        click_echo(message, file, nl, err, color)
 
 
 # Some common symbols used in prompts
-R_ANGLE = TermString('❯')
-R_ANGLE_DOUBLE = TermString('»')
-R_ARROW = TermString('➔')
-DOLLAR = TermString('$')
-PERCENT = TermString('%')
+R_ANGLE = TermString(u'❯')
+R_ANGLE_DOUBLE = TermString(u'»')
+R_ARROW = TermString(u'➔')
+DOLLAR = TermString(u'$')
+PERCENT = TermString(u'%')
 
 
 def get_prompt_state():
@@ -342,7 +294,7 @@ def wait_for(chars):
     while True:
         in_char = getchar()
         if in_char == ESC:
-            echo()
+            echo(carriage_return=True)
             raise click.Abort()
         if in_char in chars:
             echo()
@@ -351,17 +303,26 @@ def wait_for(chars):
 
 def magictype(text, prompt_template='default', speed=1):
     echo_prompt(prompt_template)
-    i = 0
-    while i < len(text):
-        char = text[i:i + speed]
-        in_char = getchar()
-        if in_char == ESC:
-            echo()
-            raise click.Abort()
-        echo(char, nl=False)
-        i += speed
-    wait_for(RETURNS)
-
+    cursor_position = 0
+    with raw_mode():
+        while True:
+            char = text[cursor_position:cursor_position + speed]
+            in_char = getchar()
+            if in_char == ESC:
+                echo(carriage_return=True)
+                raise click.Abort()
+            elif in_char == BACKSPACE:
+                if cursor_position > 0:
+                    echo("\b \b", nl=False)
+                    cursor_position -= 1
+            elif in_char in RETURNS:
+                if cursor_position >= len(text): # some comment
+                    echo("\r", nl=True)
+                    break
+            else:
+                if cursor_position < len(text):
+                    echo(char, nl=False)
+                    cursor_position += speed
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):
@@ -518,7 +479,7 @@ class SessionState(dict):
         if doit is not None:
             doit = doit.lower()
             self['commentecho'] = (doit == 'true' or doit == 'yes'
-                                     or doit == '1')
+                                   or doit == '1')
         return self['commentecho']
 
 # Map of option names => function that modifies session state
@@ -581,8 +542,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                     py_commands.append(py_command)
             # Run the player console
             magictype('python',
-                prompt_template=state['prompt_template'],
-                speed=state['speed'])
+                      prompt_template = state['prompt_template'],
+                      speed=state['speed'])
             PythonPlayerConsole(py_commands, speed=state['speed']).interact()
         else:
             magicrun(command, **state)
@@ -631,9 +592,9 @@ def list_themes():
 
 
 @click.option('--preview', '-p', is_flag=True, default=False,
-    help='Preview the available prompt themes.')
+              help='Preview the available prompt themes.')
 @click.option('--list', '-l', is_flag=True, default=False,
-    help='List the available prompt themes.')
+              help='List the available prompt themes.')
 @cli.command()
 def themes(preview, list):
     """Preview the available prompt themes."""
@@ -663,10 +624,10 @@ PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
                              show_default=True)
 
 ALIAS_OPTION = click.option('--alias', '-a', metavar='<alias>',
-    multiple=True, help='Add a session alias.')
+                            multiple=True, help='Add a session alias.')
 
 ENVVAR_OPTION = click.option('--envvar', '-e', metavar='<envvar>',
-    multiple=True, help='Adds a session variable.')
+                             multiple=True, help='Adds a session variable.')
 
 
 def _compose(*functions):
@@ -768,19 +729,19 @@ def print_recorder_instructions():
     echo()
     echo('INSTRUCTIONS:')
     echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
-        ' when you are done recording.')
+         ' when you are done recording.')
     echo('To preview the commands in the buffer, enter {}.'
-        .format(style(PREVIEW_COMMAND, bold=True)))
+         .format(style(PREVIEW_COMMAND, bold=True)))
     echo('To undo the last command in the buffer, enter {}.'
-        .format(style(UNDO_COMMAND, bold=True)))
+         .format(style(UNDO_COMMAND, bold=True)))
     echo('To view this help message again, enter {}.'
-        .format(style(HELP_COMMANDS[0], bold=True)))
+         .format(style(HELP_COMMANDS[0], bold=True)))
     echo()
 
 
 @recorder_command
 @click.argument('session_file', default='session.sh',
-    type=click.Path(dir_okay=False, writable=True))
+                type=click.Path(dir_okay=False, writable=True))
 @cli.command()
 def record(session_file, shell, prompt, alias, envvar):
     """Record a session file. If no argument is passed, commands are written to
