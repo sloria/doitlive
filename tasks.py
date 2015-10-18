@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import webbrowser
 
 from invoke import task, run
@@ -8,17 +9,40 @@ docs_dir = 'docs'
 build_dir = os.path.join(docs_dir, '_build')
 
 @task
-def test(tox=False):
+def test(tox=False, last_failing=False):
+    """Run the tests.
+
+    Note: --watch requires pytest-xdist to be installed.
+    """
     if tox:
-        run('tox', pty=True)
+        run('tox')
     else:
-        run('python setup.py test', pty=True)
+        import pytest
+        flake()
+        args = []
+        if last_failing:
+            args.append('--lf')
+        retcode = pytest.main(args)
+        sys.exit(retcode)
+
+@task
+def flake():
+    """Run flake8 on codebase."""
+    run('flake8 .', echo=True)
 
 @task
 def readme(browse=False):
     run('rst2html.py README.rst > README.html')
     if browse:
         webbrowser.open_new_tab('README.html')
+
+@task
+def clean():
+    run("rm -rf build")
+    run("rm -rf dist")
+    run("rm -rf marshmallow.egg-info")
+    clean_docs()
+    print("Cleaned up.")
 
 @task
 def publish(test=False):

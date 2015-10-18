@@ -41,7 +41,9 @@ def raw_mode():
             pass
         try:
             yield
-        finally:  # this block sets the terminal to sane mode again, also in case an exception occured in the context manager
+        finally:
+            # this block sets the terminal to sane mode again,
+            # also in case an exception occured in the context manager
             try:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
                 # sys.stdout.flush()  # not needed I think.

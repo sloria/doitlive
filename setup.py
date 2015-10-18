@@ -2,7 +2,6 @@
 import re
 import sys
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 
 
 REQUIRES = [
@@ -12,18 +11,6 @@ REQUIRES = [
 if 'win32' in str(sys.platform).lower():
     # Terminal colors for Windows
     REQUIRES.append('colorama>=0.2.4')
-
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = ['--verbose', "tests"]
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-        errcode = pytest.main(self.test_args)
-        sys.exit(errcode)
-
 
 def find_version(fname):
     """Attempts to find the version number in the file names fname.
@@ -41,8 +28,7 @@ def find_version(fname):
         raise RuntimeError('Cannot find version information')
     return version
 
-__version__ = find_version("doitlive/__init__.py")
-
+__version__ = find_version('doitlive/__init__.py')
 
 def read(fname):
     with open(fname) as fp:
@@ -81,5 +67,4 @@ setup(
         ]
     },
     tests_require=['pytest'],
-    cmdclass={'test': PyTest}
 )

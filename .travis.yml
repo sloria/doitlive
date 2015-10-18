@@ -7,6 +7,8 @@ python:
   - "3.3"
   - "2.7"
 
-install: pip install -U .
+install:
+  - pip install -U .
+  - pip install -r dev-requirements.txt
 
-script: python setup.py test
+script: invoke test

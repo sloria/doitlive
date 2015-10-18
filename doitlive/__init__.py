@@ -316,7 +316,8 @@ def magictype(text, prompt_template='default', speed=1):
                     echo("\b \b", nl=False)
                     cursor_position -= 1
             elif in_char in RETURNS:
-                if cursor_position >= len(text): # some comment
+                # Only return at end of command
+                if cursor_position >= len(text):
                     echo("\r", nl=True)
                     break
             else:
@@ -542,7 +543,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                     py_commands.append(py_command)
             # Run the player console
             magictype('python',
-                      prompt_template = state['prompt_template'],
+                      prompt_template=state['prompt_template'],
                       speed=state['speed'])
             PythonPlayerConsole(py_commands, speed=state['speed']).interact()
         else:
