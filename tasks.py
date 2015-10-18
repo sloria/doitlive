@@ -40,7 +40,7 @@ def readme(browse=False):
 def clean():
     run("rm -rf build")
     run("rm -rf dist")
-    run("rm -rf marshmallow.egg-info")
+    run("rm -rf doitlive.egg-info")
     clean_docs()
     print("Cleaned up.")
 
