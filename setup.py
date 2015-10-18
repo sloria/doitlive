@@ -74,7 +74,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Environment :: Console',
     ],
-    py_modules=["doitlive"],
+    packages=["doitlive"],
     entry_points={
         'console_scripts': [
             'doitlive = doitlive:cli'
