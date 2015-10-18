@@ -1,3 +1,9 @@
-pytest
+# Task running
 invoke
+
+# Testing
+pytest
 tox
+
+# Distribution
+twine

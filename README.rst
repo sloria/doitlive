@@ -50,6 +50,13 @@ Quickstart
 More at http://doitlive.rtfd.org
 --------------------------------
 
+Project Links
+-------------
+
+- Docs: http://doitlive.readthedocs.org/
+- Changelog: http://doitlive.readthedocs.org/en/latest/changelog.html
+- PyPI: https://pypi.python.org/pypi/doitlive
+- Issues: https://github.com/sloria/doitlive/issues
 
 Kudos
 -----

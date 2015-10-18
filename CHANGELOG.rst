@@ -1,6 +1,24 @@
 Changelog
 ---------
 
+2.4.0 (unreleased)
+******************
+
+Features:
+
+- Backspace key works during playback.
+
+Bug fixes:
+
+- Prevent unicode_literals import warning from click on Python 2 (:issue:`12`, :issue:`13`).
+- Fix bug that caused some keystrokes to get echoed instead of swallowed (:issue:`6`). Thanks :user:`jordigh` for reporting.
+
+Other changes:
+
+- Reorganized as a package. Added ``termutils`` and ``version_control`` modules.
+
+Big thanks to :user:`Stefan-Code` for implementing these changes.
+
 2.3.1 (2015-02-08)
 ******************
 

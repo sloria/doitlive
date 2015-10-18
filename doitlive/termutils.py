@@ -1,20 +1,25 @@
+# -*- coding: utf-8 -*-
 """
-This module provides a context manager for setting the (Linux) terminal to raw mode.
+This module provides a context manager for setting the Unix terminals to raw mode.
 """
 import sys
 from contextlib import contextmanager
-from click._compat import isatty
-WIN = sys.platform.startswith('win')
 
+from click._compat import isatty
+
+WIN = sys.platform.startswith('win')
 
 @contextmanager
 def raw_mode():
     """
     Enables terminal raw mode during the context.
-    For now this only works for Linux.
-    Usage:
-    with raw_mode():
-        do_some_stuff()
+
+    Note: Currently noop for Windows systems.
+
+    Usage: ::
+
+        with raw_mode():
+            do_some_stuff()
     """
     if WIN:
         # No implementation for windows yet.
