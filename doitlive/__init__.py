@@ -22,8 +22,8 @@ import click
 from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
-from termutils import raw_mode
-from version_control import (get_current_git_branch,
+from doitlive.termutils import raw_mode
+from doitlive.version_control import (get_current_git_branch,
                              get_current_hg_bookmark,
                              get_current_hg_branch,
                              get_current_hg_id,
