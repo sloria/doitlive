@@ -19,8 +19,8 @@ import socket
 import subprocess
 import sys
 from code import InteractiveConsole
-from tempfile import NamedTemporaryFile
 from collections import OrderedDict
+from tempfile import NamedTemporaryFile
 
 import click
 from click import style, secho, getchar
@@ -29,10 +29,10 @@ from click.termui import strip_ansi
 
 from doitlive.termutils import raw_mode
 from doitlive.version_control import (get_current_git_branch,
-                             get_current_hg_bookmark,
-                             get_current_hg_branch,
-                             get_current_hg_id,
-                             get_current_vcs_branch)
+                                      get_current_hg_bookmark,
+                                      get_current_hg_branch,
+                                      get_current_hg_id,
+                                      get_current_vcs_branch)
 
 
 __version__ = '2.3.1'
@@ -314,9 +314,9 @@ def magictype(text, prompt_template='default', speed=1):
             elif in_char == BACKSPACE:
                 if cursor_position > 0:
                     echo("\b \b", nl=False)
-                    cursor_position -= 1  # go only one char back when backspace is pressed, regardless of speed
+                    cursor_position -= 1
             elif in_char in RETURNS:
-                if cursor_position >= len(text):  # only accept return once the command is fully typed
+                if cursor_position >= len(text): # some comment
                     echo("\r", nl=True)
                     break
             else:
@@ -479,7 +479,7 @@ class SessionState(dict):
         if doit is not None:
             doit = doit.lower()
             self['commentecho'] = (doit == 'true' or doit == 'yes'
-                                     or doit == '1')
+                                   or doit == '1')
         return self['commentecho']
 
 # Map of option names => function that modifies session state
@@ -542,8 +542,8 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                     py_commands.append(py_command)
             # Run the player console
             magictype('python',
-                prompt_template=state['prompt_template'],
-                speed=state['speed'])
+                      prompt_template = state['prompt_template'],
+                      speed=state['speed'])
             PythonPlayerConsole(py_commands, speed=state['speed']).interact()
         else:
             magicrun(command, **state)
@@ -592,9 +592,9 @@ def list_themes():
 
 
 @click.option('--preview', '-p', is_flag=True, default=False,
-    help='Preview the available prompt themes.')
+              help='Preview the available prompt themes.')
 @click.option('--list', '-l', is_flag=True, default=False,
-    help='List the available prompt themes.')
+              help='List the available prompt themes.')
 @cli.command()
 def themes(preview, list):
     """Preview the available prompt themes."""
@@ -624,10 +624,10 @@ PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
                              show_default=True)
 
 ALIAS_OPTION = click.option('--alias', '-a', metavar='<alias>',
-    multiple=True, help='Add a session alias.')
+                            multiple=True, help='Add a session alias.')
 
 ENVVAR_OPTION = click.option('--envvar', '-e', metavar='<envvar>',
-    multiple=True, help='Adds a session variable.')
+                             multiple=True, help='Adds a session variable.')
 
 
 def _compose(*functions):
@@ -729,19 +729,19 @@ def print_recorder_instructions():
     echo()
     echo('INSTRUCTIONS:')
     echo('Enter ' + style('{}'.format(STOP_COMMAND), bold=True) +
-        ' when you are done recording.')
+         ' when you are done recording.')
     echo('To preview the commands in the buffer, enter {}.'
-        .format(style(PREVIEW_COMMAND, bold=True)))
+         .format(style(PREVIEW_COMMAND, bold=True)))
     echo('To undo the last command in the buffer, enter {}.'
-        .format(style(UNDO_COMMAND, bold=True)))
+         .format(style(UNDO_COMMAND, bold=True)))
     echo('To view this help message again, enter {}.'
-        .format(style(HELP_COMMANDS[0], bold=True)))
+         .format(style(HELP_COMMANDS[0], bold=True)))
     echo()
 
 
 @recorder_command
 @click.argument('session_file', default='session.sh',
-    type=click.Path(dir_okay=False, writable=True))
+                type=click.Path(dir_okay=False, writable=True))
 @cli.command()
 def record(session_file, shell, prompt, alias, envvar):
     """Record a session file. If no argument is passed, commands are written to
