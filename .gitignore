@@ -47,5 +47,6 @@ include/
 
 #pip
 .eggs/
+pip-selfcheck.json
 #other
 local/
