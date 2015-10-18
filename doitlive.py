@@ -10,7 +10,6 @@
   :license: MIT, see LICENSE for more details.
 """
 
-#from __future__ import unicode_literals
 import datetime as dt
 import functools
 import os
