@@ -44,3 +44,8 @@ sandbox/*
 #virtualenv
 include/
 .cache/
+
+#pip
+.eggs/
+#other
+local/
