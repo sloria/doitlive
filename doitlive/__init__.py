@@ -12,25 +12,28 @@
 
 import datetime as dt
 import functools
-import os
-import sys
-import re
 import getpass
+import os
+import re
 import socket
 import subprocess
-import click
+import sys
 from code import InteractiveConsole
 from tempfile import NamedTemporaryFile
 from collections import OrderedDict
+
+import click
+from click import style, secho, getchar
+from click import echo as click_echo
+from click.termui import strip_ansi
+
 from doitlive.termutils import raw_mode
 from doitlive.version_control import (get_current_git_branch,
                              get_current_hg_bookmark,
                              get_current_hg_branch,
                              get_current_hg_id,
                              get_current_vcs_branch)
-from click import style, secho, getchar
-from click import echo as click_echo
-from click.termui import strip_ansi
+
 
 __version__ = '2.3.1'
 __author__ = 'Steven Loria'
