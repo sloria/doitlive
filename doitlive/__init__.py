@@ -10,6 +10,9 @@
   :license: MIT, see LICENSE for more details.
 """
 
+from code import InteractiveConsole
+from collections import OrderedDict
+from tempfile import NamedTemporaryFile
 import datetime as dt
 import functools
 import getpass
@@ -18,21 +21,20 @@ import re
 import socket
 import subprocess
 import sys
-from code import InteractiveConsole
-from collections import OrderedDict
-from tempfile import NamedTemporaryFile
 
-import click
-from click import style, secho, getchar
 from click import echo as click_echo
+from click import style, secho, getchar
 from click.termui import strip_ansi
+import click
 
 from doitlive.termutils import raw_mode
-from doitlive.version_control import (get_current_git_branch,
-                                      get_current_hg_bookmark,
-                                      get_current_hg_branch,
-                                      get_current_hg_id,
-                                      get_current_vcs_branch)
+from doitlive.version_control import (
+    get_current_git_branch,
+    get_current_hg_bookmark,
+    get_current_hg_branch,
+    get_current_hg_id,
+    get_current_vcs_branch
+)
 
 
 __version__ = '2.4.0dev0'
