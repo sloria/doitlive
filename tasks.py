@@ -9,7 +9,7 @@ docs_dir = 'docs'
 build_dir = os.path.join(docs_dir, '_build')
 
 @task
-def test(tox=False, last_failing=False):
+def test(tox=False, lint=True, last_failing=False):
     """Run the tests.
 
     Note: --watch requires pytest-xdist to be installed.
@@ -18,7 +18,8 @@ def test(tox=False, last_failing=False):
         run('tox')
     else:
         import pytest
-        flake()
+        if lint:
+            flake()
         args = []
         if last_failing:
             args.append('--lf')

@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+2.5.0 (unreleased)
+******************
+
+Features
+
+- Add ipython mode (:issue:`8`).
+
 2.4.0 (2015-10-18)
 ******************
 

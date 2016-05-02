@@ -36,7 +36,6 @@ from doitlive.version_control import (
     get_current_vcs_branch
 )
 
-
 __version__ = '2.4.0'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
@@ -421,6 +420,8 @@ class PythonPlayerConsole(InteractiveConsole):
             self.write("%s\n" % str(banner))
         self.run_commands()
 
+def start_python_player(commands, speed=1):
+    PythonPlayerConsole(commands=commands, speed=speed).interact()
 
 class PythonRecorderConsole(InteractiveConsole):
     """An interactive Python console that stores user input in a list."""
@@ -497,7 +498,7 @@ OPTION_MAP = {
     'commentecho': lambda state, arg: state.commentecho(arg),
 }
 
-
+SHELL_RE = re.compile(r'```(python|ipython)')
 def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         quiet=False, test_mode=False, commentecho=False):
     if not quiet:
@@ -517,6 +518,7 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
         i += 1
         if not command:
             continue
+        shell_match = SHELL_RE.match(command)
         if command.startswith('#'):
             # Parse comment magic
             match = OPTION_RE.match(command)
@@ -528,15 +530,16 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 comment = command.lstrip("#")
                 secho(comment, fg='yellow', bold=True)
             continue
-        elif command.startswith('```python'):
+        elif shell_match:
+            shell_name = shell_match.groups()[0].strip()
             py_commands = []
             more = True
             while more:  # slurp up all the python code
                 try:
                     py_command = commands[i].rstrip()
                 except IndexError:
-                    raise SessionError('Unmatched python code block in '
-                                       'session file.')
+                    raise SessionError('Unmatched {0} code block in '
+                                       'session file.'.format(shell_name))
                 i += 1
                 if py_command.startswith('```'):
                     i += 1
@@ -544,10 +547,17 @@ def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
                 else:
                     py_commands.append(py_command)
             # Run the player console
-            magictype('python',
+            magictype(shell_name,
                       prompt_template=state['prompt_template'],
                       speed=state['speed'])
-            PythonPlayerConsole(py_commands, speed=state['speed']).interact()
+            if shell_name == 'ipython':
+                try:
+                    from doitlive.ipython import start_ipython_player
+                except ImportError:
+                    raise RuntimeError('```ipython blocks require IPython to be installed')
+                start_ipython_player(py_commands, speed=state['speed'])
+            else:
+                start_python_player(py_commands, speed=state['speed'])
         else:
             magicrun(command, **state)
     echo_prompt(state['prompt_template'])

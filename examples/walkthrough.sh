@@ -1,7 +1,7 @@
 #doitlive shell: /bin/bash
 #doitlive prompt: default
 #doitlive speed: 1
-#doitlive env: DOCS_URL=http://doitlive.rtfd.org
+#doitlive env: DOCS_URL=http://doitlive.readthdocs.io
 #doitlive alias: edit="nano "
 
 echo 'Hello there!'

@@ -170,7 +170,7 @@ Whether to echo comments or not. If enabled, non-magic comments will be echoed b
 Python mode
 -----------
 
-doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks within your ``session.sh`` file, like so:
+doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks, like so:
 
 .. code-block:: bash
 
@@ -186,6 +186,28 @@ doitlive supports autotyping in a Python console. You can enter Python mode in a
 
     print("The sum is: {sum}".format(sum=sum))
     ```
+
+IPython mode
+------------
+
+If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in ``ipython`` mode. Just enclose your Python code in triple-backticks, like so:
+
+.. code-block:: bash
+
+   # in session.sh
+
+   ```ipython
+   def fib(n):
+      a, b = 0, 1
+      while a < n:
+         print(a, end=' ')
+         a, b = b, a+b
+      print()
+
+   # Magic!
+   % time fib(100)
+
+   ```
 
 Bash completion
 ---------------

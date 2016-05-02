@@ -10,3 +10,6 @@ twine
 
 # Syntax checking
 flake8==2.4.1
+
+# Soft deps
+IPython
