@@ -2,10 +2,10 @@
 doitlive
 ========
 
-.. image:: https://badge.fury.io/py/doitlive.png
+.. image:: https://badge.fury.io/py/doitlive.svg
   :target: http://badge.fury.io/py/doitlive
 
-.. image:: https://travis-ci.org/sloria/doitlive.png?branch=master
+.. image:: https://travis-ci.org/sloria/doitlive.svg?branch=master
   :target: https://travis-ci.org/sloria/doitlive
 
 
@@ -47,8 +47,8 @@ Quickstart
 3. Type like a madman.
 
 
-More at http://doitlive.rtfd.org
---------------------------------
+More at http://doitlive.readthedocs.io
+--------------------------------------
 
 Project Links
 -------------

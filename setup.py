@@ -44,7 +44,7 @@ setup(
     author_email='sloria1@gmail.com',
     url='https://github.com/sloria/doitlive',
     install_requires=REQUIRES,
-    license=read("LICENSE"),
+    license='MIT',
     zip_safe=False,
     keywords='doitlive cli live coding presentations shell',
     classifiers=[
