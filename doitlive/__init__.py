@@ -440,6 +440,7 @@ class PythonRecorderConsole(InteractiveConsole):
 
 class SessionState(dict):
     """Stores information about a fake terminal session."""
+    TRUTHY = set(['true', 'yes', '1'])
 
     def __init__(self, shell, prompt_template, speed,
                  aliases=None, envvars=None,
@@ -482,8 +483,7 @@ class SessionState(dict):
     def commentecho(self, doit=None):
         if doit is not None:
             doit = doit.lower()
-            self['commentecho'] = (doit == 'true' or doit == 'yes'
-                                   or doit == '1')
+            self['commentecho'] = doit in self.TRUTHY
         return self['commentecho']
 
 # Map of option names => function that modifies session state
