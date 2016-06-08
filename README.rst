@@ -47,14 +47,14 @@ Quickstart
 3. Type like a madman.
 
 
-More at http://doitlive.readthedocs.io
---------------------------------------
+More at https://doitlive.readthedocs.io
+---------------------------------------
 
 Project Links
 -------------
 
-- Docs: http://doitlive.readthedocs.org/
-- Changelog: http://doitlive.readthedocs.org/en/latest/changelog.html
+- Docs: https://doitlive.readthedocs.io/
+- Changelog: https://doitlive.readthedocs.io/en/latest/changelog.html
 - PyPI: https://pypi.python.org/pypi/doitlive
 - Issues: https://github.com/sloria/doitlive/issues
 
