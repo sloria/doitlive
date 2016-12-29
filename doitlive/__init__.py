@@ -211,6 +211,7 @@ R_ANGLE_DOUBLE = TermString(u'»')
 R_ARROW = TermString(u'➔')
 DOLLAR = TermString(u'$')
 PERCENT = TermString(u'%')
+NEW_LINE = TermString(u'\n')
 
 
 def get_prompt_state():
@@ -234,6 +235,7 @@ def get_prompt_state():
         'dollar': DOLLAR,
         'percent': PERCENT,
         'now': dt.datetime.now(),
+        'new_line': NEW_LINE,
         # ANSI values object
         'TTY': TTY,
     }
