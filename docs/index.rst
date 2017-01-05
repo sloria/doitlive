@@ -123,6 +123,9 @@ Any of the prompt variables can be formatted with ANSI styles, like so:
 
 Example: ``#doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $``
 
+Newlines can be included in prompts using ``{nl}``.
+
+Example: ``#doitlive prompt: {user}:{dir}{nl}$``
 
 Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, blink, underlined, dim, paren, square, curly, inverse, git, and hg.
 

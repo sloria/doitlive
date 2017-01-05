@@ -236,6 +236,7 @@ def get_prompt_state():
         'percent': PERCENT,
         'now': dt.datetime.now(),
         'new_line': NEW_LINE,
+        'nl': NEW_LINE,
         # ANSI values object
         'TTY': TTY,
     }
