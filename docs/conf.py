@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-import sys, os
+import sys
+import os
+import datetime as dt
 
 sys.path.insert(0, os.path.abspath('..'))
-import doitlive
+import doitlive  # flake8: noqa
 sys.path.append(os.path.abspath("_themes"))
 
 extensions = [
@@ -20,9 +22,9 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'doitlive'
-copyright = u'2014-2015'
+copyright = u'2014-{0:%Y}'.format(dt.datetime.utcnow())
 
-version = release =  doitlive.__version__
+version = release = doitlive.__version__
 
 exclude_patterns = ['_build']
 pygments_style = 'flask_theme_support.FlaskyStyle'

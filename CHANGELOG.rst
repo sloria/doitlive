@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+2.6.0 (unreleased)
+******************
+
+Features:
+
+- Prompt template variables can be styled with ``.inverse``, e.g. ``{user.inverse}``.
+
+Other changes:
+
+- Test against Python 3.6.
+
 2.5.0 (2016-05-02)
 ******************
 
