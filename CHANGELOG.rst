@@ -7,6 +7,7 @@ Changelog
 Features:
 
 - Prompt template variables can be styled with ``.inverse``, e.g. ``{user.inverse}``.
+- Prompt templates can include ``{nl}`` for displaying new-lines. Thanks :user:`andredias`.
 
 Other changes:
 
