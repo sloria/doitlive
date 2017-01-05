@@ -126,6 +126,7 @@ class TermString(unicode):
     blink = Style(blink=True)
     underlined = Style(underline=True)
     dim = Style(dim=True)
+    inverse = Style(reverse=True)
 
     def _bracketed(self, left, right):
         if strip_ansi(self):
