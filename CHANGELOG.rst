@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+2.7.0 (unreleased)
+******************
+
+Features:
+
+- Add ``stev``, ``damoekri``, and ``smiley`` themes.
+- Modify ``sorin`` theme to be more like the original prezto theme.
+
 2.6.0 (2017-01-07)
 ******************
 

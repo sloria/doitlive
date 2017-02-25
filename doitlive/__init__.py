@@ -53,8 +53,14 @@ else:
 THEMES = OrderedDict([
     ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', u'{cwd.cyan} {vcs_branch.green.git} '
+    ('sorin', u'{cwd.blue} {vcs_branch.green.git} '
      '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
+
+    ('stev', u'{cwd.blue} {vcs_branch.green.git} '
+     '{r_angle.green}'),
+
+    ('damoekri', u'{dir.cyan} {r_angle.green}'),
+    ('smiley', u'{vcs_branch.blue.paren}{dir.white.bold} {TTY.GREEN}ツ{TTY.RESET}'),
 
     ('nicolauj', u'{r_angle.white}'),
 
