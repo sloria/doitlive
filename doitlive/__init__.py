@@ -53,10 +53,10 @@ else:
 THEMES = OrderedDict([
     ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
-    ('sorin', u'{cwd.blue} {vcs_branch.green.git} '
+    ('sorin', u'{cwd.blue} {vcs_branch.cyan} '
      '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
-    ('stev', u'{cwd.blue} {vcs_branch.green.git} '
+    ('stev', u'{cwd.blue} {vcs_branch.cyan} '
      '{r_angle.green}'),
 
     ('damoekri', u'{dir.cyan} {r_angle.green}'),
@@ -219,6 +219,12 @@ DOLLAR = TermString(u'$')
 PERCENT = TermString(u'%')
 NEW_LINE = TermString(u'\n')
 
+def _branch_to_term_string(branch_string):
+    if strip_ansi(branch_string):
+        return TermString(branch_string)
+    else:
+        # Prevent extra space when not in a VCS repo
+        return TermString(u'\b')
 
 def get_prompt_state():
     full_cwd = os.getcwd()
@@ -229,11 +235,11 @@ def get_prompt_state():
         'cwd': TermString(cwd_raw),
         'dir': TermString(dir_raw),
         'hostname': TermString(socket.gethostname()),
-        'git_branch': TermString(get_current_git_branch()),
+        'git_branch': _branch_to_term_string(get_current_git_branch()),
         'hg_id': TermString(get_current_hg_id()),
-        'hg_branch': TermString(get_current_hg_branch()),
+        'hg_branch': _branch_to_term_string(get_current_hg_branch()),
         'hg_bookmark': TermString(get_current_hg_bookmark()),
-        'vcs_branch': TermString(get_current_vcs_branch()),
+        'vcs_branch': _branch_to_term_string(get_current_vcs_branch()),
         # Symbols
         'r_angle': R_ANGLE,
         'r_angle_double': R_ANGLE_DOUBLE,

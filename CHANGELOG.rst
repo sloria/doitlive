@@ -9,6 +9,10 @@ Features:
 - Add ``stev``, ``damoekri``, and ``smiley`` themes.
 - Modify ``sorin`` theme to be more like the original prezto theme.
 
+Bug fixes:
+
+- Prevent extra spacing when using ``{vcs_branch}``, ``{git_branch}``, or ``{hg_branch}`` in a custom prompt.
+
 2.6.0 (2017-01-07)
 ******************
 
