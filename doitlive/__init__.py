@@ -474,7 +474,8 @@ class SessionState(dict):
         self['envvars'].append(envvar)
 
     def set_speed(self, speed):
-        speed = int(speed) if int(speed) > 0 else 1
+        speed = int(speed)
+        speed = speed if speed > 0 else 1
         self['speed'] = speed
 
     def set_template(self, template):
