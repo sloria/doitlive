@@ -677,6 +677,7 @@ recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION,
 @cli.command()
 def play(quiet, session_file, shell, speed, prompt, commentecho):
     """Play a session file."""
+    speed = speed if speed > 0 else 1
     run(session_file.readlines(),
         shell=shell,
         speed=speed,
