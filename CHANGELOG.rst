@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+2.8.0 (2017-10-08)
+******************
+
+Bug fixes:
+
+- Don't allow passing a `--speed` that is < 1 (:issue:`17`). Thanks
+  :user:`mblhaunted` for reporting and thanks :user:`Stefan-Code` for
+  the implementation suggestion.
+
 2.7.0 (2017-03-07)
 ******************
 

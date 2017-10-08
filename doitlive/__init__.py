@@ -6,7 +6,7 @@
 
   A tool for "live" presentations in the terminal.
 
-  :copyright: (c) 2014-2015 by Steven Loria and contributors.
+  :copyright: (c) 2014-2017 by Steven Loria and contributors.
   :license: MIT, see LICENSE for more details.
 """
 
@@ -36,7 +36,7 @@ from doitlive.version_control import (
     get_current_vcs_branch
 )
 
-__version__ = '2.7.0'
+__version__ = '2.8.0'
 __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
