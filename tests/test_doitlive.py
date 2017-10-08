@@ -120,6 +120,10 @@ class TestPlayer:
         result = runner.invoke(cli, ['-p', 'thisisnotatheme'])
         assert result.exit_code > 0
 
+    def test_bad_speed(self, runner):
+        result = runner.invoke(cli, ['demo', '-s', '-1'])
+        assert result.exit_code > 0
+
     def test_cd(self, runner):
         user_input = (random_string(len('cd ~')) + '\n' +
             random_string(len('pwd')) + '\n')

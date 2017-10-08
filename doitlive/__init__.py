@@ -643,8 +643,8 @@ SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
                             default='/bin/bash', help='The shell to use.',
                             show_default=True)
 
-SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', default=1,
-                            help='Typing speed.', show_default=True)
+SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', type=click.IntRange(1),
+                            default=1, help='Typing speed.', show_default=True)
 
 PROMPT_OPTION = click.option('--prompt', '-p', metavar='<prompt_theme>',
                              default='default',
