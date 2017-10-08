@@ -46,18 +46,6 @@ def clean(ctx):
     print("Cleaned up.")
 
 @task
-def publish(ctx, test=False):
-    """Publish to the cheeseshop."""
-    clean(ctx)
-    if test:
-        ctx.run('python setup.py register -r test sdist', echo=True)
-        ctx.run('twine upload dist/* -r test', echo=True)
-    else:
-        ctx.run('python setup.py register sdist', echo=True)
-        ctx.run('twine upload dist/*', echo=True)
-
-
-@task
 def clean_docs(ctx):
     ctx.run("rm -rf %s" % build_dir)
 

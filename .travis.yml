@@ -1,15 +1,20 @@
 language: python
 sudo: false
-
 python:
-  - "3.6"
-  - "3.5"
-  - "3.4"
-  - "3.3"
-  - "2.7"
-
+- '3.6'
+- '3.5'
+- '3.4'
+- '3.3'
+- '2.7'
 install:
-  - pip install -U .
-  - pip install -r dev-requirements.txt
-
+- pip install -U .
+- pip install -r dev-requirements.txt
 script: invoke test
+deploy:
+  provider: pypi
+  user: sloria
+  password:
+    secure: gi6lzTgK4I42Is1Hzk1VZCSR3sIqAE2xqSc/xySuoJNZwMADIJNrjahW/CgfnIQYXSpYc8aya3B5p9+95Fdk88YQLrVm0e6EhJ2MXT5R9d/dmlKSEWRQQjlMduApq2AJKY/vhs+hxPuPL7kbuZaPMnY7p+D4JsrVPJfKM9IydrY=
+  on:
+    tags: true
+  distributions: sdist
