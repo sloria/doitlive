@@ -156,7 +156,7 @@ class TestPlayer:
         result = run_session(runner, 'unalias.session', user_input)
         # nonzero exit code becuase 'foo' is no longer aliased
         assert result.exit_code != 0
-        assert '42' not in result.output
+        assert 'foobarbazquux' not in result.output
 
     def test_unset_envvar(self, runner):
         user_input = random_string(len('echo $MEANING'))

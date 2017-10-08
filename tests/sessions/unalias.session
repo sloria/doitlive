@@ -1,4 +1,4 @@
-#doitlive alias: foo="echo 42"
+#doitlive alias: foo="echo foobarbazquux"
 
 
 #doitlive unalias: foo
