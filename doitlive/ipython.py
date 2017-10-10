@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """doitlive IPython support."""
 from __future__ import absolute_import
+from warnings import warn
 
 from IPython.utils import py3compat
-from IPython.utils.warn import warn
 from IPython.terminal.interactiveshell import TerminalInteractiveShell
 from IPython.terminal.ipapp import TerminalIPythonApp
 from IPython.utils.text import num_ini_spaces
