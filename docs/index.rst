@@ -7,6 +7,10 @@ doitlive
 
 Current version: v\ |version|.
 
+.. image:: https://user-images.githubusercontent.com/2379650/31386572-2e2b9d14-ad95-11e7-9be5-fcc5ed09f0e8.gif
+    :alt: Demo
+    :target: http://doitlive.readthedocs.io
+
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
 .. contents::
