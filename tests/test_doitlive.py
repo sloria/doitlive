@@ -341,7 +341,7 @@ class TestRecorder:
             assert 'echo "bar"' in content
 
     def test_header_content(self, runner):
-        with recording_session(runner), open('session.sh') as fp:
+        with recording_session(runner, args=['--shell', '/bin/bash']), open('session.sh') as fp:
             content = fp.read()
             assert '#doitlive shell: /bin/bash' in content
 

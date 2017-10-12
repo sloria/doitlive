@@ -273,9 +273,12 @@ def write_directives(fp, directive, args):
             fp.write(ensure_utf(line))
     return None
 
+def get_default_shell():
+    return env.get('DOITLIVE_INTERPRETER') or env.get('SHELL') or '/bin/bash'
 
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
-    shell = shell or env.get('DOITLIVE_INTERPRETER') or '/bin/bash'
+    shell = shell or get_default_shell()
+    print(f'Shell: {shell}')
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
         try:
@@ -515,7 +518,7 @@ OPTION_MAP = {
 }
 
 SHELL_RE = re.compile(r'```(python|ipython)')
-def run(commands, shell='/bin/bash', prompt_template='default', speed=1,
+def run(commands, shell=None, prompt_template='default', speed=1,
         quiet=False, test_mode=False, commentecho=False):
     if not quiet:
         secho("We'll do it live!", fg='red', bold=True)
@@ -640,7 +643,7 @@ ECHO_OPTION = click.option('--commentecho', '-e',
                            default=False, show_default=False)
 
 SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
-                            default='/bin/bash', help='The shell to use.',
+                            default=get_default_shell, help='The shell to use.',
                             show_default=True)
 
 SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', type=click.IntRange(1),
