@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+Next release
+************
+
+- Use `$SHELL` as the default interpreter for commands if not explicitly
+  specified.
+- Remove invalid import in ``ipython`` module. Thanks :user:`axocomm`.
+
 2.8.0 (2017-10-08)
 ******************
 
