@@ -9,7 +9,7 @@ python:
 install:
 - pip install -U .
 - pip install -r dev-requirements.txt
-script: invoke test
+script: invoke test --lint
 deploy:
   provider: pypi
   user: sloria

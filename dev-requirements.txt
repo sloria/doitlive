@@ -5,11 +5,8 @@ invoke==0.21.0
 pytest
 tox
 
-# Distribution
-twine
-
 # Syntax checking
-flake8==2.4.1
+flake8==3.4.1
 
 # Soft deps
 IPython
