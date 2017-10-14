@@ -1,58 +1,126 @@
 # -*- coding: utf-8 -*-
 """doitlive IPython support."""
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
+
 from warnings import warn
 
-from IPython.utils import py3compat
-from IPython.terminal.interactiveshell import TerminalInteractiveShell
+from click import Abort
+from IPython.terminal.interactiveshell import (DISPLAY_BANNER_DEPRECATED,
+                                               TerminalInteractiveShell)
 from IPython.terminal.ipapp import TerminalIPythonApp
-from IPython.utils.text import num_ini_spaces
+from prompt_toolkit.interface import (CommandLineInterface,
+                                      _InterfaceEventLoopCallbacks)
+from prompt_toolkit.key_binding.input_processor import KeyPress
+from prompt_toolkit.keys import Keys
+from prompt_toolkit.shortcuts import create_output
+
+from doitlive import RETURNS, wait_for, echo
+
+class _PlayerInterfaceEventLoopCallbacks(_InterfaceEventLoopCallbacks):
+    def __init__(self, cli, on_feed_key):
+        super(_PlayerInterfaceEventLoopCallbacks, self).__init__(cli)
+        self.on_feed_key = on_feed_key
+
+    # Override _InterfaceEventLoopCallbacks
+    def feed_key(self, key_press, *args, **kwargs):
+        key_press = self.on_feed_key(key_press)
+        if key_press is not None:
+            return super(_PlayerInterfaceEventLoopCallbacks, self).feed_key(key_press,
+                                                                           *args, **kwargs)
 
 
-from doitlive import magictype, wait_for, RETURNS
-from click import echo
+class _PlayerCommandLineInterface(CommandLineInterface):
+    def __init__(self, application, eventloop=None, input=None, output=None,
+                 on_feed_key=None):
+        super(_PlayerCommandLineInterface, self).__init__(application, eventloop, input, output)
+        self.on_feed_key = on_feed_key
+
+    # Overrride CommandLineInterface
+    def create_eventloop_callbacks(self):
+        return _PlayerInterfaceEventLoopCallbacks(self, on_feed_key=self.on_feed_key)
 
 
 class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
-    """A magic Ipython terminal shell."""
-    def __init__(self, commands, speed, *args, **kwargs):
-        self.commands = commands
-        self.current_command = 0  # Index of current command
+    """A magic IPython terminal shell."""
+    def __init__(self, commands, speed=1, *args, **kwargs):
+        self.commands = commands or []
         self.speed = speed
+        # Index of current command
+        self.current_command_index = 0
+        # Index of current character in current command
+        self.current_command_pos = 0
         super(PlayerTerminalInteractiveShell, self).__init__(*args, **kwargs)
 
-    # Override raw_input to do magic-typing
-    # NOTE: Much of this is copy-and-pasted from the parent class's implementation
+    def on_feed_key(self, key_press):
+        """Handles the magictyping when a key is pressed"""
+        if key_press.key == Keys.Escape:
+            echo(carriage_return=True)
+            raise Abort()
+        if key_press.key == Keys.Backspace:
+            self.current_command_pos -= 1
+            return key_press
+        ret = None
+        if key_press.key != Keys.CPRResponse:
+            if self.current_command_pos < len(self.current_command):
+                current_key = self.current_command_key
+                ret = KeyPress(current_key)
+                self.current_command_pos += self.speed
+            else:
+                # Command is finished, wait for Enter
+                if key_press.key != Keys.Enter:
+                    return None
+                self.current_command_index += 1
+                self.current_command_pos = 0
+                ret = key_press
+        return ret
+
+    @property
+    def current_command(self):
+        return self.commands[self.current_command_index]
+
+    @property
+    def current_command_key(self):
+        pos = self.current_command_pos
+        return self.current_command[pos:pos + self.speed]
+
+    # Overrride TerminalInteractiveShell
+    # Much of this is copy-and-pasted from the parent class implementation
     # due to lack of hooks
-    def raw_input(self, prompt=''):
-        if self.current_command > len(self.commands) - 1:
-            echo('Do you really want to exit ([y]/n)? ', nl=False)
-            wait_for(RETURNS)
-            self.ask_exit()
-            return ''
-        # raw_input expects str, but we pass it unicode sometimes
-        prompt = py3compat.cast_bytes_py2(prompt)
+    def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
 
-        try:
-            command = self.commands[self.current_command]
-            magictype(command, prompt_template=prompt, speed=self.speed)
-            line = py3compat.cast_unicode_py2(command)
-        except ValueError:
-            warn("\n********\nYou or a %run:ed script called sys.stdin.close()"
-                 " or sys.stdout.close()!\nExiting IPython!\n")
-            self.ask_exit()
-            return ""
+        if display_banner is not DISPLAY_BANNER_DEPRECATED:
+            warn('interact `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.', DeprecationWarning, stacklevel=2)  # noqa
 
-        # Try to be reasonably smart about not re-indenting pasted input more
-        # than necessary.  We do this by trimming out the auto-indent initial
-        # spaces, if the user's actual input started itself with whitespace.
-        if self.autoindent:
-            if num_ini_spaces(line) > self.indent_current_nsp:
-                line = line[self.indent_current_nsp:]
-                self.indent_current_nsp = 0
+        self.keep_running = True
+        while self.keep_running:
+            print(self.separate_in, end='')
 
-        self.current_command += 1
-        return line
+            if self.current_command_index > len(self.commands) - 1:
+                echo('Do you really want to exit ([y]/n)? ', nl=False)
+                wait_for(RETURNS)
+                self.ask_exit()
+                return None
+
+            try:
+                code = self.prompt_for_code()
+            except EOFError:
+                if (not self.confirm_exit) \
+                        or self.ask_yes_no('Do you really want to exit ([y]/n)?', 'y', 'n'):
+                    self.ask_exit()
+
+            else:
+                if code:
+                    self.run_cell(code, store_history=True)
+
+    # Overrride TerminalInteractiveShell
+    def init_prompt_toolkit_cli(self):
+        super(PlayerTerminalInteractiveShell, self).init_prompt_toolkit_cli()
+        # override CommandLineInterface
+        self.pt_cli = _PlayerCommandLineInterface(
+            self._pt_app, eventloop=self._eventloop,
+            output=create_output(true_color=self.true_color),
+            on_feed_key=self.on_feed_key,
+        )
 
 class PlayerTerminalIPythonApp(TerminalIPythonApp):
     """IPython app that runs the PlayerTerminalInteractiveShell."""
