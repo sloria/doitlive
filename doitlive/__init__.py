@@ -278,7 +278,6 @@ def get_default_shell():
 
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or get_default_shell()
-    print(f'Shell: {shell}')
     if cmd.startswith("cd "):
         directory = cmd.split()[1]
         try:
