@@ -53,7 +53,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
 
     def on_feed_key(self, key_press):
         """Handles the magictyping when a key is pressed"""
-        if key_press.key == Keys.Escape:
+        if key_press.key in {Keys.Escape, Keys.ControlC}:
             echo(carriage_return=True)
             raise Abort()
         if key_press.key == Keys.Backspace:

@@ -92,6 +92,7 @@ THEMES = OrderedDict([
 
 ESC = '\x1b'
 BACKSPACE = '\x7f'
+CTRLC = '\x03'
 RETURNS = {'\r', '\n'}
 OPTION_RE = re.compile(r'^#\s?doitlive\s+'
                        r'(?P<option>prompt|shell|alias|env|speed'
@@ -328,7 +329,7 @@ def magictype(text, prompt_template='default', speed=1):
         while True:
             char = text[cursor_position:cursor_position + speed]
             in_char = getchar()
-            if in_char == ESC:
+            if in_char in [ESC, CTRLC]:
                 echo(carriage_return=True)
                 raise click.Abort()
             elif in_char == BACKSPACE:
