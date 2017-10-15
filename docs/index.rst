@@ -180,6 +180,9 @@ Whether to echo comments or not. If enabled, non-magic comments will be echoed b
 Python mode
 -----------
 
+.. image:: https://user-images.githubusercontent.com/2379650/31582125-d52d1418-b140-11e7-8f27-8baf87eb9e76.gif
+    :alt: Demo
+
 doitlive supports autotyping in a Python console. You can enter Python mode in a session by enclosing Python code in triple-backticks, like so:
 
 .. code-block:: bash
