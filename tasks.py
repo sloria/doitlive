@@ -33,7 +33,7 @@ def flake(ctx):
 
 @task
 def readme(ctx, browse=False):
-    ctx.run('rst2html.py README.rst > README.html')
+    ctx.run('rst2html.py README.rst > README.html', echo=True)
     if browse:
         webbrowser.open_new_tab('README.html')
 

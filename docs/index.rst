@@ -81,6 +81,9 @@ This will start a recording session. When you are finished recording, run the ``
 Themes
 ------
 
+.. image:: https://user-images.githubusercontent.com/2379650/31581943-6f763608-b13c-11e7-8bc1-6e0403f7d3b4.png
+    :alt: Themes preview
+
 doitlive comes with many prompt themes. To use a theme:
 
 .. code-block:: bash

@@ -2,10 +2,16 @@
 doitlive
 ========
 
+.. image:: https://img.shields.io/homebrew/v/doitlive.svg
+  :alt: homebrew badge
+  :target: https://github.com/Homebrew/homebrew-core/blob/master/Formula/doitlive.rb
+
 .. image:: https://badge.fury.io/py/doitlive.svg
+  :alt: pypi badge
   :target: http://badge.fury.io/py/doitlive
 
-.. image:: https://travis-ci.org/sloria/doitlive.svg?branch=master
+.. image:: https://travis-ci.org/sloria/doitlive.svg
+  :alt: travis-ci status
   :target: https://travis-ci.org/sloria/doitlive
 
 
