@@ -1,12 +1,12 @@
 Changelog
 ---------
 
-Next release
-************
+3.0.0 (2017-10-15)
+******************
 
 - Support IPython>=5.0 (:issue:`20`). Drop support for IPython<5.0. Thanks :user:`rplevka` for
   reporting.
-- Use `$SHELL` as the default interpreter for commands if not explicitly
+- Use ``$SHELL`` as the default interpreter for commands if not explicitly
   specified.
 - Remove invalid import in ``ipython`` module. Thanks :user:`axocomm`.
 - Fix exiting a session with Ctrl-C in Python 3.
