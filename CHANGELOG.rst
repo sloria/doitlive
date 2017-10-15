@@ -4,6 +4,8 @@ Changelog
 Next release
 ************
 
+- Support IPython>=5.0 (:issue:`20`). Thanks :user:`rplevka` for
+  reporting.
 - Use `$SHELL` as the default interpreter for commands if not explicitly
   specified.
 - Remove invalid import in ``ipython`` module. Thanks :user:`axocomm`.

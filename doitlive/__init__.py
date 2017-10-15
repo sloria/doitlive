@@ -21,6 +21,7 @@ import re
 import socket
 import subprocess
 import sys
+import textwrap
 
 from click import echo as click_echo
 from click import style, secho, getchar
@@ -573,7 +574,9 @@ def run(commands, shell=None, prompt_template='default', speed=1,
                     from doitlive.ipython import start_ipython_player
                 except ImportError:
                     raise RuntimeError('```ipython blocks require IPython to be installed')
-                start_ipython_player(py_commands, speed=state['speed'])
+                # dedent all the commands to account for IPython's autoindentation
+                ipy_commands = [textwrap.dedent(cmd) for cmd in py_commands]
+                start_ipython_player(ipy_commands, speed=state['speed'])
             else:
                 start_python_player(py_commands, speed=state['speed'])
         else:
