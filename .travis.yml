@@ -9,6 +9,7 @@ python:
 install:
 - pip install -U .
 - pip install -r dev-requirements.txt
+- if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install 'IPython<6'; fi
 script: invoke test --lint
 deploy:
   provider: pypi

@@ -20,7 +20,7 @@ def test(ctx, tox=False, lint=True, last_failing=False):
         import pytest
         if lint:
             flake(ctx)
-        args = []
+        args = ['-s']
         if last_failing:
             args.append('--lf')
         retcode = pytest.main(args)
