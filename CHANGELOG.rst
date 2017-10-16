@@ -1,12 +1,13 @@
 Changelog
 ---------
 
-3.0.0 (unreleased)
+3.0.1 (2017-10-16)
 ******************
 
 Bug fixes:
 
-- Fix behavior of Backspace key.
+- Fix behavior of Backspace key when speed > 1.
+- Handle KeyError when ``$HOME`` is unset (:issue:`10`). Thanks :user:`Stefan-Code` for reporting.
 
 3.0.0 (2017-10-15)
 ******************
