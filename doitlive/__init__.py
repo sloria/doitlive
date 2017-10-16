@@ -230,8 +230,9 @@ def _branch_to_term_string(branch_string):
 
 def get_prompt_state():
     full_cwd = os.getcwd()
-    cwd_raw = full_cwd.replace(env['HOME'], '~')
-    dir_raw = '~' if full_cwd == env['HOME'] else os.path.split(full_cwd)[-1]
+    home = env.get('HOME', '')
+    cwd_raw = full_cwd.replace(home, '~')
+    dir_raw = '~' if full_cwd == home else os.path.split(full_cwd)[-1]
     return {
         'user': TermString(getpass.getuser()),
         'cwd': TermString(cwd_raw),
