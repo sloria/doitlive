@@ -21,8 +21,8 @@ Current version: v\ |version|.
 Get it now
 ----------
 
-MacOSX with `Homebrew <http://brew.sh/>`_:
-******************************************
+macOS with `Homebrew <http://brew.sh/>`_:
+*****************************************
 
 .. code-block:: bash
 
