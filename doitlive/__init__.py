@@ -345,7 +345,8 @@ def magictype(text, prompt_template='default', speed=1):
             else:
                 if cursor_position < len(text):
                     echo(char, nl=False)
-                    cursor_position += speed
+                    increment = min([speed, len(text) - cursor_position])
+                    cursor_position += increment
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):

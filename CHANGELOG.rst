@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+3.0.0 (unreleased)
+******************
+
+Bug fixes:
+
+- Fix behavior of Backspace key.
+
 3.0.0 (2017-10-15)
 ******************
 

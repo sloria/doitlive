@@ -69,3 +69,19 @@ class TestPlayerTerminalInteractiveShell:
         assert shell.current_command_key == 'i'
         shell.on_feed_key(KeyPress(Keys.Backspace))
         assert shell.current_command_key == 'i'
+
+    def test_on_feed_key_backspace_with_speed(self, make_shell):
+        shell = make_shell(commands=['1+1'], speed=2)
+        shell.on_feed_key(KeyPress('x'))
+        assert shell.current_command_key == '1'
+        shell.on_feed_key(KeyPress(Keys.Backspace))
+        assert shell.current_command_key == '+1'
+
+    def test_on_feed_key_does_not_increment_pos_past_length_of_command(self, make_shell):
+        shell = make_shell(commands=['1+1'], speed=2)
+        shell.on_feed_key(KeyPress('xx'))
+        assert shell.current_command_pos == len('1+1') - 1
+        shell.on_feed_key(KeyPress('x'))
+        assert shell.current_command_pos == len('1+1')
+        shell.on_feed_key(KeyPress('x'))
+        assert shell.current_command_pos == len('1+1')

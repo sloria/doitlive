@@ -65,7 +65,8 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
             if self.current_command_pos < len(self.current_command):
                 current_key = self.current_command_key
                 ret = KeyPress(current_key)
-                self.current_command_pos += self.speed
+                increment = min([self.speed, len(self.current_command) - self.current_command_pos])
+                self.current_command_pos += increment
             else:
                 # Command is finished, wait for Enter
                 if key_press.key != Keys.Enter:
@@ -82,7 +83,8 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
     @property
     def current_command_key(self):
         pos = self.current_command_pos
-        return self.current_command[pos:pos + self.speed]
+        end = min(pos + self.speed, len(self.current_command))
+        return self.current_command[pos:end]
 
     # Overrride TerminalInteractiveShell
     # Much of this is copy-and-pasted from the parent class implementation
