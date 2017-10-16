@@ -61,3 +61,11 @@ class TestPlayerTerminalInteractiveShell:
     def test_on_feed_key_ctrlc_aborts(self, shell):
         with pytest.raises(click.Abort):
             shell.on_feed_key(KeyPress(Keys.ControlC))
+
+    def test_on_feed_key_backspace(self, shell):
+        shell.on_feed_key(KeyPress('x'))
+        assert shell.current_command_key == 'm'
+        shell.on_feed_key(KeyPress(Keys.Backspace))
+        assert shell.current_command_key == 'i'
+        shell.on_feed_key(KeyPress(Keys.Backspace))
+        assert shell.current_command_key == 'i'

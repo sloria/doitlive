@@ -57,7 +57,8 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
             echo(carriage_return=True)
             raise Abort()
         if key_press.key == Keys.Backspace:
-            self.current_command_pos -= 1
+            if self.current_command_pos > 0:
+                self.current_command_pos -= 1
             return key_press
         ret = None
         if key_press.key != Keys.CPRResponse:
