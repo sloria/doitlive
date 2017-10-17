@@ -282,9 +282,9 @@ def get_default_shell():
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or get_default_shell()
     if cmd.startswith("cd "):
-        directory = cmd.split()[1]
+        directory = cmd.split()[1].strip()
         try:
-            os.chdir(os.path.expanduser(directory))
+            os.chdir(os.path.expandvars(os.path.expanduser(directory)))
         except OSError:
             echo('No such file or directory: {}'.format(directory))
 
