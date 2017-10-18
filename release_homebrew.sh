@@ -29,6 +29,6 @@ SHA256=`shasum -a 256 $OUTPUT_PATH | head -1 | grep -o '^\S\+'`
 echo "URL: $URL"
 echo "SHA: $SHA256"
 
-echo '*** Sending PR to homebrew-core... ***'
 brew update
+echo '*** Sending PR to homebrew-core... ***'
 brew bump-formula-pr --strict --sha256=$SHA256 --url=$URL doitlive

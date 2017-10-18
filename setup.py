@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import codecs
 import re
 import sys
 from setuptools import setup
@@ -17,7 +18,7 @@ def find_version(fname):
     Raises RuntimeError if not found.
     """
     version = ''
-    with open(fname, 'r') as fp:
+    with codecs.open(fname, 'r', encoding='utf-8') as fp:
         reg = re.compile(r'__version__ = [\'"]([^\'"]*)[\'"]')
         for line in fp:
             m = reg.match(line)
@@ -31,7 +32,7 @@ def find_version(fname):
 __version__ = find_version('doitlive/__init__.py')
 
 def read(fname):
-    with open(fname) as fp:
+    with codecs.open(fname, 'r', encoding='utf-8') as fp:
         content = fp.read()
     return content
 
