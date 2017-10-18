@@ -320,7 +320,7 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
 def wait_for(chars):
     while True:
         in_char = getchar()
-        if in_char == ESC:
+        if in_char in {ESC, CTRLC}:
             echo(carriage_return=True)
             raise click.Abort()
         if in_char in chars:
@@ -335,7 +335,7 @@ def magictype(text, prompt_template='default', speed=1):
         while True:
             char = text[cursor_position:cursor_position + speed]
             in_char = getchar()
-            if in_char in [ESC, CTRLC]:
+            if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
             elif in_char == BACKSPACE:
