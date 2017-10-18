@@ -282,11 +282,16 @@ def get_default_shell():
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or get_default_shell()
     if cmd.startswith("cd "):
+        cwd = os.getcwd()  # Save cwd
         directory = cmd.split()[1].strip()
+        if directory == '-':  # Go back to $OLDPWD
+            directory = os.environ.get('OLDPWD', directory)
         try:
             os.chdir(os.path.expandvars(os.path.expanduser(directory)))
         except OSError:
             echo('No such file or directory: {}'.format(directory))
+        else:
+            os.environ['OLDPWD'] = cwd
 
     else:
         # Need to make a temporary command file so that $ENV are used correctly
