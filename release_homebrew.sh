@@ -30,4 +30,5 @@ echo "URL: $URL"
 echo "SHA: $SHA256"
 
 echo '*** Sending PR to homebrew-core... ***'
+brew update
 brew bump-formula-pr --strict --sha256=$SHA256 --url=$URL doitlive
