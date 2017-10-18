@@ -1,12 +1,13 @@
 Changelog
 ---------
 
-3.0.2 (unreleased)
+3.0.2 (2017-10-17)
 ******************
 
 Bug fixes:
 
-- Fix 'cd-ing' to paths with an envvar
+- Fix 'cd-ing' to paths with an envvar (:issue:`24`). Thanks :user:`utdrmac` for
+  reporting.
 - Fix behavior of ``cd -``
 - Fix behavior of ``Ctrl-C`` after all commands have finished.
 
