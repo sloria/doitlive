@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+3.0.2 (unreleased)
+******************
+
+Bug fixes:
+
+- Fix 'cd-ing' to paths with an envvar
+- Fix behavior of ``cd -``
+- Fix behavior of ``Ctrl-C`` after all commands have finished.
+
 3.0.1 (2017-10-16)
 ******************
 
