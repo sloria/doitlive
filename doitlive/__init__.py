@@ -657,7 +657,7 @@ def themes(preview, list):
         list_themes()
 
 
-QUIET_OPTION = click.option('--quiet', '-q', help='Suppress startup message.',
+QUIET_OPTION = click.option('--quiet', '-q', help='Suppress startup and ending message.',
                             is_flag=True, default=False, show_default=False)
 
 ECHO_OPTION = click.option('--commentecho', '-e',
