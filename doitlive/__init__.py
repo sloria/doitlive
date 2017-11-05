@@ -48,17 +48,17 @@ if not PY2:
     basestring = (str, bytes)
 else:
     from codecs import open  # pylint: disable=W0622
-    open = open
 
+    open = open
 
 THEMES = OrderedDict([
     ('default', u'{user.cyan.bold}@{hostname.blue}:{dir.green} $'),
 
     ('sorin', u'{cwd.blue} {vcs_branch.cyan} '
-     '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
+              '{r_angle.red}{r_angle.yellow}{r_angle.green}'),
 
     ('stev', u'{cwd.blue} {vcs_branch.cyan} '
-     '{r_angle.green}'),
+             '{r_angle.green}'),
 
     ('damoekri', u'{dir.cyan} {r_angle.green}'),
     ('smiley', u'{vcs_branch.blue.paren}{dir.white.bold} {TTY.GREEN}ツ{TTY.RESET}'),
@@ -88,7 +88,6 @@ THEMES = OrderedDict([
                u'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
 
 ])
-
 
 ESC = '\x1b'
 BACKSPACE = '\x7f'
@@ -221,12 +220,14 @@ DOLLAR = TermString(u'$')
 PERCENT = TermString(u'%')
 NEW_LINE = TermString(u'\n')
 
+
 def _branch_to_term_string(branch_string):
     if strip_ansi(branch_string):
         return TermString(branch_string)
     else:
         # Prevent extra space when not in a VCS repo
         return TermString(u'\b')
+
 
 def get_prompt_state():
     full_cwd = os.getcwd()
@@ -276,8 +277,10 @@ def write_directives(fp, directive, args):
             fp.write(ensure_utf(line))
     return None
 
+
 def get_default_shell():
     return env.get('DOITLIVE_INTERPRETER') or env.get('SHELL') or '/bin/bash'
+
 
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or get_default_shell()
@@ -353,6 +356,7 @@ def magictype(text, prompt_template='default', speed=1):
                     increment = min([speed, len(text) - cursor_position])
                     cursor_position += increment
 
+
 def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):
     magictype(text, prompt_template, speed)
@@ -375,6 +379,7 @@ def make_prompt_formatter(template):
 def echo_prompt(template):
     prompt = make_prompt_formatter(template)()
     echo(prompt + ' ', nl=False)
+
 
 # Exceptions
 # ##########
@@ -447,8 +452,10 @@ class PythonPlayerConsole(InteractiveConsole):
             self.write("%s\n" % str(banner))
         self.run_commands()
 
+
 def start_python_player(commands, speed=1):
     PythonPlayerConsole(commands=commands, speed=speed).interact()
+
 
 class PythonRecorderConsole(InteractiveConsole):
     """An interactive Python console that stores user input in a list."""
@@ -513,6 +520,7 @@ class SessionState(dict):
             self['commentecho'] = doit in self.TRUTHY
         return self['commentecho']
 
+
 # Map of option names => function that modifies session state
 OPTION_MAP = {
     'prompt': lambda state, arg: state.set_template(arg),
@@ -526,6 +534,8 @@ OPTION_MAP = {
 }
 
 SHELL_RE = re.compile(r'```(python|ipython)')
+
+
 def run(commands, shell=None, prompt_template='default', speed=1,
         quiet=False, test_mode=False, commentecho=False):
     if not quiet:
@@ -591,7 +601,8 @@ def run(commands, shell=None, prompt_template='default', speed=1,
             magicrun(command, **state)
     echo_prompt(state['prompt_template'])
     wait_for(RETURNS)
-    secho("FINISHED SESSION", fg='yellow', bold=True)
+    if not quiet:
+        secho("FINISHED SESSION", fg='yellow', bold=True)
 
 
 # Les CLI
@@ -645,6 +656,7 @@ def themes(preview, list):
     else:
         list_themes()
 
+
 QUIET_OPTION = click.option('--quiet', '-q', help='Suppress startup message.',
                             is_flag=True, default=False, show_default=False)
 
@@ -675,7 +687,9 @@ ENVVAR_OPTION = click.option('--envvar', '-e', metavar='<envvar>',
 def _compose(*functions):
     def inner(func1, func2):
         return lambda x: func1(func2(x))
+
     return functools.reduce(inner, functions)
+
 
 # Compose the decorators into "bundled" decorators
 player_command = _compose(QUIET_OPTION, SHELL_OPTION, SPEED_OPTION,
@@ -696,6 +710,7 @@ def play(quiet, session_file, shell, speed, prompt, commentecho):
         test_mode=TESTING,
         prompt_template=prompt,
         commentecho=commentecho)
+
 
 DEMO = [
     'echo "Greetings"',
