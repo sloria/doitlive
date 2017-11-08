@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+3.0.3 (2017-11-08)
+******************
+
+Bug fixes:
+
+- `--quiet` options supresses ending message (:issue:`26`). Thanks
+  :user:`technovangelist` for reporting and thanks :user:`PandaWhoCodes` for the PR.
+- Fix installation issue on Windows (:issue:`4`). Thanks :user:`eXigentCoder` for reporting.
+
 3.0.2 (2017-10-17)
 ******************
 
