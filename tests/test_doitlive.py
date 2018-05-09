@@ -180,6 +180,19 @@ def test_themes_preview(runner):
     assert result1.output == result2.output
 
 
+def test_completion(runner, monkeypatch):
+    monkeypatch.setitem(os.environ, 'SHELL', '/usr/local/bin/zsh')
+    result = runner.invoke(cli, ['completion'])
+    assert result.exit_code == 0
+
+
+def test_completion_fails_if_SHELL_is_unset(runner, monkeypatch):
+    monkeypatch.delitem(os.environ, 'SHELL')
+    result = runner.invoke(cli, ['completion'])
+    assert result.exit_code > 0
+    msg = 'Please ensure that the SHELL environment variable is set.'
+    assert msg in result.output
+
 def test_version(runner):
     result = runner.invoke(cli, ['--version'])
     assert doitlive.__version__ in result.output
