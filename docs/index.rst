@@ -227,18 +227,23 @@ If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in
    Only IPython>=5.0 is supported.
 
 
-Bash completion
----------------
+Shell completion
+----------------
 
-To enable bash completion, add the following to your ``.bashrc`` or ``.bash_profile``.
+Shell completion is available for ``bash``, ``zsh``, and ``fish``.
+
+For bash or zsh, add the following to your ``.bashrc`` or ``.zshrc``:
 
 .. code-block:: bash
 
-    eval "$(_DOITLIVE_COMPLETE=source doitlive)"
+   eval "$(doitlive completion)"
 
 
-Completion is currently only supported for ``bash``.
+For fish, add the following to ``~/.config/fish/completions/doitlive.fish``:
 
+.. code-block:: bash
+
+   eval (doitlive completion)
 
 More
 ----

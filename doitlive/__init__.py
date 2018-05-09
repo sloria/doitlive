@@ -27,6 +27,7 @@ from click import echo as click_echo
 from click import style, secho, getchar
 from click.termui import strip_ansi
 import click
+import click_completion
 
 from doitlive.termutils import raw_mode
 from doitlive.version_control import (
@@ -42,6 +43,8 @@ __author__ = 'Steven Loria'
 __license__ = 'MIT'
 
 env = os.environ
+click_completion.init()
+
 PY2 = int(sys.version[0]) == 2
 if not PY2:
     unicode = str
@@ -628,7 +631,6 @@ def cli():
     """
     pass
 
-
 def preview_themes():
     secho('Theme previews:', bold=True)
     echo()
@@ -655,6 +657,33 @@ def themes(preview, list):
         preview_themes()
     else:
         list_themes()
+
+@cli.command()
+def completion():
+    """Output completion (to be eval'd).
+
+    For bash or zsh, add the following to your .bashrc or .zshrc:
+
+        eval "$(doitlive completion)"
+
+    For fish, add the following to ~/.config/fish/completions/doitlive.fish:
+
+        eval (doitlive completion)
+    """
+    shell = env.get('SHELL', None)
+    if env.get('SHELL', None):
+        echo(
+            click_completion.get_code(
+                shell=shell.split(os.sep)[-1],
+                prog_name='doitlive'
+            )
+        )
+    else:
+        echo(
+            'Please ensure that the {SHELL} environment '
+            'variable is set.'.format(SHELL=style('SHELL', bold=True))
+        )
+        sys.exit(1)
 
 
 QUIET_OPTION = click.option('--quiet', '-q', help='Suppress startup and ending message.',
