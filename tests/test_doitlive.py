@@ -205,6 +205,13 @@ def test_bad_format_prompt():
         doitlive.format_prompt('{notfound}')
 
 
+def test_did_you_mean(runner):
+    result = runner.invoke(cli, ['the'])
+    assert result.exit_code > 0
+    assert 'Did you mean' in result.output
+    assert 'themes' in result.output
+
+
 @pytest.mark.skipif(not git_available, reason='Git is not available')
 def test_get_git_branch(runner):
     with runner.isolated_filesystem():

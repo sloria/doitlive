@@ -8,6 +8,7 @@ from setuptools import setup
 REQUIRES = [
     'click>=4.0',
     'click-completion>=0.3.1',
+    'click-didyoumean>=0.0.3',
 ]
 
 if 'win32' in str(sys.platform).lower():

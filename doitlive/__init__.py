@@ -26,6 +26,7 @@ import textwrap
 from click import echo as click_echo
 from click import style, secho, getchar
 from click.termui import strip_ansi
+from click_didyoumean import DYMGroup
 import click
 import click_completion
 
@@ -612,7 +613,7 @@ def run(commands, shell=None, prompt_template='default', speed=1,
 # #######
 
 @click.version_option(__version__, '--version', '-v')
-@click.group(context_settings={'help_option_names': ('-h', '--help')})
+@click.group(cls=DYMGroup, context_settings={'help_option_names': ('-h', '--help')})
 def cli():
     """doitlive: A tool for "live" presentations in the terminal
 
