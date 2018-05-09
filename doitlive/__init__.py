@@ -317,11 +317,14 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             cmd_line = cmd + '\n'
             fp.write(ensure_utf(cmd_line))
             fp.flush()
-            if test_mode:
-                output = subprocess.check_output([shell, fp.name])
-                echo(output)
-            else:
-                return subprocess.call([shell, fp.name])
+            try:
+                if test_mode:
+                    output = subprocess.check_output([shell, fp.name])
+                    echo(output)
+                else:
+                    return subprocess.call([shell, fp.name])
+            except KeyboardInterrupt:
+                pass
 
 
 def wait_for(chars):
