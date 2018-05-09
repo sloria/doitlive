@@ -1,6 +1,18 @@
 Changelog
 ---------
 
+4.0.0 (unreleased)
+******************
+
+Features:
+
+* Add shell completion for bash, zsh, and fish (:issue:`3`).
+* Add "Did you mean" suggestions.
+
+Other changes:
+
+* Drop official support for Python 3.3 and 3.4. Python 2.7 and >=3.5 are supported.
+
 3.0.3 (2017-11-08)
 ******************
 

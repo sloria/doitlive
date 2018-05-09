@@ -3,19 +3,27 @@ sudo: false
 python:
 - '3.6'
 - '3.5'
-- '3.4'
-- '3.3'
 - '2.7'
 install:
 - pip install -U .
 - pip install -r dev-requirements.txt
 - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install 'IPython<6'; fi
 script: invoke test --lint
-deploy:
-  provider: pypi
-  user: sloria
-  password:
-    secure: gi6lzTgK4I42Is1Hzk1VZCSR3sIqAE2xqSc/xySuoJNZwMADIJNrjahW/CgfnIQYXSpYc8aya3B5p9+95Fdk88YQLrVm0e6EhJ2MXT5R9d/dmlKSEWRQQjlMduApq2AJKY/vhs+hxPuPL7kbuZaPMnY7p+D4JsrVPJfKM9IydrY=
-  on:
-    tags: true
-  distributions: sdist
+
+jobs:
+  include:
+  - stage: PyPI Release
+    if: tag IS present
+    python: "3.6"
+    env: []
+    # Override install and script to no-ops
+    install: true
+    script: echo "Releasing to PyPI..."
+    deploy:
+      provider: pypi
+      user: sloria
+      on:
+        tags: true
+      distributions: sdist bdist_wheel
+      password:
+        secure: gi6lzTgK4I42Is1Hzk1VZCSR3sIqAE2xqSc/xySuoJNZwMADIJNrjahW/CgfnIQYXSpYc8aya3B5p9+95Fdk88YQLrVm0e6EhJ2MXT5R9d/dmlKSEWRQQjlMduApq2AJKY/vhs+hxPuPL7kbuZaPMnY7p+D4JsrVPJfKM9IydrY=

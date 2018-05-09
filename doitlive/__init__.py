@@ -6,7 +6,7 @@
 
   A tool for "live" presentations in the terminal.
 
-  :copyright: (c) 2014-2017 by Steven Loria and contributors.
+  :copyright: (c) 2014-2018 by Steven Loria and contributors.
   :license: MIT, see LICENSE for more details.
 """
 
