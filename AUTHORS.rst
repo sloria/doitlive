@@ -17,3 +17,4 @@ Contributors (chronological)
 - André Felipe Dias  `@andredias <https://github.com/andredias>`_
 - @axocomm `@axocomm <https://github.com/axocomm>`_
 - Thomas Ashish Cherian `@PandaWhoCodes <https://github.com/PandaWhoCodes>`_
+- Alexandre Garnier `@zigarn <https://github.com/zigarn>`_

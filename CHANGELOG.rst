@@ -9,6 +9,11 @@ Features:
 * Add shell completion for bash, zsh, and fish (:issue:`3`).
 * Add "Did you mean" suggestions.
 
+Bug fixes:
+
+* Fix exiting a command such as ``watch`` with ``ctrl-c`` during a
+  session (:issue:`29`). Thanks :user:`zigarn` for the catch and patch.
+
 Other changes:
 
 * Drop official support for Python 3.3 and 3.4. Python 2.7 and >=3.5 are supported.
