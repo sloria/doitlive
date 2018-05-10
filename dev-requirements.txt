@@ -9,4 +9,4 @@ tox==3.0.0
 flake8==3.5.0
 
 # Soft deps
-IPython
+IPython==6.3.1
