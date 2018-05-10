@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
-This module provides a context manager for setting the Unix terminals to raw mode.
-"""
+import os
 import sys
 from contextlib import contextmanager
 
 from click._compat import isatty
 
 WIN = sys.platform.startswith('win')
+env = os.environ
 
 @contextmanager
 def raw_mode():
@@ -51,3 +50,7 @@ def raw_mode():
                     f.close()
             except termios.error:
                 pass
+
+
+def get_default_shell():
+    return env.get('DOITLIVE_INTERPRETER') or env.get('SHELL') or '/bin/bash'

@@ -1,5 +1,5 @@
-"""
-This module includes utility functions to get information about the
+# -*- coding: utf-8 -*-
+"""Utility functions to get information about the
 git or mercurial repository in the working directory
 """
 import subprocess

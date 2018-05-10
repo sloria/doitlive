@@ -5,7 +5,7 @@ import pytest
 from prompt_toolkit.key_binding.input_processor import KeyPress
 from prompt_toolkit.keys import Keys
 
-from doitlive.ipython import PlayerTerminalInteractiveShell
+from doitlive.ipython_consoles import PlayerTerminalInteractiveShell
 
 
 class TestPlayerTerminalInteractiveShell:
