@@ -29,6 +29,9 @@ def wait_for(chars):
 
 
 def magictype(text, prompt_template='default', speed=1):
+    """Echo each character in ``text`` as keyboard characters are pressed.
+    Characters are echo'd ``speed`` characters at a time.
+    """
     echo_prompt(prompt_template)
     cursor_position = 0
     with raw_mode():
@@ -104,6 +107,9 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
              envvars=None, speed=1, test_mode=False, commentecho=False):
+    """Echo out each character in ``text`` as keyboard characters are pressed,
+    wait for a RETURN keypress, then run the ``text`` in a shell context.
+    """
     magictype(text, prompt_template, speed)
     run_command(text, shell, aliases=aliases, envvars=envvars,
                 test_mode=test_mode)

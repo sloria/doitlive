@@ -2,7 +2,7 @@
 Releasing
 =========
 
-* Bump version in ``doitlive/__init__.py``.
+* Bump version in ``doitlive/__version__.py``.
 * Update ``CHANGELOG.rst``.
 * Commit: ``git add . && git commit -m "Bump version and update changelog"``
 * Tag: ``git tag x.y.z``
