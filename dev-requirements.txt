@@ -6,7 +6,7 @@ pytest==3.5.1
 tox==3.0.0
 
 # Syntax checking
-flake8==3.4.1
+flake8==3.5.0
 
 # Soft deps
 IPython
