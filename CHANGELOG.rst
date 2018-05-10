@@ -17,6 +17,7 @@ Bug fixes:
 Other changes:
 
 * Drop official support for Python 3.3 and 3.4. Python 2.7 and >=3.5 are supported.
+* Lots of internal re-organization of modules.
 
 3.0.3 (2017-11-08)
 ******************

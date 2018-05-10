@@ -31,7 +31,7 @@ def find_version(fname):
         raise RuntimeError('Cannot find version information')
     return version
 
-__version__ = find_version('doitlive/__init__.py')
+__version__ = find_version('doitlive/__version__.py')
 
 def read(fname):
     with codecs.open(fname, 'r', encoding='utf-8') as fp:
@@ -65,7 +65,7 @@ setup(
     packages=['doitlive'],
     entry_points={
         'console_scripts': [
-            'doitlive = doitlive:cli'
+            'doitlive = doitlive.cli:cli',
         ]
     },
     tests_require=['pytest'],

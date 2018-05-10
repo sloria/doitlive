@@ -6,12 +6,10 @@ from contextlib import contextmanager
 import subprocess
 
 import pytest
-import click
-from click import style
-from click.testing import CliRunner
 
 import doitlive
-from doitlive import cli, TermString, TTY
+from doitlive.cli import cli
+from doitlive.__version__ import __version__
 
 
 # Check if git is installed
@@ -27,12 +25,6 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 def random_string(n, alphabet='abcdefghijklmnopqrstuvwxyz1234567890;\'\\][=-+_`'):
     return ''.join([random.choice(alphabet) for _ in range(n)])
-
-
-@pytest.fixture(scope='session')
-def runner():
-    doitlive.TESTING = True
-    return CliRunner()
 
 
 def run_session(runner, filename, user_input, args=None):
@@ -195,7 +187,7 @@ def test_completion_fails_if_SHELL_is_unset(runner, monkeypatch):
 
 def test_version(runner):
     result = runner.invoke(cli, ['--version'])
-    assert doitlive.__version__ in result.output
+    assert __version__ in result.output
     result2 = runner.invoke(cli, ['-v'])
     assert result.output == result2.output
 
@@ -222,77 +214,6 @@ def test_get_git_branch(runner):
         subprocess.call(['git', 'commit', '-c', '"initial commit"'])
         branch = doitlive.get_current_git_branch()
         assert branch == 'master'
-
-
-class TestTermString:
-
-    @pytest.fixture
-    def ts(self):
-        return TermString('foo')
-
-    @pytest.fixture
-    def ts_blank(self):
-        return TermString('')
-
-    def test_str(self, ts):
-        assert str(ts) == 'foo'
-
-    # Test all the ANSI colors provided by click
-    @pytest.mark.parametrize('color', click.termui._ansi_colors)
-    def test_color(self, color, ts):
-        colored = getattr(ts, color)
-        assert isinstance(colored, TermString)
-        assert str(colored) == style('foo', fg=color)
-
-    def test_bold(self, ts):
-        assert str(ts.bold) == style('foo', bold=True)
-
-    def test_blink(self, ts):
-        assert str(ts.blink) == style('foo', blink=True)
-
-    def test_dim(self, ts):
-        assert str(ts.dim) == style('foo', dim=True)
-
-    def test_underlined(self, ts):
-        assert str(ts.underlined) == style('foo', underline=True)
-
-    def test_paren(self, ts, ts_blank):
-        assert str(ts.paren) == '(foo)'
-        assert str(ts_blank.paren) == '\b'
-
-    def test_square(self, ts, ts_blank):
-        assert str(ts.square) == '[foo]'
-        assert str(ts_blank.square) == '\b'
-
-    def test_curly(self, ts, ts_blank):
-        assert str(ts.curly) == '{foo}'
-        assert str(ts_blank.curly) == '\b'
-
-    def test_git(self, ts, ts_blank):
-        assert str(ts.git) == ':'.join([style('git', fg='blue'), 'foo'])
-        assert str(ts_blank.git) == '\b'
-
-
-class TestTTY:
-
-    @pytest.mark.parametrize('color', [
-        'blue', 'red', 'magenta', 'white', 'green', 'black', 'yellow', 'cyan'
-    ])
-    def test_colors(self, color):
-        code = getattr(TTY, color.upper())
-        assert code == style('', fg=color, reset=False)
-
-    def test_bold(self):
-        assert TTY.BOLD == style('', bold=True, reset=False)
-
-    def test_blink(self):
-        assert TTY.BLINK == style('', blink=True, reset=False)
-
-    def test_underline(self):
-        assert TTY.UNDERLINE == style('', underline=True, reset=False)
-
-    def test_dim(self):
-        assert TTY.DIM == style('', dim=True, reset=False)
 
 
 class TestSessionState:
@@ -443,32 +364,3 @@ class TestRecorder:
                 content = fp.read()
                 assert '```python\n' in content
                 assert 'print("hello")\n' in content
-
-
-class TestPlayerConsole:
-
-    @pytest.fixture
-    def console(self):
-        return doitlive.PythonPlayerConsole()
-
-    @pytest.mark.parametrize('command,expected', [
-        ('1 + 1', b'2'),
-        ('print("f" + "o" + "o")', b"foo"),
-        ('import math; math.sqrt(144)', b'12'),
-    ])
-    def test_interact(self, runner, console, command, expected):
-        console.commands = [command]
-        with runner.isolation(input='{}\n\n'.format(command)) as output:
-            console.interact()
-        assert expected in output.getvalue()
-
-
-class TestRecorderConsole:
-
-    def test_interact_stores_commands(self, runner):
-        cons = doitlive.PythonRecorderConsole()
-        commands = ['print("foo")', 'import math']
-        with runner.isolation(input='\n'.join(commands)):
-            cons.interact()
-        for command in commands:
-            assert (command + '\n') in cons.commands
