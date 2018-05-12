@@ -155,6 +155,15 @@ class TestPlayer:
         result = run_session(runner, 'unset.session', user_input)
         assert 'fortytwo' not in result.output
 
+    def test_export(self, runner):
+        user_input = ''.join([
+            random_string(len('export NAME=Steve')),
+            '\n',
+            random_string(len("echo 'Hello' $NAME"))
+        ])
+        result = run_session(runner, 'export.session', user_input)
+        assert 'Hello Steve' in result.output
+
 
 def test_themes_list(runner):
     result1 = runner.invoke(cli, ['themes'])
