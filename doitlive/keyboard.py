@@ -67,7 +67,7 @@ def write_commands(fp, command, args):
 
 def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
     shell = shell or get_default_shell()
-    command_as_list = shlex.split(cmd)
+    command_as_list = shlex.split(ensure_utf8(cmd))
     if len(command_as_list) and command_as_list[0] == 'cd':
         cwd = os.getcwd()  # Save cwd
         directory = cmd.split()[1].strip()
