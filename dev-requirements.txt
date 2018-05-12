@@ -1,12 +1,13 @@
 # Task running
-invoke==0.21.0
+invoke==1.0.0
 
 # Testing
-pytest
-tox
+pytest==3.5.1
+tox==3.0.0
 
 # Syntax checking
-flake8==3.4.1
+flake8==3.5.0
 
 # Soft deps
-IPython
+IPython<6; python_version < '3'
+IPython==6.3.1; python_version >= '3'
