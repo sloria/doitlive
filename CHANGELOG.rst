@@ -8,6 +8,8 @@ Features:
 
 * Add shell completion for bash, zsh, and fish (:issue:`3`).
 * Add "Did you mean" suggestions.
+* Support setting environment variables with ``export`` commands
+  (:issue:`32`). Thanks :user:`asmacdo` for the suggestion.
 
 Bug fixes:
 

@@ -2,6 +2,7 @@
 import functools
 import os
 import re
+import shlex
 import sys
 import textwrap
 from codecs import open
@@ -11,6 +12,7 @@ import click_completion
 from click import secho, style
 from click_didyoumean import DYMGroup
 
+from doitlive.__version__ import __version__
 from doitlive.compat import ensure_utf8
 from doitlive.exceptions import SessionError
 from doitlive.keyboard import (RETURNS, magicrun, magictype, run_command,
@@ -18,7 +20,6 @@ from doitlive.keyboard import (RETURNS, magicrun, magictype, run_command,
 from doitlive.python_consoles import PythonRecorderConsole, start_python_player
 from doitlive.styling import THEMES, echo, echo_prompt, format_prompt
 from doitlive.termutils import get_default_shell
-from doitlive.__version__ import __version__
 
 env = os.environ
 click_completion.init()
@@ -120,6 +121,7 @@ def run(commands, shell=None, prompt_template='default', speed=1,
     i = 0
     while i < len(commands):
         command = commands[i].strip()
+        command_as_list = shlex.split(ensure_utf8(command))
         i += 1
         if not command:
             continue
@@ -135,6 +137,14 @@ def run(commands, shell=None, prompt_template='default', speed=1,
                 comment = command.lstrip("#")
                 secho(comment, fg='yellow', bold=True)
             continue
+        # Handle 'export' commands by adding envvars to SessionState
+        elif command_as_list and command_as_list[0] == 'export':
+            magictype(command,
+                      prompt_template=state['prompt_template'],
+                      speed=state['speed'])
+            for envvar in command_as_list[1:]:
+                state.add_envvar(envvar)
+        # Handle ```python and ```ipython by running "player" shells
         elif shell_match:
             shell_name = shell_match.groups()[0].strip()
             py_commands = []

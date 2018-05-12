@@ -1,0 +1,2 @@
+export NAME=Steve
+echo 'Hello' $NAME
