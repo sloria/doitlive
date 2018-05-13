@@ -140,7 +140,7 @@ Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, b
 #doitlive shell: <shell>
 ************************
 
-configures which shell is use. Default is ``/bin/bash``.
+configures which shell is use. Defaults to the `$SHELL` environment variable.
 
 
 Example: ``#doitlive shell: /bin/zsh``
