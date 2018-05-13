@@ -35,7 +35,7 @@ class _PlayerCommandLineInterface(CommandLineInterface):
         super(_PlayerCommandLineInterface, self).__init__(application, eventloop, input, output)
         self.on_feed_key = on_feed_key
 
-    # Overrride CommandLineInterface
+    # Override CommandLineInterface
     def create_eventloop_callbacks(self):
         return _PlayerInterfaceEventLoopCallbacks(self, on_feed_key=self.on_feed_key)
 
@@ -86,7 +86,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
         end = min(pos + self.speed, len(self.current_command))
         return self.current_command[pos:end]
 
-    # Overrride TerminalInteractiveShell
+    # Override TerminalInteractiveShell
     # Much of this is copy-and-pasted from the parent class implementation
     # due to lack of hooks
     def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
@@ -115,7 +115,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
                 if code:
                     self.run_cell(code, store_history=True)
 
-    # Overrride TerminalInteractiveShell
+    # Override TerminalInteractiveShell
     def init_prompt_toolkit_cli(self):
         super(PlayerTerminalInteractiveShell, self).init_prompt_toolkit_cli()
         # override CommandLineInterface
