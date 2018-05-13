@@ -1,3 +1,2 @@
-#doitlive alias: foo="echo 42"
-
+alias foo="echo $((41+1))"
 foo

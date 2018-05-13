@@ -45,12 +45,14 @@ class SessionState(dict):
     TRUTHY = set(['true', 'yes', '1'])
 
     def __init__(self, shell, prompt_template, speed,
-                 aliases=None, envvars=None,
+                 aliases=None, envvars=None, extra_commands=None,
                  test_mode=False, commentecho=False):
         aliases = aliases or []
         envvars = envvars or []
+        extra_commands = extra_commands or []
         dict.__init__(self, shell=shell, prompt_template=prompt_template,
                       speed=speed, aliases=aliases, envvars=envvars,
+                      extra_commands=extra_commands,
                       test_mode=test_mode, commentecho=commentecho)
 
     def add_alias(self, alias):
@@ -58,6 +60,9 @@ class SessionState(dict):
 
     def add_envvar(self, envvar):
         self['envvars'].append(envvar)
+
+    def add_command(self, command):
+        self['extra_commands'].append(command)
 
     def set_speed(self, speed):
         self['speed'] = int(speed)
@@ -137,14 +142,15 @@ def run(commands, shell=None, prompt_template='default', speed=1,
                 comment = command.lstrip("#")
                 secho(comment, fg='yellow', bold=True)
             continue
-        # Handle 'export' commands by adding envvars to SessionState
-        elif command_as_list and command_as_list[0] == 'export':
+        # Handle 'export' and 'alias' commands by storing them in SessionState
+        elif command_as_list and command_as_list[0] in ['alias', 'export']:
             magictype(command,
                       prompt_template=state['prompt_template'],
                       speed=state['speed'])
-            for envvar in command_as_list[1:]:
-                state.add_envvar(envvar)
-        # Handle ```python and ```ipython by running "player" shells
+            # Store the raw commands instead of using add_envvar and add_alias
+            # to avoid having to parse the command ourselves
+            state.add_command(command)
+        # Handle ```python and ```ipython by running "player" consoles
         elif shell_match:
             shell_name = shell_match.groups()[0].strip()
             py_commands = []

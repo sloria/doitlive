@@ -139,7 +139,7 @@ class TestPlayer:
 
     def test_alias(self, runner):
         user_input = random_string(len('foo'))
-        result = run_session(runner, 'alias.session', user_input)
+        result = run_session(runner, 'alias_comment.session', user_input)
         assert result.exit_code == 0
         assert '42' in result.output
 
@@ -155,7 +155,7 @@ class TestPlayer:
         result = run_session(runner, 'unset.session', user_input)
         assert 'fortytwo' not in result.output
 
-    def test_export(self, runner):
+    def test_export_sets_envvar(self, runner):
         user_input = ''.join([
             random_string(len('export NAME=Steve')),
             '\n',
@@ -163,6 +163,15 @@ class TestPlayer:
         ])
         result = run_session(runner, 'export.session', user_input)
         assert 'Hello Steve' in result.output
+
+    def test_alias_sets_alias(self, runner):
+        user_input = ''.join([
+            random_string(len('alias foo="echo $((41+1))"')),
+            '\n',
+            random_string(len('foo'))
+        ])
+        result = run_session(runner, 'alias.session', user_input)
+        assert '42' in result.output
 
 
 def test_themes_list(runner):
