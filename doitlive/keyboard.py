@@ -65,7 +65,7 @@ def write_commands(fp, command, args):
     return None
 
 
-def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
+def run_command(cmd, shell=None, aliases=None, envvars=None, extra_commands=None, test_mode=False):
     shell = shell or get_default_shell()
     command_as_list = shlex.split(ensure_utf8(cmd))
     if len(command_as_list) and command_as_list[0] == 'cd':
@@ -93,6 +93,10 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
             # Write envvars and aliases
             write_commands(fp, 'export', envvars)
             write_commands(fp, 'alias', aliases)
+            if extra_commands:
+                for command in extra_commands:
+                    line = '{}\n'.format(command)
+                    fp.write(ensure_utf8(line))
 
             cmd_line = cmd + '\n'
             fp.write(ensure_utf8(cmd_line))
@@ -108,10 +112,10 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, test_mode=False):
 
 
 def magicrun(text, shell, prompt_template='default', aliases=None,
-             envvars=None, speed=1, test_mode=False, commentecho=False):
+             envvars=None, extra_commands=None, speed=1, test_mode=False, commentecho=False):
     """Echo out each character in ``text`` as keyboard characters are pressed,
     wait for a RETURN keypress, then run the ``text`` in a shell context.
     """
     magictype(text, prompt_template, speed)
     run_command(text, shell, aliases=aliases, envvars=envvars,
-                test_mode=test_mode)
+                extra_commands=extra_commands, test_mode=test_mode)

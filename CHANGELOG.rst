@@ -10,6 +10,7 @@ Features:
 * Add "Did you mean" suggestions.
 * Support setting environment variables with ``export`` commands
   (:issue:`32`). Thanks :user:`asmacdo` for the suggestion.
+* Support setting aliases with ``alias`` commands (:issue:`40`).
 
 Bug fixes:
 
