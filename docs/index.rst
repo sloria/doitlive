@@ -37,7 +37,7 @@ With pip:
     $ pip install doitlive
 
 
-Requires Python >= 2.7 or >= 3.3 with pip.
+Requires Python >= 2.7 or >= 3.5 with pip.
 
 Quickstart
 ----------
@@ -103,19 +103,25 @@ Comment magic (configuration)
 
 Any line in a session file that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
 
-The following options can be included at the top of your session file (all are optional).
+The following options are available (all are optional).
 
 #doitlive speed: <int>
 **********************
 
 configures "typing" speed. Defaults to 1.
 
-Example: ``#doitlive speed: 3``
+Example: ::
+
+   #doitlive speed: 3
 
 #doitlive prompt: <theme_name_or_template>
 ******************************************
 
 configures the prompt. Can be any of the built-in themes or a custom prompt template.
+
+Example: ::
+
+   #doitlive prompt: stev
 
 **Using a custom template**:
 
@@ -123,16 +129,22 @@ You can provide the ``prompt`` option with a custom template. To include the use
 
 For git, ``{vcs_branch}`` just shows the branch. For Mercurial, this shows the branch name + the bookmark, except it omits the default branch name if there is a bookmark. This is equivalent to ``{git_branch}{hg_id}``. There are also specialised ``{hg_branch}``, and ``{hg_bookmark}`` keywords that only show that information, without the combined logic of ``{hg_id}``.
 
-Example: ``#doitlive prompt: {user} is at {cwd} $``
+Example: ::
+
+   #doitlive prompt: {user} is at {cwd} $
 
 Any of the prompt variables can be formatted with ANSI styles, like so:
 
 
-Example: ``#doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $``
+Example: ::
+
+   #doitlive prompt: {user.cyan}@{hostname.green}:{dir.bold.magenta} $
 
 Newlines can be included in prompts using ``{nl}``.
 
-Example: ``#doitlive prompt: {user}:{dir}{nl}$``
+Example: ::
+
+   #doitlive prompt: {user}:{dir}{nl}$
 
 Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, blink, underlined, dim, paren, square, curly, inverse, git, and hg.
 
@@ -143,7 +155,9 @@ Available styles: blue, magenta, red, white, green, black, yellow, cyan, bold, b
 configures which shell is use. Defaults to the `$SHELL` environment variable.
 
 
-Example: ``#doitlive shell: /bin/zsh``
+Example: ::
+
+   #doitlive shell: /bin/zsh
 
 
 #doitlive alias: <alias>=<command>
@@ -151,7 +165,9 @@ Example: ``#doitlive shell: /bin/zsh``
 
 adds an alias to the session.
 
-Example: ``#doitlive alias: du="du -ach | sort -h"``
+Example: :: 
+
+   #doitlive alias: du="du -ach | sort -h"
 
 
 #doitlive env: <envvar>=<value>
@@ -159,7 +175,9 @@ Example: ``#doitlive alias: du="du -ach | sort -h"``
 
 sets an environment variable.
 
-Example: ``#doitlive env: EDITOR=vim``
+Example: ::
+
+   #doitlive env: EDITOR=vim
 
 #doitlive unalias: <alias>
 **************************
@@ -276,4 +294,3 @@ Project info
    license
    authors
    kudos
-
