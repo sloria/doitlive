@@ -230,6 +230,10 @@ If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in
 Shell completion
 ----------------
 
+.. note::
+
+   If you installed doitlive with Homebrew, bash and zsh completion are already installed.
+
 Shell completion is available for ``bash``, ``zsh``, and ``fish``.
 
 For bash or zsh, add the following to your ``.bashrc`` or ``.zshrc``:
