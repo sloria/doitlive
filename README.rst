@@ -41,7 +41,7 @@ With pip:
     $ pip install doitlive
 
 
-Requires Python >= 2.7 or >= 3.3 with pip.
+Requires Python >= 2.7 or >= 3.5 with pip.
 
 Quickstart
 ----------
