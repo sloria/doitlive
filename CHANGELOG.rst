@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+4.0.0.post0 (2018-05-14)
+************************
+
+* Distribute a universal wheel.
+* Minor docs updates.
+
 4.0.0 (2018-05-13)
 ******************
 
