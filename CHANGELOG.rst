@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+4.0.1 (2018-05-22)
+******************
+
+Bug fixes:
+
+* Ctrl-Z suspends doitlive (:issue:`44`). Thanks :user:`emanuelhouse`
+  for reporting.
+* Fix help text for ``--shell`` option (:issue:`43`).
+
 4.0.0.post0 (2018-05-14)
 ************************
 
