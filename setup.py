@@ -69,4 +69,8 @@ setup(
         ]
     },
     tests_require=['pytest'],
+    project_urls={
+        'Bug Reports': 'https://github.com/sloria/doitlive/issues',
+        'Source': 'https://github.com/sloria/doitlive/',
+    },
 )
