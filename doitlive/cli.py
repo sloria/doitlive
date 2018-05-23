@@ -275,8 +275,11 @@ ECHO_OPTION = click.option('--commentecho', '-e',
                            default=False, show_default=False)
 
 SHELL_OPTION = click.option('--shell', '-S', metavar='<shell>',
-                            default=get_default_shell, help='The shell to use.',
-                            show_default=True)
+                            default=get_default_shell, help=(
+                                'The shell to use. '
+                                '[default: $DOITLIVE_INTERPRETER or $SHELL or /bin/bash]'
+                            ),
+                            show_default=False)
 
 SPEED_OPTION = click.option('--speed', '-s', metavar='<int>', type=click.IntRange(1),
                             default=1, help='Typing speed.', show_default=True)
