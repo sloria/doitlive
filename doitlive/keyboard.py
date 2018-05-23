@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import shlex
+import signal
 import subprocess
 from tempfile import NamedTemporaryFile
 
@@ -16,6 +17,7 @@ env = os.environ
 ESC = '\x1b'
 BACKSPACE = '\x7f'
 CTRLC = '\x03'
+CTRLZ = '\x1a'
 RETURNS = {'\r', '\n'}
 
 def wait_for(chars):
@@ -51,6 +53,14 @@ def magictype(text, prompt_template='default', speed=1):
                 if cursor_position >= len(text):
                     echo("\r", nl=True)
                     break
+            elif in_char == CTRLZ and hasattr(signal, 'SIGTSTP'):
+                # Background process
+                os.kill(0, signal.SIGTSTP)
+                # When doitlive is back in foreground, clear the terminal
+                # and resume where we left off
+                click.clear()
+                echo_prompt(prompt_template)
+                echo(text[:cursor_position], nl=False)
             else:
                 if cursor_position < len(text):
                     echo(char, nl=False)
