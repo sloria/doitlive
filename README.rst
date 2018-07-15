@@ -28,7 +28,7 @@ Get it now
 macOS with `Homebrew <http://brew.sh/>`_:
 *****************************************
 
-.. code-block:: bash
+.. code-block:: console
 
     $ brew update
     $ brew install doitlive
@@ -36,7 +36,7 @@ macOS with `Homebrew <http://brew.sh/>`_:
 With pip:
 *********
 
-.. code-block:: bash
+.. code-block:: console
 
     $ pip install doitlive
 
@@ -49,7 +49,7 @@ Quickstart
 1. Create a file called ``session.sh``. Fill it with bash commands.
 2. Run ``doitlive play session.sh``.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive play session.sh
 

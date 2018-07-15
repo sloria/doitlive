@@ -24,7 +24,7 @@ Get it now
 macOS with `Homebrew <http://brew.sh/>`_:
 *****************************************
 
-.. code-block:: bash
+.. code-block:: console
 
     $ brew update
     $ brew install doitlive
@@ -32,7 +32,7 @@ macOS with `Homebrew <http://brew.sh/>`_:
 With pip:
 *********
 
-.. code-block:: bash
+.. code-block:: console
 
     $ pip install doitlive
 
@@ -45,7 +45,7 @@ Quickstart
 1. Create a file called ``session.sh``. Fill it with bash commands.
 2. Run ``doitlive play session.sh``.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive play session.sh
 
@@ -56,7 +56,7 @@ Quickstart
 Examples
 --------
 
-.. code-block:: bash
+.. code-block:: console
 
     # Use the "sorin" prompt theme
     $ doitlive play session.sh -p sorin
@@ -72,7 +72,7 @@ Using the recorder
 
 You can record session files using the built-in recorder command.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive record
 
@@ -86,7 +86,7 @@ Themes
 
 doitlive comes with many prompt themes. To use a theme:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive play session.sh -p <theme_name>
 
@@ -272,14 +272,14 @@ More
 
 For more options, run
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive --help
 
 
 You can also get help with subcommands.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ doitlive play --help
 
