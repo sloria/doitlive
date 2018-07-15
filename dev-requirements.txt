@@ -9,7 +9,7 @@ tox==3.1.2
 flake8==3.5.0
 
 # Soft deps
-IPython<6; python_version < '3'
+IPython==6.4.0; python_version < '3'
 IPython==6.4.0; python_version >= '3'
 
 # Install this package in development mode
