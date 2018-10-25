@@ -2,7 +2,7 @@
 invoke==1.2.0
 
 # Testing
-pytest==3.8.1
+pytest==3.9.2
 tox==3.5.2
 
 # Syntax checking
