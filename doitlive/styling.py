@@ -92,6 +92,15 @@ class TermString(text_type):
     cyan = Style(fg='cyan')
     reset = Style(fg='reset')
 
+    bright_black = Style(fg='bright_black')
+    bright_red = Style(fg='bright_red')
+    bright_green = Style(fg='bright_green')
+    bright_yellow = Style(fg='bright_yellow')
+    bright_blue = Style(fg='bright_blue')
+    bright_magenta = Style(fg='bright_magenta')
+    bright_cyan = Style(fg='bright_cyan')
+    bright_white = Style(fg='bright_white')
+
     # Styling
 
     bold = Style(bold=True)

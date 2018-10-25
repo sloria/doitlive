@@ -16,9 +16,9 @@ class TestPlayerConsole:
     ])
     def test_interact(self, runner, console, command, expected):
         console.commands = [command]
-        with runner.isolation(input='{}\n\n'.format(command)) as output:
+        with runner.isolation(input='{}\n\n'.format(command)) as (stdout, stderr):
             console.interact()
-        assert expected in output.getvalue()
+        assert expected in stdout.getvalue()
 
 
 class TestRecorderConsole:

@@ -1,6 +1,17 @@
 Changelog
 ---------
 
+4.1.0 (unreleased)
+******************
+
+Features:
+
+* Support bright colors in prompt templates.
+
+Bug fixes:
+
+* Fix compatibility with click>=7.0.
+
 4.0.1 (2018-05-22)
 ******************
 
