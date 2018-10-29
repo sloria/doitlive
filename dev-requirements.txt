@@ -3,7 +3,7 @@ invoke==1.2.0
 
 # Testing
 pytest==3.9.3
-tox==3.5.2
+tox==3.5.3
 
 # Syntax checking
 flake8==3.6.0
