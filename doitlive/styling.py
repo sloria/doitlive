@@ -57,7 +57,8 @@ THEMES = OrderedDict([
     ('robbyrussell', u'{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}'),
 
     ('giddie', u'{user.magenta}@{hostname.yellow}|{cwd.green} '
-               u'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}')
+               u'on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}'),
+    ('deadsimple', u'$')
 
 ])
 
