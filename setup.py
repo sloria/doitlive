@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 
-REQUIRES = [
+INSTALL_REQUIRES = [
     'click>=4.0',
     'click-completion>=0.3.1',
     'click-didyoumean>=0.0.3',
@@ -13,7 +13,23 @@ REQUIRES = [
 
 if 'win32' in str(sys.platform).lower():
     # Terminal colors for Windows
-    REQUIRES.append('colorama>=0.2.4')
+    INSTALL_REQUIRES.append('colorama>=0.2.4')
+
+EXTRAS_REQUIRE = {
+    'tests': [
+        'pytest',
+        'IPython<6; python_version < "3"',
+        'IPython==6.5.0; python_version >= "3"',
+    ],
+    'lint': [
+        'flake8==3.6.0',
+    ],
+}
+EXTRAS_REQUIRE['dev'] = (
+    EXTRAS_REQUIRE['tests'] +
+    EXTRAS_REQUIRE['lint'] +
+    ['tox']
+)
 
 def find_version(fname):
     """Attempts to find the version number in the file names fname.
@@ -31,7 +47,6 @@ def find_version(fname):
         raise RuntimeError('Cannot find version information')
     return version
 
-__version__ = find_version('doitlive/__version__.py')
 
 def read(fname):
     with codecs.open(fname, 'r', encoding='utf-8') as fp:
@@ -40,13 +55,14 @@ def read(fname):
 
 setup(
     name='doitlive',
-    version=__version__,
+    version=find_version('doitlive/__version__.py'),
     description='Because sometimes you need to do it live.',
     long_description=read('README.rst'),
     author='Steven Loria',
     author_email='sloria1@gmail.com',
     url='https://github.com/sloria/doitlive',
-    install_requires=REQUIRES,
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
     license='MIT',
     zip_safe=False,
     keywords='doitlive cli live coding presentations shell',
@@ -59,7 +75,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: 3.7',
         'Environment :: Console',
     ],
     packages=['doitlive'],
