@@ -4,6 +4,8 @@ Changelog
 4.2.0 (unreleased)
 ******************
 
+* Add ``deadsimple`` theme (:pr:`97`). Thanks :user:`Aversiste`.
+
 Other changes:
 
 * Test against Python 3.7.

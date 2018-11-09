@@ -18,3 +18,4 @@ Contributors (chronological)
 - @axocomm `@axocomm <https://github.com/axocomm>`_
 - Thomas Ashish Cherian `@PandaWhoCodes <https://github.com/PandaWhoCodes>`_
 - Alexandre Garnier `@zigarn <https://github.com/zigarn>`_
+- Tristan Le Guern `@Aversiste <https://github.com/Aversiste>`_
