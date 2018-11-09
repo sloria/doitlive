@@ -1,7 +1,7 @@
 Changelog
 ---------
 
-4.2.0 (unreleased)
+4.2.0 (2018-11-08)
 ******************
 
 * Add ``deadsimple`` theme (:pr:`97`). Thanks :user:`Aversiste`.
