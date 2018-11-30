@@ -19,7 +19,7 @@ EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
         'IPython<6; python_version < "3"',
-        'IPython==6.5.0; python_version >= "3"',
+        'IPython==7.2.0; python_version >= "3"',
     ],
     'lint': [
         'flake8==3.6.0',
