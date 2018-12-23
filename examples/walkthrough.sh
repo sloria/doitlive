@@ -1,8 +1,8 @@
 #doitlive shell: /bin/bash
 #doitlive prompt: default
 #doitlive speed: 1
-#doitlive env: DOCS_URL=http://doitlive.readthdocs.io
-#doitlive alias: edit="nano "
+#doitlive env: DOCS_URL=https://doitlive.readthedocs.io
+#doitlive commentecho: true
 
 echo 'Hello there!'
 
@@ -20,6 +20,8 @@ echo "Let's check out some themes"
 doitlive themes -p
 
 clear
+
+# And now for something completely different
 
 echo 'We can even enter a Python console'
 
