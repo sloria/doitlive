@@ -14,11 +14,12 @@ from doitlive.termutils import get_default_shell, raw_mode
 
 env = os.environ
 
-ESC = '\x1b'
-BACKSPACE = '\x7f'
-CTRLC = '\x03'
-CTRLZ = '\x1a'
-RETURNS = {'\r', '\n'}
+ESC = "\x1b"
+BACKSPACE = "\x7f"
+CTRLC = "\x03"
+CTRLZ = "\x1a"
+RETURNS = {"\r", "\n"}
+
 
 def wait_for(chars):
     while True:
@@ -31,7 +32,7 @@ def wait_for(chars):
             return in_char
 
 
-def magictype(text, prompt_template='default', speed=1):
+def magictype(text, prompt_template="default", speed=1):
     """Echo each character in ``text`` as keyboard characters are pressed.
     Characters are echo'd ``speed`` characters at a time.
     """
@@ -39,7 +40,7 @@ def magictype(text, prompt_template='default', speed=1):
     cursor_position = 0
     with raw_mode():
         while True:
-            char = text[cursor_position:cursor_position + speed]
+            char = text[cursor_position : cursor_position + speed]
             in_char = getchar()
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
@@ -53,7 +54,7 @@ def magictype(text, prompt_template='default', speed=1):
                 if cursor_position >= len(text):
                     echo("\r", nl=True)
                     break
-            elif in_char == CTRLZ and hasattr(signal, 'SIGTSTP'):
+            elif in_char == CTRLZ and hasattr(signal, "SIGTSTP"):
                 # Background process
                 os.kill(0, signal.SIGTSTP)
                 # When doitlive is back in foreground, clear the terminal
@@ -67,48 +68,51 @@ def magictype(text, prompt_template='default', speed=1):
                     increment = min([speed, len(text) - cursor_position])
                     cursor_position += increment
 
+
 def write_commands(fp, command, args):
     if args:
         for arg in args:
-            line = '{command} {arg}\n'.format(**locals())
+            line = "{command} {arg}\n".format(**locals())
             fp.write(ensure_utf8(line))
     return None
 
 
-def run_command(cmd, shell=None, aliases=None, envvars=None, extra_commands=None, test_mode=False):
+def run_command(
+    cmd, shell=None, aliases=None, envvars=None, extra_commands=None, test_mode=False
+):
     shell = shell or get_default_shell()
     command_as_list = shlex.split(ensure_utf8(cmd))
-    if len(command_as_list) and command_as_list[0] == 'cd':
+    if len(command_as_list) and command_as_list[0] == "cd":
         cwd = os.getcwd()  # Save cwd
         directory = cmd.split()[1].strip()
-        if directory == '-':  # Go back to $OLDPWD
-            directory = os.environ.get('OLDPWD', directory)
+        if directory == "-":  # Go back to $OLDPWD
+            directory = os.environ.get("OLDPWD", directory)
         try:
             os.chdir(os.path.expandvars(os.path.expanduser(directory)))
         except OSError:
-            echo('No such file or directory: {}'.format(directory))
+            echo("No such file or directory: {}".format(directory))
         else:
-            os.environ['OLDPWD'] = cwd
+            os.environ["OLDPWD"] = cwd
 
     else:
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work
-        with NamedTemporaryFile('w') as fp:
-            fp.write('#!{0}\n'.format(shell))
-            fp.write('# -*- coding: utf-8 -*-\n')
+        with NamedTemporaryFile("w") as fp:
+            fp.write("#!{0}\n".format(shell))
+            fp.write("# -*- coding: utf-8 -*-\n")
             # Make aliases work in bash:
-            if 'bash' in shell:
-                fp.write('shopt -s expand_aliases\n')
+            if "bash" in shell:
+                fp.write("shopt -s expand_aliases\n")
 
             # Write envvars and aliases
-            write_commands(fp, 'export', envvars)
-            write_commands(fp, 'alias', aliases)
+            write_commands(fp, "export", envvars)
+            write_commands(fp, "alias", aliases)
             if extra_commands:
                 for command in extra_commands:
-                    line = '{}\n'.format(command)
+                    line = "{}\n".format(command)
                     fp.write(ensure_utf8(line))
 
-            cmd_line = cmd + '\n'
+            cmd_line = cmd + "\n"
             fp.write(ensure_utf8(cmd_line))
             fp.flush()
             try:
@@ -121,11 +125,26 @@ def run_command(cmd, shell=None, aliases=None, envvars=None, extra_commands=None
                 pass
 
 
-def magicrun(text, shell, prompt_template='default', aliases=None,
-             envvars=None, extra_commands=None, speed=1, test_mode=False, commentecho=False):
+def magicrun(
+    text,
+    shell,
+    prompt_template="default",
+    aliases=None,
+    envvars=None,
+    extra_commands=None,
+    speed=1,
+    test_mode=False,
+    commentecho=False,
+):
     """Echo out each character in ``text`` as keyboard characters are pressed,
     wait for a RETURN keypress, then run the ``text`` in a shell context.
     """
     magictype(text, prompt_template, speed)
-    run_command(text, shell, aliases=aliases, envvars=envvars,
-                extra_commands=extra_commands, test_mode=test_mode)
+    run_command(
+        text,
+        shell,
+        aliases=aliases,
+        envvars=envvars,
+        extra_commands=extra_commands,
+        test_mode=test_mode,
+    )
