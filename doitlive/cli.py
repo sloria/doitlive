@@ -126,12 +126,16 @@ def run(commands, shell=None, prompt_template='default', speed=1,
     i = 0
     while i < len(commands):
         command = commands[i].strip()
-        command_as_list = shlex.split(ensure_utf8(command))
         i += 1
         if not command:
             continue
+        is_comment = command.startswith('#')
+        if not is_comment:
+            command_as_list = shlex.split(ensure_utf8(command))
+        else:
+            command_as_list = None
         shell_match = SHELL_RE.match(command)
-        if command.startswith('#'):
+        if is_comment:
             # Parse comment magic
             match = OPTION_RE.match(command)
             if match:

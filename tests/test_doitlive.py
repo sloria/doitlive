@@ -81,7 +81,7 @@ class TestPlayer:
                              )
         assert result.exit_code == 0
         assert 'foo' not in result.output
-        assert 'bar' in result.output
+        assert "bar'" in result.output
         assert 'baz' not in result.output
 
     def test_esc_key_aborts(self, runner):

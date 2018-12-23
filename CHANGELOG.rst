@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+4.2.1 (unreleased)
+******************
+
+Bug fixes:
+
+* Fix behavior of ``commentecho`` when a comment includes quote characters.
+
 4.2.0 (2018-11-08)
 ******************
 

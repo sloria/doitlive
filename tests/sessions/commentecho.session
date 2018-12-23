@@ -2,6 +2,6 @@
 # foo
 #doitlive commentecho: true
 echo
-# bar
+# bar'
 #doitlive commentecho: false
 # baz
