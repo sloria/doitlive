@@ -5,16 +5,18 @@ from __future__ import absolute_import, print_function
 from warnings import warn
 
 from click import Abort
-from IPython.terminal.interactiveshell import (DISPLAY_BANNER_DEPRECATED,
-                                               TerminalInteractiveShell)
+from IPython.terminal.interactiveshell import (
+    DISPLAY_BANNER_DEPRECATED,
+    TerminalInteractiveShell,
+)
 from IPython.terminal.ipapp import TerminalIPythonApp
-from prompt_toolkit.interface import (CommandLineInterface,
-                                      _InterfaceEventLoopCallbacks)
+from prompt_toolkit.interface import CommandLineInterface, _InterfaceEventLoopCallbacks
 from prompt_toolkit.key_binding.input_processor import KeyPress
 from prompt_toolkit.keys import Keys
 from prompt_toolkit.shortcuts import create_output
 
 from doitlive import RETURNS, wait_for, echo
+
 
 class _PlayerInterfaceEventLoopCallbacks(_InterfaceEventLoopCallbacks):
     def __init__(self, cli, on_feed_key):
@@ -25,14 +27,18 @@ class _PlayerInterfaceEventLoopCallbacks(_InterfaceEventLoopCallbacks):
     def feed_key(self, key_press, *args, **kwargs):
         key_press = self.on_feed_key(key_press)
         if key_press is not None:
-            return super(_PlayerInterfaceEventLoopCallbacks, self).feed_key(key_press,
-                                                                           *args, **kwargs)
+            return super(_PlayerInterfaceEventLoopCallbacks, self).feed_key(
+                key_press, *args, **kwargs
+            )
 
 
 class _PlayerCommandLineInterface(CommandLineInterface):
-    def __init__(self, application, eventloop=None, input=None, output=None,
-                 on_feed_key=None):
-        super(_PlayerCommandLineInterface, self).__init__(application, eventloop, input, output)
+    def __init__(
+        self, application, eventloop=None, input=None, output=None, on_feed_key=None
+    ):
+        super(_PlayerCommandLineInterface, self).__init__(
+            application, eventloop, input, output
+        )
         self.on_feed_key = on_feed_key
 
     # Override CommandLineInterface
@@ -42,6 +48,7 @@ class _PlayerCommandLineInterface(CommandLineInterface):
 
 class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
     """A magic IPython terminal shell."""
+
     def __init__(self, commands, speed=1, *args, **kwargs):
         self.commands = commands or []
         self.speed = speed
@@ -65,7 +72,9 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
             if self.current_command_pos < len(self.current_command):
                 current_key = self.current_command_key
                 ret = KeyPress(current_key)
-                increment = min([self.speed, len(self.current_command) - self.current_command_pos])
+                increment = min(
+                    [self.speed, len(self.current_command) - self.current_command_pos]
+                )
                 self.current_command_pos += increment
             else:
                 # Command is finished, wait for Enter
@@ -92,14 +101,18 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
     def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
 
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
-            warn('interact `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.', DeprecationWarning, stacklevel=2)  # noqa
+            warn(
+                "interact `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.",
+                DeprecationWarning,
+                stacklevel=2,
+            )  # noqa
 
         self.keep_running = True
         while self.keep_running:
-            print(self.separate_in, end='')
+            print(self.separate_in, end="")
 
             if self.current_command_index > len(self.commands) - 1:
-                echo('Do you really want to exit ([y]/n)? ', nl=False)
+                echo("Do you really want to exit ([y]/n)? ", nl=False)
                 wait_for(RETURNS)
                 self.ask_exit()
                 return None
@@ -107,8 +120,9 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
             try:
                 code = self.prompt_for_code()
             except EOFError:
-                if (not self.confirm_exit) \
-                        or self.ask_yes_no('Do you really want to exit ([y]/n)?', 'y', 'n'):
+                if (not self.confirm_exit) or self.ask_yes_no(
+                    "Do you really want to exit ([y]/n)?", "y", "n"
+                ):
                     self.ask_exit()
 
             else:
@@ -120,13 +134,16 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
         super(PlayerTerminalInteractiveShell, self).init_prompt_toolkit_cli()
         # override CommandLineInterface
         self.pt_cli = _PlayerCommandLineInterface(
-            self._pt_app, eventloop=self._eventloop,
+            self._pt_app,
+            eventloop=self._eventloop,
             output=create_output(true_color=self.true_color),
             on_feed_key=self.on_feed_key,
         )
 
+
 class PlayerTerminalIPythonApp(TerminalIPythonApp):
     """IPython app that runs the PlayerTerminalInteractiveShell."""
+
     commands = tuple()
     speed = 1
 
@@ -137,11 +154,16 @@ class PlayerTerminalIPythonApp(TerminalIPythonApp):
     def init_shell(self):
         """initialize the InteractiveShell instance"""
         self.shell = PlayerTerminalInteractiveShell.instance(
-            commands=self.commands, speed=self.speed,
-            parent=self, display_banner=False, profile_dir=self.profile_dir,
-            ipython_dir=self.ipython_dir, user_ns=self.user_ns
+            commands=self.commands,
+            speed=self.speed,
+            parent=self,
+            display_banner=False,
+            profile_dir=self.profile_dir,
+            ipython_dir=self.ipython_dir,
+            user_ns=self.user_ns,
         )
         self.shell.configurables.append(self)
+
 
 def start_ipython_player(commands, speed=1):
     """Starts a new magic IPython shell."""

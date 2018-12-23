@@ -14,6 +14,10 @@ doitlive
   :alt: travis-ci status
   :target: https://travis-ci.org/sloria/doitlive
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/ambv/black
+   :alt: Code style: Black
+
 
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 

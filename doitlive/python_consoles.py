@@ -8,6 +8,7 @@ import sys
 from doitlive.styling import echo_prompt
 from doitlive.keyboard import magictype, wait_for, RETURNS
 
+
 class PythonPlayerConsole(InteractiveConsole):
     """A magic python console."""
 
@@ -29,7 +30,7 @@ class PythonPlayerConsole(InteractiveConsole):
                     self.write("\n")
                     break
                 else:
-                    if command.strip() == 'exit()':
+                    if command.strip() == "exit()":
                         return
                     more = self.push(command)
             except KeyboardInterrupt:
@@ -45,16 +46,16 @@ class PythonPlayerConsole(InteractiveConsole):
         try:
             sys.ps1
         except AttributeError:
-            sys.ps1 = '>>>'
+            sys.ps1 = ">>>"
         try:
             sys.ps2
         except AttributeError:
             sys.ps2 = "... "
-        cprt = ('Type "help", "copyright", "credits" or "license" for '
-                'more information.')
+        cprt = (
+            'Type "help", "copyright", "credits" or "license" for ' "more information."
+        )
         if banner is None:
-            self.write("Python %s on %s\n%s\n" %
-                       (sys.version, sys.platform, cprt))
+            self.write("Python %s on %s\n%s\n" % (sys.version, sys.platform, cprt))
         else:
             self.write("%s\n" % str(banner))
         self.run_commands()
@@ -73,7 +74,7 @@ class PythonRecorderConsole(InteractiveConsole):
 
     def raw_input(self, *args, **kwargs):
         ret = InteractiveConsole.raw_input(self, *args, **kwargs)
-        self.commands.append(ret + '\n')
-        if ret.strip() == 'exit()':
+        self.commands.append(ret + "\n")
+        if ret.strip() == "exit()":
             raise EOFError()
         return ret

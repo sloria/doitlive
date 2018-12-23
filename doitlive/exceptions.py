@@ -1,5 +1,6 @@
 class DoItLiveError(Exception):
     """Base exception class for all doitlive-related errors."""
+
     pass
 
 

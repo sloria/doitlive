@@ -5,8 +5,9 @@ from contextlib import contextmanager
 
 from click._compat import isatty
 
-WIN = sys.platform.startswith('win')
+WIN = sys.platform.startswith("win")
 env = os.environ
+
 
 @contextmanager
 def raw_mode():
@@ -27,8 +28,9 @@ def raw_mode():
         #  imports are placed here because this will fail under Windows
         import tty
         import termios
+
         if not isatty(sys.stdin):
-            f = open('/dev/tty')
+            f = open("/dev/tty")
             fd = f.fileno()
         else:
             fd = sys.stdin.fileno()
@@ -53,4 +55,4 @@ def raw_mode():
 
 
 def get_default_shell():
-    return env.get('DOITLIVE_INTERPRETER') or env.get('SHELL') or '/bin/bash'
+    return env.get("DOITLIVE_INTERPRETER") or env.get("SHELL") or "/bin/bash"

@@ -7,15 +7,14 @@ import os
 
 
 def get_current_git_branch():
-    command = ['git', 'symbolic-ref', '--short', '-q', 'HEAD']
+    command = ["git", "symbolic-ref", "--short", "-q", "HEAD"]
     try:
-        proc = subprocess.Popen(command, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+        proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, _ = proc.communicate()
-        return out.strip().decode('utf-8')
+        return out.strip().decode("utf-8")
     except subprocess.CalledProcessError:
         pass
-    return ''
+    return ""
 
 
 # We'll avoid shelling out to hg for speed.
@@ -27,7 +26,7 @@ def find_hg_root():
     while True:
         pardir = get_parent_dir(cwd)
 
-        hgroot = os.path.join(cwd, '.hg')
+        hgroot = os.path.join(cwd, ".hg")
         if os.path.isdir(hgroot):
             return hgroot
 
@@ -36,16 +35,16 @@ def find_hg_root():
 
         cwd = pardir
 
-    return ''
+    return ""
 
 
 def get_current_hg_branch():
     try:
         hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'branch')) as f:
+        with open(os.path.join(hgroot, "branch")) as f:
             branch = f.read().rstrip()
     except IOError:
-        branch = ''
+        branch = ""
 
     return branch
 
@@ -53,10 +52,10 @@ def get_current_hg_branch():
 def get_current_hg_bookmark():
     try:
         hgroot = find_hg_root()
-        with open(os.path.join(hgroot, 'bookmarks.current')) as f:
+        with open(os.path.join(hgroot, "bookmarks.current")) as f:
             bookmark = f.read()
     except IOError:
-        bookmark = ''
+        bookmark = ""
     return bookmark
 
 
