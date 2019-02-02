@@ -8,7 +8,7 @@ doitlive
 
 .. image:: https://badgen.net/pypi/v/doitlive
   :alt: pypi badge
-  :target: http://badge.fury.io/py/doitlive
+  :target: https://pypi.org/project/doitlive/
 
 .. image:: https://badgen.net/travis/sloria/doitlive
   :alt: travis-ci status
