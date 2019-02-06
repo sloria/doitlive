@@ -6,7 +6,7 @@ repos:
     exclude: docopt.py
     language_version: python3.6
 - repo: https://gitlab.com/pycqa/flake8
-  rev: 3.7.4
+  rev: 3.7.5
   hooks:
   - id: flake8
 - repo: https://github.com/asottile/blacken-docs
