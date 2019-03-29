@@ -38,6 +38,7 @@ def magictype(text, prompt_template="default", speed=1):
     """
     echo_prompt(prompt_template)
     cursor_position = 0
+    return_to_regular_type = False
     with raw_mode():
         while True:
             char = text[cursor_position : cursor_position + speed]
@@ -45,6 +46,9 @@ def magictype(text, prompt_template="default", speed=1):
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
+            elif in_char == CTRLZ:
+                return_to_regular_type = True
+                break
             elif in_char == BACKSPACE:
                 if cursor_position > 0:
                     echo("\b \b", nl=False)
@@ -67,6 +71,7 @@ def magictype(text, prompt_template="default", speed=1):
                     echo(char, nl=False)
                     increment = min([speed, len(text) - cursor_position])
                     cursor_position += increment
+    return return_to_regular_type
 
 
 def write_commands(fp, command, args):
@@ -125,6 +130,78 @@ def run_command(
                 pass
 
 
+def regulartype(prompt_template="default"):
+    """Echo each character typed. Unlike magictype, this echos the characters the
+    user is pressing.
+
+    Returns: command_string |  The command to be passed to the shell to run. This is
+                            |  typed by the user.
+    """
+    echo("\r", nl=True)
+    echo_prompt(prompt_template)
+    command_string = ""
+    cursor_position = 0
+    with raw_mode():
+        while True:
+            in_char = getchar()
+            if in_char in {ESC, CTRLC}:
+                echo(carriage_return=True)
+                raise click.Abort()
+            elif in_char == CTRLZ:
+                click.clear()
+                echo_prompt(prompt_template)
+                return in_char
+            elif in_char == BACKSPACE:
+                if cursor_position > 0:
+                    echo("\b \b", nl=False)
+                    command_string = command_string[:-1]
+                    cursor_position -= 1
+            elif in_char in RETURNS:
+                echo("\r", nl=True)
+                return command_string
+            elif in_char == CTRLZ and hasattr(signal, "SIGTSTP"):
+                # Background process
+                os.kill(0, signal.SIGTSTP)
+                # When doitlive is back in foreground, clear the terminal
+                # and resume where we left off
+                click.clear()
+                echo_prompt(prompt_template)
+            else:
+                echo(in_char, nl=False)
+                command_string += in_char
+                cursor_position += 1
+
+
+def regularrun(
+    text,
+    shell,
+    prompt_template="default",
+    aliases=None,
+    envvars=None,
+    extra_commands=None,
+    speed=1,
+    test_mode=False,
+    commentecho=False,
+):
+    """Allow user to run their own live commands until CTRL-Z is pressed again.
+    """
+    loop_again = True
+    command_string = regulartype(prompt_template)
+    if command_string == CTRLZ:
+        loop_again = False
+        click.clear()
+        return loop_again
+    run_command(
+        command_string,
+        shell,
+        aliases=aliases,
+        envvars=envvars,
+        extra_commands=extra_commands,
+        test_mode=test_mode,
+    )
+    return loop_again
+
+
 def magicrun(
     text,
     shell,
@@ -139,7 +216,9 @@ def magicrun(
     """Echo out each character in ``text`` as keyboard characters are pressed,
     wait for a RETURN keypress, then run the ``text`` in a shell context.
     """
-    magictype(text, prompt_template, speed)
+    goto_regulartype = magictype(text, prompt_template, speed)
+    if goto_regulartype:
+        return goto_regulartype
     run_command(
         text,
         shell,
@@ -148,3 +227,4 @@ def magicrun(
         extra_commands=extra_commands,
         test_mode=test_mode,
     )
+    return goto_regulartype

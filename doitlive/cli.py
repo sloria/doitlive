@@ -15,7 +15,14 @@ from click_didyoumean import DYMGroup
 from doitlive.__version__ import __version__
 from doitlive.compat import ensure_utf8
 from doitlive.exceptions import SessionError
-from doitlive.keyboard import RETURNS, magicrun, magictype, run_command, wait_for
+from doitlive.keyboard import (
+    RETURNS,
+    magicrun,
+    magictype,
+    run_command,
+    wait_for,
+    regularrun,
+)
 from doitlive.python_consoles import PythonRecorderConsole, start_python_player
 from doitlive.styling import THEMES, echo, echo_prompt, format_prompt
 from doitlive.termutils import get_default_shell
@@ -126,6 +133,15 @@ OPTION_MAP = {
 SHELL_RE = re.compile(r"```(python|ipython)")
 
 
+def stealthmode(command, state, is_run):
+    if not is_run:
+        return 0
+    continue_loop = True
+    while continue_loop:
+        continue_loop = regularrun(command, **state)
+    return 1
+
+
 def run(
     commands,
     shell=None,
@@ -210,6 +226,7 @@ def run(
                 prompt_template=state["prompt_template"],
                 speed=state["speed"],
             )
+
             if shell_name == "ipython":
                 try:
                     from doitlive.ipython_consoles import start_ipython_player
@@ -223,7 +240,10 @@ def run(
             else:
                 start_python_player(py_commands, speed=state["speed"])
         else:
-            magicrun(command, **state)
+            # goto_stealthmode determines when to switch to stealthmode
+            goto_stealthmode = magicrun(command, **state)
+            # stealthmode allows user to type live commands outside of automated script
+            i -= stealthmode(command, state, goto_stealthmode)
     echo_prompt(state["prompt_template"])
     wait_for(RETURNS)
     if not quiet:
