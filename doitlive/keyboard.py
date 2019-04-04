@@ -137,7 +137,6 @@ def regulartype(prompt_template="default"):
     Returns: command_string |  The command to be passed to the shell to run. This is
                             |  typed by the user.
     """
-    echo("\r", nl=True)
     echo_prompt(prompt_template)
     command_string = ""
     cursor_position = 0
@@ -148,8 +147,7 @@ def regulartype(prompt_template="default"):
                 echo(carriage_return=True)
                 raise click.Abort()
             elif in_char == CTRLZ:
-                click.clear()
-                echo_prompt(prompt_template)
+                echo("\r", nl=True)
                 return in_char
             elif in_char == BACKSPACE:
                 if cursor_position > 0:
@@ -162,10 +160,6 @@ def regulartype(prompt_template="default"):
             elif in_char == CTRLZ and hasattr(signal, "SIGTSTP"):
                 # Background process
                 os.kill(0, signal.SIGTSTP)
-                # When doitlive is back in foreground, clear the terminal
-                # and resume where we left off
-                click.clear()
-                echo_prompt(prompt_template)
             else:
                 echo(in_char, nl=False)
                 command_string += in_char
@@ -173,7 +167,6 @@ def regulartype(prompt_template="default"):
 
 
 def regularrun(
-    text,
     shell,
     prompt_template="default",
     aliases=None,
@@ -189,7 +182,6 @@ def regularrun(
     command_string = regulartype(prompt_template)
     if command_string == CTRLZ:
         loop_again = False
-        click.clear()
         return loop_again
     run_command(
         command_string,

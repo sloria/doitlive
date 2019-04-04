@@ -133,12 +133,13 @@ OPTION_MAP = {
 SHELL_RE = re.compile(r"```(python|ipython)")
 
 
-def stealthmode(command, state, is_run):
+def stealthmode(state, is_run):
     if not is_run:
         return 0
     continue_loop = True
+    echo("\r", nl=True)
     while continue_loop:
-        continue_loop = regularrun(command, **state)
+        continue_loop = regularrun(**state)
     return 1
 
 
@@ -243,7 +244,7 @@ def run(
             # goto_stealthmode determines when to switch to stealthmode
             goto_stealthmode = magicrun(command, **state)
             # stealthmode allows user to type live commands outside of automated script
-            i -= stealthmode(command, state, goto_stealthmode)
+            i -= stealthmode(state, goto_stealthmode)
     echo_prompt(state["prompt_template"])
     wait_for(RETURNS)
     if not quiet:
