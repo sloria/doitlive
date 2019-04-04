@@ -18,6 +18,7 @@ ESC = "\x1b"
 BACKSPACE = "\x7f"
 CTRLC = "\x03"
 CTRLZ = "\x1a"
+TAB = "\x09"
 RETURNS = {"\r", "\n"}
 
 
@@ -46,7 +47,7 @@ def magictype(text, prompt_template="default", speed=1):
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
-            elif in_char == CTRLZ:
+            elif in_char == TAB:
                 return_to_regular_type = True
                 break
             elif in_char == BACKSPACE:
@@ -146,7 +147,7 @@ def regulartype(prompt_template="default"):
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
-            elif in_char == CTRLZ:
+            elif in_char == TAB:
                 echo("\r", nl=True)
                 return in_char
             elif in_char == BACKSPACE:
@@ -160,6 +161,10 @@ def regulartype(prompt_template="default"):
             elif in_char == CTRLZ and hasattr(signal, "SIGTSTP"):
                 # Background process
                 os.kill(0, signal.SIGTSTP)
+                # When doitlive is back in foreground, clear the terminal
+                # and resume where we left off
+                click.clear()
+                echo_prompt(prompt_template)
             else:
                 echo(in_char, nl=False)
                 command_string += in_char
@@ -180,7 +185,7 @@ def regularrun(
     """
     loop_again = True
     command_string = regulartype(prompt_template)
-    if command_string == CTRLZ:
+    if command_string == TAB:
         loop_again = False
         return loop_again
     run_command(
