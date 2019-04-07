@@ -67,6 +67,12 @@ Examples
     # Use zsh
     $ doitlive play session.sh --shell /bin/zsh
 
+Stealth mode
+------------
+
+Hit the TAB key to enter "stealth mode." While in stealth mode, you can
+enter commands normally. Hit TAB again to exit stealth mode.
+
 Using the recorder
 ------------------
 

@@ -19,3 +19,4 @@ Contributors (chronological)
 - Thomas Ashish Cherian `@PandaWhoCodes <https://github.com/PandaWhoCodes>`_
 - Alexandre Garnier `@zigarn <https://github.com/zigarn>`_
 - Tristan Le Guern `@Aversiste <https://github.com/Aversiste>`_
+- John Lehett `@jlehett <https://github.com/jlehett>`_

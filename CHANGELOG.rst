@@ -1,6 +1,15 @@
 Changelog
 ---------
 
+4.3.0 (unreleased)
+******************
+
+Features:
+
+* Enter and exit "stealth mode" by pressing TAB (:issue:`113`). Thanks
+  :user:`ThinkBriK` for the suggestion and thanks :user:`jlehett` for
+  the implementation.
+
 4.2.1 (2018-12-22)
 ******************
 
