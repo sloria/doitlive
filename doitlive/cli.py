@@ -178,19 +178,21 @@ def run(
         if not command:
             continue
 
-        # Comments starting with "#dilc:" are meant to be typed out.
-        if command.startswith("#dilc:"):
-            is_comment = False
-            command = "#" + command[6:]
-        else:
-            is_comment = command.startswith("#")
+        is_comment = command.startswith("#")
 
-        if not is_comment:
-            command_as_list = shlex.split(ensure_utf8(command))
-        else:
-            command_as_list = None
+        # Comments starting with "#dilc:" are meant to be typed out.
+        is_typed_comment = True if command.startswith("#dilc:") else False
+        command_as_list = None if is_comment else shlex.split(ensure_utf8(command))
+
         shell_match = SHELL_RE.match(command)
-        if is_comment:
+
+        if is_typed_comment:
+            magictype(
+                "#" + command[6:],
+                prompt_template=state["prompt_template"],
+                speed=state["speed"],
+            )
+        elif is_comment:
             # Parse comment magic
             match = OPTION_RE.match(command)
             if match:
