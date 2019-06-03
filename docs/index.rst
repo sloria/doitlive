@@ -107,7 +107,12 @@ To view a list of available themes, run ``doitlive themes`` or ``doitlive themes
 Comment magic (configuration)
 -----------------------------
 
-Any line in a session file that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session.
+Any line in a session file that begins with  ``#`` is a comment. Comments are ignored unless they begin with ``#doitlive``, in which case they are used to configure the session, or ``#dilc:``, in which case they are typed out.
+
+Example: ::
+
+    # This comment will be ignored and not shown at all.
+    #dilc: This comment will be typed out as a shell comment.
 
 The following options are available (all are optional).
 

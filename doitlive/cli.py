@@ -177,7 +177,14 @@ def run(
         i += 1
         if not command:
             continue
-        is_comment = command.startswith("#")
+
+        # Comments starting with "#dilc:" are meant to be typed out.
+        if command.startswith("#dilc:"):
+            is_comment = False
+            command = "#" + command[6:]
+        else:
+            is_comment = command.startswith("#")
+
         if not is_comment:
             command_as_list = shlex.split(ensure_utf8(command))
         else:
