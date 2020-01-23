@@ -43,7 +43,7 @@ TESTING = False
 def write_directives(fp, directive, args):
     if args:
         for arg in args:
-            line = "#doitlive {directive}: {arg}\n".format(**locals())
+            line = "#doitlive {directive}: {arg}\n".format(directive=directive, arg=arg)
             fp.write(ensure_utf8(line))
     return None
 
