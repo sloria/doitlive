@@ -78,7 +78,7 @@ def magictype(text, prompt_template="default", speed=1):
 def write_commands(fp, command, args):
     if args:
         for arg in args:
-            line = "{command} {arg}\n".format(**locals())
+            line = "{command} {arg}\n".format(command=command, arg=arg)
             fp.write(ensure_utf8(line))
     return None
 

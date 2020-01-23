@@ -102,7 +102,8 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
 
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn(
-                "interact `display_banner` argument is deprecated since IPython 5.0. Call `show_banner()` if needed.",
+                "interact `display_banner` argument is deprecated since IPython 5.0. "
+                "Call `show_banner()` if needed.",
                 DeprecationWarning,
                 stacklevel=2,
             )  # noqa
