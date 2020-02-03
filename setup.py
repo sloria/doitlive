@@ -19,7 +19,7 @@ EXTRAS_REQUIRE = {
     ],
     "lint": [
         "flake8==3.7.9",
-        'flake8-bugbear==20.1.3; python_version >= "3.5"',
+        'flake8-bugbear==20.1.4; python_version >= "3.5"',
         "pre-commit==1.21.0",
     ],
 }
