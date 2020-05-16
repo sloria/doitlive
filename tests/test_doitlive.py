@@ -201,7 +201,8 @@ def test_completion(runner, monkeypatch):
 
 
 def test_completion_fails_if_SHELL_is_unset(runner, monkeypatch):
-    monkeypatch.delitem(os.environ, "SHELL")
+    if "SHELL" in os.environ:
+        monkeypatch.delitem(os.environ, "SHELL")
     result = runner.invoke(cli, ["completion"])
     assert result.exit_code > 0
     msg = "Please ensure that the SHELL environment variable is set."
