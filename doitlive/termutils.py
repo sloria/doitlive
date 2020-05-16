@@ -29,7 +29,7 @@ def raw_mode():
         import tty
         import termios
 
-        if not isatty(sys.stdin):
+        if not isatty(sys.stdin) and os.path.exists("/dev/tty"):
             f = open("/dev/tty")
             fd = f.fileno()
         else:
