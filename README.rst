@@ -10,10 +10,6 @@ doitlive
   :alt: pypi badge
   :target: https://pypi.org/project/doitlive/
 
-.. image:: https://badgen.net/travis/sloria/doitlive
-  :alt: travis-ci status
-  :target: https://travis-ci.org/sloria/doitlive
-
 .. image:: https://badgen.net/badge/code%20style/black/000
    :target: https://github.com/ambv/black
    :alt: Code style: Black
