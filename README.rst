@@ -6,6 +6,10 @@ doitlive
   :alt: homebrew badge
   :target: https://github.com/Homebrew/homebrew-core/blob/master/Formula/doitlive.rb
 
+.. image:: https://dev.azure.com/sloria/sloria/_apis/build/status/sloria.doitlive?branchName=dev
+  :alt: Build Status
+  :target: https://dev.azure.com/sloria/sloria/_build/latest?definitionId=19&branchName=dev
+
 .. image:: https://badgen.net/pypi/v/doitlive
   :alt: pypi badge
   :target: https://pypi.org/project/doitlive/
