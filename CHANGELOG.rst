@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+(unreleased)
+************
+
+Support:
+
+* Test against Python 3.8.
+
 4.3.0 (2019-04-07)
 ******************
 

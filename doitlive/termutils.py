@@ -6,6 +6,8 @@ from contextlib import contextmanager
 from click._compat import isatty
 
 WIN = sys.platform.startswith("win")
+CI = "CI" in os.environ
+
 env = os.environ
 
 
@@ -21,7 +23,7 @@ def raw_mode():
         with raw_mode():
             do_some_stuff()
     """
-    if WIN:
+    if WIN or CI:
         # No implementation for windows yet.
         yield  # needed for the empty context manager to work
     else:
@@ -30,12 +32,8 @@ def raw_mode():
         import termios
 
         if not isatty(sys.stdin):
-            try:
-                f = open("/dev/tty")
-            except OSError:
-                fd = sys.stdin.fileno()
-            else:
-                fd = f.fileno()
+            f = open("/dev/tty")
+            fd = f.fileno()
         else:
             fd = sys.stdin.fileno()
             f = None

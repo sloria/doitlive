@@ -12,6 +12,9 @@ resources:
       name: sloria/azure-pipeline-templates
       ref: refs/heads/sloria
 
+variables:
+  CI: "true"
+
 jobs:
 - template: job--python-tox.yml@sloria
   parameters:
