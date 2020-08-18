@@ -80,7 +80,6 @@ def write_commands(fp, command, args):
         for arg in args:
             line = "{command} {arg}\n".format(command=command, arg=arg)
             fp.write(ensure_utf8(line))
-    return None
 
 
 def run_command(
@@ -88,7 +87,7 @@ def run_command(
 ):
     shell = shell or get_default_shell()
     command_as_list = shlex.split(ensure_utf8(cmd))
-    if len(command_as_list) and command_as_list[0] == "cd":
+    if command_as_list and command_as_list[0] == "cd":
         cwd = os.getcwd()  # Save cwd
         directory = cmd.split()[1].strip()
         if directory == "-":  # Go back to $OLDPWD

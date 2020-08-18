@@ -145,7 +145,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
 class PlayerTerminalIPythonApp(TerminalIPythonApp):
     """IPython app that runs the PlayerTerminalInteractiveShell."""
 
-    commands = tuple()
+    commands = ()
     speed = 1
 
     # Ignore command line args, since this will be run from the doitlive CLI
