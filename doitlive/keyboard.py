@@ -181,8 +181,7 @@ def regularrun(
     test_mode=False,
     commentecho=False,
 ):
-    """Allow user to run their own live commands until CTRL-Z is pressed again.
-    """
+    """Allow user to run their own live commands until CTRL-Z is pressed again."""
     loop_again = True
     command_string = regulartype(prompt_template)
     if command_string == TAB:
