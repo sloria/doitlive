@@ -6,7 +6,7 @@ Changelog
 
 Support:
 
-* Test against Python 3.8.
+* Test against Python 3.8 and 3.9.
 
 4.3.0 (2019-04-07)
 ******************
