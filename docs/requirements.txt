@@ -1,2 +1,2 @@
-sphinx==3.5.3
+sphinx==3.5.4
 sphinx-issues==1.2.0
