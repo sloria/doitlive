@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "08:00"
+    timezone: America/New_York
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: ipython
+    versions:
+    - "< 7.3, >= 7.2.a"
+  - dependency-name: ipython
+    versions:
+    - ">= 7.a, < 8"
+  - dependency-name: flake8-bugbear
+    versions:
+    - 21.3.1
+    - 21.3.2
