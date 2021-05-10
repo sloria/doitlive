@@ -18,7 +18,7 @@ EXTRAS_REQUIRE = {
         'IPython==6.5.0; python_version >= "3"',
     ],
     "lint": [
-        "flake8==3.9.1",
+        "flake8==3.9.2",
         'flake8-bugbear==20.11.1; python_version >= "3.5"',
         "pre-commit==2.12.1",
     ],
