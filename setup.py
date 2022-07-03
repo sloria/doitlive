@@ -5,16 +5,19 @@ import sys
 from setuptools import setup
 
 
-INSTALL_REQUIRES = ["click>=4.0", "click-completion>=0.3.1", "click-didyoumean>=0.0.3", "packaging"]
+INSTALL_REQUIRES = [
+    "click>=4.0,<8",
+    "click-completion>=0.3.1",
+    "click-didyoumean>=0.0.3",
+    "packaging",
+]
 
 if "win32" in str(sys.platform).lower():
     # Terminal colors for Windows
     INSTALL_REQUIRES.append("colorama>=0.2.4")
 
 EXTRAS_REQUIRE = {
-    "tests": [
-        "pytest"
-    ],
+    "tests": ["pytest", "IPython"],
     "lint": [
         "flake8==3.9.2",
         'flake8-bugbear==20.11.1; python_version >= "3.5"',

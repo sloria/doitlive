@@ -18,7 +18,27 @@ variables:
 jobs:
 - template: job--python-tox.yml@sloria
   parameters:
-    toxenvs: [lint, py27, py36, py37, py38, py39]
+    toxenvs: [
+      lint,
+
+      py27-ipython5,
+      
+      py36-ipython5,
+      py36-ipython6,
+      py36-ipython7,
+
+      py37-ipython6,
+      py37-ipython7,
+
+      py38-ipython7,
+      py38-ipython8,
+
+      py39-ipython7,
+      py39-ipython8,
+
+      py310-ipython7,
+      py310-ipython8
+    ]
     os: linux
 - template: job--pypi-release.yml@sloria
   parameters:
