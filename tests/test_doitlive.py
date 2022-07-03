@@ -146,7 +146,7 @@ class TestPlayer:
     def test_unalias(self, runner):
         user_input = random_string(len("foo"))
         result = run_session(runner, "unalias.session", user_input)
-        # nonzero exit code becuase 'foo' is no longer aliased
+        # nonzero exit code because 'foo' is no longer aliased
         assert result.exit_code != 0
         assert "foobarbazquux" not in result.output
 
