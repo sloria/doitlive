@@ -1,6 +1,13 @@
 Changelog
 ---------
 
+5.0.0 (unreleased)
+******************
+
+Support:
+
+* Drop support for Python 2 (:issue:`202`), Python 3.6, and IPython 5.
+
 4.4.0 (2022-08-14)
 ******************
 

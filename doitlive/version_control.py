@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utility functions to get information about the
 git or mercurial repository in the working directory
 """
@@ -43,7 +42,7 @@ def get_current_hg_branch():
         hgroot = find_hg_root()
         with open(os.path.join(hgroot, "branch")) as f:
             branch = f.read().rstrip()
-    except IOError:
+    except OSError:
         branch = ""
 
     return branch
@@ -54,7 +53,7 @@ def get_current_hg_bookmark():
         hgroot = find_hg_root()
         with open(os.path.join(hgroot, "bookmarks.current")) as f:
             bookmark = f.read()
-    except IOError:
+    except OSError:
         bookmark = ""
     return bookmark
 

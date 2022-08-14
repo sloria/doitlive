@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import random
 import getpass
@@ -44,7 +43,7 @@ class TestPlayer:
         assert 'echo "Hello"' in result.output
 
     def test_session_with_unicode(self, runner):
-        user_input = random_string(len(u'echo "H´l¬ø ∑ø®ld"'))
+        user_input = random_string(len('echo "H´l¬ø ∑ø®ld"'))
         result = run_session(runner, "unicode.session", user_input)
         assert result.exit_code == 0
 
@@ -351,7 +350,7 @@ class TestRecorder:
 
     def test_undo_command(self, runner):
         with recording_session(runner, ["echo foo", "echo bar", "U\ny"]):
-            with open("session.sh", "r") as fp:
+            with open("session.sh") as fp:
                 content = fp.read()
                 assert "echo bar" not in content
                 assert "echo foo" in content
@@ -364,7 +363,7 @@ class TestRecorder:
 
     def test_aliases_are_written(self, runner):
         with recording_session(runner, args=["-a", "g=git", "-a", "c=clear"]):
-            with open("session.sh", "r") as fp:
+            with open("session.sh") as fp:
                 content = fp.read()
                 assert "#doitlive alias: g=git\n" in content
                 assert "#doitlive alias: c=clear\n" in content
@@ -375,14 +374,14 @@ class TestRecorder:
 
     def test_envvars_are_written(self, runner):
         with recording_session(runner, args=["-e", "FIRST=Steve", "-e", "LAST=Loria"]):
-            with open("session.sh", "r") as fp:
+            with open("session.sh") as fp:
                 content = fp.read()
                 assert "#doitlive env: FIRST=Steve\n" in content
                 assert "#doitlive env: LAST=Loria\n" in content
 
     def test_python_mode(self, runner):
         with recording_session(runner, ["python", 'print("hello")', "exit()"]):
-            with open("session.sh", "r") as fp:
+            with open("session.sh") as fp:
                 content = fp.read()
                 assert "```python\n" in content
                 assert 'print("hello")\n' in content

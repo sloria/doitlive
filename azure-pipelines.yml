@@ -2,7 +2,7 @@ trigger:
   branches:
     include: [dev, test-me-*]
   tags:
-    include: ['*']
+    include: ["*"]
 
 resources:
   repositories:
@@ -16,21 +16,11 @@ variables:
   CI: "true"
 
 jobs:
-- template: job--python-tox.yml@sloria
-  parameters:
-    toxenvs: [
-      lint,
-
-      py27-ipython5,
-      
-      py36-ipython5,
-      py36-ipython6,
-
-      py310-ipython7,
-      py310-ipython8
-    ]
-    os: linux
-- template: job--pypi-release.yml@sloria
-  parameters:
-    dependsOn:
-      - tox_linux
+  - template: job--python-tox.yml@sloria
+    parameters:
+      toxenvs: [lint, py37-ipython6, py310-ipython7, py310-ipython8]
+      os: linux
+  - template: job--pypi-release.yml@sloria
+    parameters:
+      dependsOn:
+        - tox_linux
