@@ -164,10 +164,3 @@ class PlayerTerminalIPythonApp(TerminalIPythonApp):
             user_ns=self.user_ns,
         )
         self.shell.configurables.append(self)
-
-
-def start_ipython_player(commands, speed=1):
-    """Starts a new magic IPython shell."""
-    PlayerTerminalIPythonApp.commands = commands
-    PlayerTerminalIPythonApp.speed = speed
-    PlayerTerminalIPythonApp.launch_instance()

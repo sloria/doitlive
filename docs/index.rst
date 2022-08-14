@@ -246,10 +246,6 @@ If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in
 
    ```
 
-.. note::
-
-   Only IPython>=5.0,<7.0 is supported.
-
 
 Shell completion
 ----------------
