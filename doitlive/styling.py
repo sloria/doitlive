@@ -11,10 +11,13 @@ from click import style
 from click.termui import strip_ansi
 
 from doitlive.exceptions import ConfigurationError
-from doitlive.version_control import (get_current_git_branch,
-                                      get_current_hg_bookmark,
-                                      get_current_hg_branch, get_current_hg_id,
-                                      get_current_vcs_branch)
+from doitlive.version_control import (
+    get_current_git_branch,
+    get_current_hg_bookmark,
+    get_current_hg_branch,
+    get_current_hg_id,
+    get_current_vcs_branch,
+)
 
 env = os.environ
 

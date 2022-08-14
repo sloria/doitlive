@@ -13,8 +13,14 @@ from click_didyoumean import DYMGroup
 
 from doitlive.__version__ import __version__
 from doitlive.exceptions import SessionError
-from doitlive.keyboard import (RETURNS, magicrun, magictype, regularrun,
-                               run_command, wait_for)
+from doitlive.keyboard import (
+    RETURNS,
+    magicrun,
+    magictype,
+    regularrun,
+    run_command,
+    wait_for,
+)
 from doitlive.python_consoles import PythonRecorderConsole, start_python_player
 from doitlive.styling import THEMES, echo, echo_prompt, format_prompt
 from doitlive.termutils import get_default_shell
