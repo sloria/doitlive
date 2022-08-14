@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 """doitlive IPython support."""
-from __future__ import absolute_import, print_function
 
 import itertools as it
 
@@ -46,7 +44,7 @@ class DoitliveTerminalInteractiveShell(TerminalInteractiveShell):
         # Index of current character in current command
         self.current_command_pos = 0
 
-        super(DoitliveTerminalInteractiveShell, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def next_keys(self, key_presses):
         return list(
@@ -123,7 +121,7 @@ class DoitliveTerminalInteractiveShell(TerminalInteractiveShell):
 
     # Override TerminalInteractiveShell
     def init_prompt_toolkit_cli(self):
-        super(DoitliveTerminalInteractiveShell, self).init_prompt_toolkit_cli()
+        super().init_prompt_toolkit_cli()
         self.pt_app.app.key_processor = DoitliveKeyProcessor(
             wrapped_processor=self.pt_app.app.key_processor, next_keys=self.next_keys
         )

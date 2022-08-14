@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """InteractiveConsole subclasses for recording and playback
 of canned Python statements.
 """
@@ -55,7 +54,7 @@ class PythonPlayerConsole(InteractiveConsole):
             'Type "help", "copyright", "credits" or "license" for ' "more information."
         )
         if banner is None:
-            self.write("Python %s on %s\n%s\n" % (sys.version, sys.platform, cprt))
+            self.write(f"Python {sys.version} on {sys.platform}\n{cprt}\n")
         else:
             self.write("%s\n" % str(banner))
         self.run_commands()

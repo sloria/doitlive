@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import shlex
 import signal
@@ -8,7 +7,6 @@ from tempfile import NamedTemporaryFile
 import click
 from click import getchar
 
-from doitlive.compat import ensure_utf8
 from doitlive.styling import echo, echo_prompt
 from doitlive.termutils import get_default_shell, raw_mode
 
@@ -78,8 +76,8 @@ def magictype(text, prompt_template="default", speed=1):
 def write_commands(fp, command, args):
     if args:
         for arg in args:
-            line = "{command} {arg}\n".format(command=command, arg=arg)
-            fp.write(ensure_utf8(line))
+            line = f"{command} {arg}\n"
+            fp.write(line)
     return None
 
 
@@ -87,7 +85,7 @@ def run_command(
     cmd, shell=None, aliases=None, envvars=None, extra_commands=None, test_mode=False
 ):
     shell = shell or get_default_shell()
-    command_as_list = shlex.split(ensure_utf8(cmd))
+    command_as_list = shlex.split(cmd)
     if len(command_as_list) and command_as_list[0] == "cd":
         cwd = os.getcwd()  # Save cwd
         directory = cmd.split()[1].strip()
@@ -96,7 +94,7 @@ def run_command(
         try:
             os.chdir(os.path.expandvars(os.path.expanduser(directory)))
         except OSError:
-            echo("No such file or directory: {}".format(directory))
+            echo(f"No such file or directory: {directory}")
         else:
             os.environ["OLDPWD"] = cwd
 
@@ -104,7 +102,7 @@ def run_command(
         # Need to make a temporary command file so that $ENV are used correctly
         # and that shell built-ins, e.g. "source" work
         with NamedTemporaryFile("w") as fp:
-            fp.write("#!{0}\n".format(shell))
+            fp.write(f"#!{shell}\n")
             fp.write("# -*- coding: utf-8 -*-\n")
             # Make aliases work in bash:
             if "bash" in shell:
@@ -115,11 +113,11 @@ def run_command(
             write_commands(fp, "alias", aliases)
             if extra_commands:
                 for command in extra_commands:
-                    line = "{}\n".format(command)
-                    fp.write(ensure_utf8(line))
+                    line = f"{command}\n"
+                    fp.write(line)
 
             cmd_line = cmd + "\n"
-            fp.write(ensure_utf8(cmd_line))
+            fp.write(cmd_line)
             fp.flush()
             try:
                 if test_mode:

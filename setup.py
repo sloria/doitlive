@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import codecs
 import re
 import sys
-from setuptools import setup
 
+from setuptools import setup
 
 INSTALL_REQUIRES = [
     "click>=4.0,<8",
@@ -20,8 +19,8 @@ EXTRAS_REQUIRE = {
     "tests": ["pytest", "IPython"],
     "lint": [
         "flake8==3.9.2",
-        'flake8-bugbear==20.11.1; python_version >= "3.5"',
-        "pre-commit==2.13.0",
+        "flake8-bugbear==20.11.1",
+        "pre-commit~=2.20.0",
     ],
 }
 EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + ["tox"]
@@ -60,6 +59,7 @@ setup(
     url="https://github.com/sloria/doitlive",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
+    python_requires=">=3.7",
     license="MIT",
     zip_safe=False,
     keywords="doitlive cli live coding presentations shell",
@@ -67,14 +67,11 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Environment :: Console",
     ],
     packages=["doitlive"],
