@@ -1,12 +1,13 @@
 Changelog
 ---------
 
-(unreleased)
-************
+4.4.0 (2022-08-14)
+******************
 
 Support:
 
-* Test against Python 3.8 and 3.9.
+* Support IPython 7 and 8 (:issue:`91`). Thanks :user:`matan129` for the PR.
+* Test against Python 3.8, 3.9, and 3.10.
 
 4.3.0 (2019-04-07)
 ******************
