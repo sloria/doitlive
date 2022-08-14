@@ -229,12 +229,8 @@ def run(
             )
 
             if shell_name == "ipython":
-                try:
-                    from doitlive.ipython_consoles import start_ipython_player
-                except ImportError:
-                    raise RuntimeError(
-                        "```ipython blocks require IPython to be installed"
-                    )
+                from doitlive.ipython import start_ipython_player
+
                 # dedent all the commands to account for IPython's autoindentation
                 ipy_commands = [textwrap.dedent(cmd) for cmd in py_commands]
                 start_ipython_player(ipy_commands, speed=state["speed"])
