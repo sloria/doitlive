@@ -12,6 +12,7 @@ from click import secho, style
 from click_didyoumean import DYMGroup
 
 from doitlive.__version__ import __version__
+from doitlive.comments import display_comment
 from doitlive.exceptions import SessionError
 from doitlive.keyboard import (
     RETURNS,
@@ -189,8 +190,7 @@ def run(
                 func = OPTION_MAP[option]
                 func(state, arg)
             elif state.commentecho():
-                comment = command.lstrip("#")
-                secho(comment, fg="yellow", bold=True)
+                display_comment(command)
             continue
         # Handle 'export' and 'alias' commands by storing them in SessionState
         elif command_as_list and command_as_list[0] in ["alias", "export"]:
