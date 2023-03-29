@@ -32,7 +32,7 @@ click_completion.init()
 OPTION_RE = re.compile(
     r"^#\s?doitlive\s+"
     r"(?P<option>prompt|shell|alias|env|speed"
-    r"|unalias|unset|commentecho):\s*(?P<arg>.+)$"
+    r"|unalias|unset|commentecho|clear):\s*(?P<arg>.+)$"
 )
 
 TESTING = False
@@ -94,6 +94,9 @@ class SessionState(dict):
 
     def set_shell(self, shell):
         self["shell"] = shell
+        
+    def clear_screen(self, args):
+        click.clear()
 
     def _remove_var(self, key, variable):
         for each in self[key]:
@@ -126,6 +129,7 @@ OPTION_MAP = {
     "unalias": lambda state, arg: state.remove_alias(arg),
     "unset": lambda state, arg: state.remove_envvar(arg),
     "commentecho": lambda state, arg: state.commentecho(arg),
+    "clear": lambda state, arg: state.clear_screen(arg)
 }
 
 SHELL_RE = re.compile(r"```(python|ipython)")
