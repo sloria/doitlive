@@ -32,7 +32,7 @@ click_completion.init()
 OPTION_RE = re.compile(
     r"^#\s?doitlive\s+"
     r"(?P<option>prompt|shell|alias|env|speed"
-    r"|unalias|unset|commentecho):\s*(?P<arg>.+)$"
+    r"|unalias|unset|commentecho|anchor):\s*(?P<arg>.+)$"
 )
 
 TESTING = False
@@ -61,10 +61,13 @@ class SessionState(dict):
         extra_commands=None,
         test_mode=False,
         commentecho=False,
+        boundaries=(None, None)
     ):
         aliases = aliases or []
         envvars = envvars or []
         extra_commands = extra_commands or []
+        # Flag that defines if any command should be processed
+        do_process = True if boundaries[0] is None else False
         dict.__init__(
             self,
             shell=shell,
@@ -75,8 +78,10 @@ class SessionState(dict):
             extra_commands=extra_commands,
             test_mode=test_mode,
             commentecho=commentecho,
+            boundaries=boundaries,
+            do_process=do_process
         )
-
+        
     def add_alias(self, alias):
         self["aliases"].append(alias)
 
@@ -94,6 +99,12 @@ class SessionState(dict):
 
     def set_shell(self, shell):
         self["shell"] = shell
+        
+    def passed_anchor(self, anchor):
+        if anchor == self["boundaries"][0]:
+            self["do_process"] = True
+        if anchor == self["boundaries"][1]:
+            self["do_process"] = False
 
     def _remove_var(self, key, variable):
         for each in self[key]:
@@ -126,6 +137,7 @@ OPTION_MAP = {
     "unalias": lambda state, arg: state.remove_alias(arg),
     "unset": lambda state, arg: state.remove_envvar(arg),
     "commentecho": lambda state, arg: state.commentecho(arg),
+    "anchor": lambda state, arg: state.passed_anchor(arg),
 }
 
 SHELL_RE = re.compile(r"```(python|ipython)")
@@ -149,6 +161,8 @@ def run(
     quiet=False,
     test_mode=False,
     commentecho=False,
+    from_anchor=None,
+    to_anchor=None
 ):
     """Main function for "magic-running" a list of commands."""
     if not quiet:
@@ -167,6 +181,7 @@ def run(
         speed=speed,
         test_mode=test_mode,
         commentecho=commentecho,
+        boundaries=(from_anchor, to_anchor)
     )
 
     i = 0
@@ -175,6 +190,7 @@ def run(
         i += 1
         if not command:
             continue
+        
         is_comment = command.startswith("#")
         if not is_comment:
             command_as_list = shlex.split(command)
@@ -189,8 +205,11 @@ def run(
                 func = OPTION_MAP[option]
                 func(state, arg)
             elif state.commentecho():
-                comment = command.lstrip("#")
-                secho(comment, fg="yellow", bold=True)
+                if state["do_process"]:
+                     comment = command.lstrip("#")
+                     secho(comment, fg="yellow", bold=True)
+            continue
+        elif not state["do_process"]:
             continue
         # Handle 'export' and 'alias' commands by storing them in SessionState
         elif command_as_list and command_as_list[0] in ["alias", "export"]:
@@ -391,6 +410,20 @@ ENVVAR_OPTION = click.option(
     "--envvar", "-e", metavar="<envvar>", multiple=True, help="Adds a session variable."
 )
 
+ANCHOR_FROM_OPTION = click.option(
+    "--from-anchor",
+    "-f",
+    metavar="<anchor_name>",
+    type=str
+)
+
+ANCHOR_TO_OPTION = click.option(
+    "--to-anchor",
+    "-t",
+    metavar="<anchor_name>",
+    type=str
+)
+
 
 def _compose(*functions):
     def inner(func1, func2):
@@ -401,7 +434,7 @@ def _compose(*functions):
 
 # Compose the decorators into "bundled" decorators
 player_command = _compose(
-    QUIET_OPTION, SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION, ECHO_OPTION
+    QUIET_OPTION, SHELL_OPTION, SPEED_OPTION, PROMPT_OPTION, ECHO_OPTION, ANCHOR_FROM_OPTION, ANCHOR_TO_OPTION
 )
 recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OPTION)
 
@@ -409,7 +442,7 @@ recorder_command = _compose(SHELL_OPTION, PROMPT_OPTION, ALIAS_OPTION, ENVVAR_OP
 @player_command
 @click.argument("session_file", type=click.File("r", encoding="utf-8"))
 @cli.command()
-def play(quiet, session_file, shell, speed, prompt, commentecho):
+def play(quiet, session_file, shell, speed, prompt, commentecho, from_anchor, to_anchor):
     """Play a session file."""
     run(
         session_file.readlines(),
@@ -419,6 +452,8 @@ def play(quiet, session_file, shell, speed, prompt, commentecho):
         test_mode=TESTING,
         prompt_template=prompt,
         commentecho=commentecho,
+        from_anchor=from_anchor,
+        to_anchor=to_anchor
     )
 
 

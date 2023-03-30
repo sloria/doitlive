@@ -206,6 +206,7 @@ def magicrun(
     speed=1,
     test_mode=False,
     commentecho=False,
+    **kwargs
 ):
     """Echo out each character in ``text`` as keyboard characters are pressed,
     wait for a RETURN keypress, then run the ``text`` in a shell context.
