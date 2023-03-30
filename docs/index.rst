@@ -200,6 +200,10 @@ unsets an environment variable.
 
 Whether to echo comments or not. If enabled, non-magic comments will be echoed back in bold yellow before each prompt. This can be useful for providing some annotations for yourself and the audience.
 
+#doitlive clear: now
+********************
+
+clears the screen at the time when that line is met. 
 
 Python mode
 -----------
