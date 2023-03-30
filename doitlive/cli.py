@@ -126,7 +126,6 @@ class SessionState(dict):
             self["commentecho"] = doit in self.TRUTHY
         return self["commentecho"]
 
-
 # Map of option names => function that modifies session state
 OPTION_MAP = {
     "prompt": lambda state, arg: state.set_template(arg),
@@ -206,8 +205,8 @@ def run(
                 func(state, arg)
             elif state.commentecho():
                 if state["do_process"]:
-                     comment = command.lstrip("#")
-                     secho(comment, fg="yellow", bold=True)
+                    comment = command.lstrip("#")
+                    secho(comment, fg="yellow", bold=True)
             continue
         elif not state["do_process"]:
             continue
@@ -259,6 +258,10 @@ def run(
             i -= stealthmode(state, goto_stealthmode)
     echo_prompt(state["prompt_template"])
     wait_for(RETURNS)
+    if not state['do_process']:
+        secho("NO COMMAND WAS PROCESSED. Anchors provided were probably not found", fg="red", bold=True)
+        return
+    
     if not quiet:
         secho("FINISHED SESSION", fg="yellow", bold=True)
 
