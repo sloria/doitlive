@@ -417,14 +417,16 @@ ANCHOR_FROM_OPTION = click.option(
     "--from-anchor",
     "-f",
     metavar="<anchor_name>",
-    type=str
+    type=str,
+    help="Start point for session, as marked in the script (otherwise, start of file)"
 )
 
 ANCHOR_TO_OPTION = click.option(
     "--to-anchor",
     "-t",
     metavar="<anchor_name>",
-    type=str
+    type=str,
+    help="End point for session, as marked in the script (otherwise, end of file)"
 )
 
 
