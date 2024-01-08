@@ -22,8 +22,14 @@ EXTRAS_REQUIRE = {
         "flake8-bugbear==23.12.2",
         "pre-commit~=3.5",
     ],
+    "docs": [
+        "sphinx==7.2.6",
+        "sphinx-issues==3.0.1",
+    ],
 }
-EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + ["tox"]
+EXTRAS_REQUIRE["dev"] = (
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + EXTRAS_REQUIRE["docs"] + ["tox"]
+)
 
 
 def find_version(fname):
