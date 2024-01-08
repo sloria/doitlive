@@ -1,0 +1,51 @@
+name: build
+on:
+  push:
+  pull_request:
+jobs:
+  tests:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: "3.8-ipython8", python: "3.8", tox: py38-ipython8 }
+          - { name: "3.11-ipython8", python: "3.11", tox: py11-ipython8 }
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-python@v4.3.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install tox
+      - run: python -m tox -e${{ matrix.tox }}
+  # this duplicates pre-commit.ci, so only run it on tags
+  # it guarantees that linting is passing prior to a release
+  lint-pre-release:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-python@v4.3.0
+        with:
+          python-version: "3.11"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install tox
+      - run: python -m tox -elint
+  release:
+    needs: [tests, lint-pre-release]
+    name: PyPI release
+    if: startsWith(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.1.0
+      - uses: actions/setup-python@v4.3.0
+      - name: install requirements
+        run: python -m pip install build twine
+      - name: build dists
+        run: python -m build
+      - name: check package metadata
+        run: twine check dist/*
+      - name: publish
+        run: twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} dist/*
