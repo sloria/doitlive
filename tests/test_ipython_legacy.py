@@ -1,4 +1,3 @@
-import os
 import click
 import pytest
 from prompt_toolkit.key_binding.input_processor import KeyPress
@@ -7,11 +6,6 @@ from prompt_toolkit.keys import Keys
 from doitlive.ipython.legacy_app import PlayerTerminalInteractiveShell
 
 
-@pytest.mark.skipif(
-    # FIXME
-    "CI" in os.environ,
-    reason="IPython shell does not work in Azure Pipelines",
-)
 class TestPlayerTerminalInteractiveShell:
     @pytest.fixture()
     def make_shell(self):
