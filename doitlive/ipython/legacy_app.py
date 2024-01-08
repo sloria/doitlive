@@ -93,7 +93,6 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
     # Much of this is copy-and-pasted from the parent class implementation
     # due to lack of hooks
     def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
-
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn(
                 "interact `display_banner` argument is deprecated since IPython 5.0. "

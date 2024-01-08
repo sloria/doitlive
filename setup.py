@@ -18,12 +18,18 @@ if "win32" in str(sys.platform).lower():
 EXTRAS_REQUIRE = {
     "tests": ["pytest", "IPython"],
     "lint": [
-        "flake8==3.9.2",
-        "flake8-bugbear==20.11.1",
-        "pre-commit~=2.20.0",
+        "flake8==7.0.0",
+        "flake8-bugbear==23.12.2",
+        "pre-commit~=3.5",
+    ],
+    "docs": [
+        "sphinx==7.2.6",
+        "sphinx-issues==3.0.1",
     ],
 }
-EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + ["tox"]
+EXTRAS_REQUIRE["dev"] = (
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + EXTRAS_REQUIRE["docs"] + ["tox"]
+)
 
 
 def find_version(fname):
@@ -59,7 +65,7 @@ setup(
     url="https://github.com/sloria/doitlive",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     license="MIT",
     zip_safe=False,
     keywords="doitlive cli live coding presentations shell",
@@ -68,10 +74,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Environment :: Console",
     ],
     packages=["doitlive"],
