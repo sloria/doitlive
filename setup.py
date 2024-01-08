@@ -18,9 +18,9 @@ if "win32" in str(sys.platform).lower():
 EXTRAS_REQUIRE = {
     "tests": ["pytest", "IPython"],
     "lint": [
-        "flake8==3.9.2",
-        "flake8-bugbear==20.11.1",
-        "pre-commit~=2.20.0",
+        "flake8==7.0.0",
+        "flake8-bugbear==23.12.2",
+        "pre-commit~=3.5",
     ],
 }
 EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + ["tox"]
