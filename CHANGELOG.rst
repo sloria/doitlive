@@ -4,6 +4,10 @@ Changelog
 5.0.0 (unreleased)
 ******************
 
+Features:
+
+* Ctrl-l clears the screen (:issue:`217`, :pr:`237`). Thanks :user:`Kaligule` for the suggestion and :user:`DvirB10` for the PR.
+
 Support:
 
 * Drop support for Python 2 (:issue:`202`), Python 3.6, Python 3.7, IPython 5, IPython 6, IPython 7, and click<8.
