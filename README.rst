@@ -4,7 +4,7 @@ doitlive
 
 .. image:: https://badgen.net/homebrew/v/doitlive
   :alt: homebrew badge
-  :target: https://github.com/Homebrew/homebrew-core/blob/master/Formula/doitlive.rb
+  :target: https://github.com/Homebrew/homebrew-core/blob/master/Formula/d/doitlive.rb
 
 .. image:: https://github.com/sloria/doitlive/actions/workflows/build-release.yml/badge.svg
   :alt: Build Status
