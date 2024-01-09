@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import functools
 import os
 import re
@@ -13,15 +12,14 @@ from click import secho, style
 from click_didyoumean import DYMGroup
 
 from doitlive.__version__ import __version__
-from doitlive.compat import ensure_utf8
 from doitlive.exceptions import SessionError
 from doitlive.keyboard import (
     RETURNS,
     magicrun,
     magictype,
+    regularrun,
     run_command,
     wait_for,
-    regularrun,
 )
 from doitlive.python_consoles import PythonRecorderConsole, start_python_player
 from doitlive.styling import THEMES, echo, echo_prompt, format_prompt
@@ -43,15 +41,15 @@ TESTING = False
 def write_directives(fp, directive, args):
     if args:
         for arg in args:
-            line = "#doitlive {directive}: {arg}\n".format(directive=directive, arg=arg)
-            fp.write(ensure_utf8(line))
+            line = f"#doitlive {directive}: {arg}\n"
+            fp.write(line)
     return None
 
 
 class SessionState(dict):
     """Stores information about a fake terminal session."""
 
-    TRUTHY = set(["true", "yes", "1"])
+    TRUTHY = {"true", "yes", "1"}
 
     def __init__(
         self,
@@ -179,7 +177,7 @@ def run(
             continue
         is_comment = command.startswith("#")
         if not is_comment:
-            command_as_list = shlex.split(ensure_utf8(command))
+            command_as_list = shlex.split(command)
         else:
             command_as_list = None
         shell_match = SHELL_RE.match(command)
@@ -212,8 +210,7 @@ def run(
                     py_command = commands[i].rstrip()
                 except IndexError:
                     raise SessionError(
-                        "Unmatched {0} code block in "
-                        "session file.".format(shell_name)
+                        "Unmatched {} code block in " "session file.".format(shell_name)
                     )
                 i += 1
                 if py_command.startswith("```"):
@@ -229,12 +226,8 @@ def run(
             )
 
             if shell_name == "ipython":
-                try:
-                    from doitlive.ipython_consoles import start_ipython_player
-                except ImportError:
-                    raise RuntimeError(
-                        "```ipython blocks require IPython to be installed"
-                    )
+                from doitlive.ipython import start_ipython_player
+
                 # dedent all the commands to account for IPython's autoindentation
                 ipy_commands = [textwrap.dedent(cmd) for cmd in py_commands]
                 start_ipython_player(ipy_commands, speed=state["speed"])
@@ -280,7 +273,7 @@ def preview_themes():
     secho("Theme previews:", bold=True)
     echo()
     for name, template in THEMES.items():
-        echo('"{}" theme:'.format(name))
+        echo(f'"{name}" theme:')
         echo(format_prompt(template), nl=False)
         echo(" command arg1 arg2 ... argn")
         echo()
@@ -433,7 +426,7 @@ DEMO = [
     'echo "Greetings"',
     'echo "This is just a demo session"',
     'echo "For more info, check out the home page..."',
-    'echo "http://doitlive.readthdocs.io"',
+    'echo "https://doitlive.readthedocs.io"',
 ]
 
 
@@ -484,9 +477,7 @@ def run_recorder(shell, prompt, aliases=None, envvars=None):
         elif command == PREVIEW_COMMAND:
             echo_rec_buffer(commands)
         elif command == UNDO_COMMAND:
-            if commands and click.confirm(
-                'Remove command? "{}"'.format(commands[-1].strip())
-            ):
+            if commands and click.confirm(f'Remove command? "{commands[-1].strip()}"'):
                 commands.pop()
                 secho("Removed command.", bold=True)
                 echo_rec_buffer(commands)
@@ -516,9 +507,7 @@ def print_recorder_instructions():
     echo()
     echo("INSTRUCTIONS:")
     echo(
-        "Enter "
-        + style("{}".format(STOP_COMMAND), bold=True)
-        + " when you are done recording."
+        "Enter " + style(f"{STOP_COMMAND}", bold=True) + " when you are done recording."
     )
     echo(
         "To preview the commands in the buffer, enter {}.".format(
@@ -551,14 +540,14 @@ def record(session_file, shell, prompt, alias, envvar):
     """
     if os.path.exists(session_file):
         click.confirm(
-            'File "{0}" already exists. Overwrite?'.format(session_file),
+            f'File "{session_file}" already exists. Overwrite?',
             abort=True,
             default=False,
         )
 
     secho("We'll do it live!", fg="red", bold=True)
     filename = click.format_filename(session_file)
-    secho("RECORDING SESSION: {}".format(filename), fg="yellow", bold=True)
+    secho(f"RECORDING SESSION: {filename}", fg="yellow", bold=True)
 
     print_recorder_instructions()
 
@@ -572,7 +561,7 @@ def record(session_file, shell, prompt, alias, envvar):
     os.chdir(cwd)  # Reset cwd
 
     secho("FINISHED RECORDING SESSION", fg="yellow", bold=True)
-    secho("Writing to {0}...".format(filename), fg="cyan")
+    secho(f"Writing to {filename}...", fg="cyan")
     with open(session_file, "w", encoding="utf-8") as fp:
         fp.write(HEADER_TEMPLATE.format(shell=shell, prompt=prompt))
         write_directives(fp, "alias", alias)
@@ -581,8 +570,8 @@ def record(session_file, shell, prompt, alias, envvar):
         fp.write("".join(commands))
         fp.write("\n")
 
-    play_cmd = style("doitlive play {}".format(filename), bold=True)
-    echo("Done. Run {} to play back your session.".format(play_cmd))
+    play_cmd = style(f"doitlive play {filename}", bold=True)
+    echo(f"Done. Run {play_cmd} to play back your session.")
 
 
 if __name__ == "__main__":

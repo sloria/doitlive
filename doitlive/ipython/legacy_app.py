@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 """doitlive IPython support."""
-from __future__ import absolute_import, print_function
 
 from warnings import warn
 
@@ -20,25 +18,21 @@ from doitlive import RETURNS, wait_for, echo
 
 class _PlayerInterfaceEventLoopCallbacks(_InterfaceEventLoopCallbacks):
     def __init__(self, cli, on_feed_key):
-        super(_PlayerInterfaceEventLoopCallbacks, self).__init__(cli)
+        super().__init__(cli)
         self.on_feed_key = on_feed_key
 
     # Override _InterfaceEventLoopCallbacks
     def feed_key(self, key_press, *args, **kwargs):
         key_press = self.on_feed_key(key_press)
         if key_press is not None:
-            return super(_PlayerInterfaceEventLoopCallbacks, self).feed_key(
-                key_press, *args, **kwargs
-            )
+            return super().feed_key(key_press, *args, **kwargs)
 
 
 class _PlayerCommandLineInterface(CommandLineInterface):
     def __init__(
         self, application, eventloop=None, input=None, output=None, on_feed_key=None
     ):
-        super(_PlayerCommandLineInterface, self).__init__(
-            application, eventloop, input, output
-        )
+        super().__init__(application, eventloop, input, output)
         self.on_feed_key = on_feed_key
 
     # Override CommandLineInterface
@@ -56,7 +50,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
         self.current_command_index = 0
         # Index of current character in current command
         self.current_command_pos = 0
-        super(PlayerTerminalInteractiveShell, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def on_feed_key(self, key_press):
         """Handles the magictyping when a key is pressed"""
@@ -99,7 +93,6 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
     # Much of this is copy-and-pasted from the parent class implementation
     # due to lack of hooks
     def interact(self, display_banner=DISPLAY_BANNER_DEPRECATED):
-
         if display_banner is not DISPLAY_BANNER_DEPRECATED:
             warn(
                 "interact `display_banner` argument is deprecated since IPython 5.0. "
@@ -132,7 +125,7 @@ class PlayerTerminalInteractiveShell(TerminalInteractiveShell):
 
     # Override TerminalInteractiveShell
     def init_prompt_toolkit_cli(self):
-        super(PlayerTerminalInteractiveShell, self).init_prompt_toolkit_cli()
+        super().init_prompt_toolkit_cli()
         # override CommandLineInterface
         self.pt_cli = _PlayerCommandLineInterface(
             self._pt_app,
@@ -164,10 +157,3 @@ class PlayerTerminalIPythonApp(TerminalIPythonApp):
             user_ns=self.user_ns,
         )
         self.shell.configurables.append(self)
-
-
-def start_ipython_player(commands, speed=1):
-    """Starts a new magic IPython shell."""
-    PlayerTerminalIPythonApp.commands = commands
-    PlayerTerminalIPythonApp.speed = speed
-    PlayerTerminalIPythonApp.launch_instance()

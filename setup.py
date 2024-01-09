@@ -1,29 +1,35 @@
-# -*- coding: utf-8 -*-
 import codecs
 import re
 import sys
+
 from setuptools import setup
 
-
-INSTALL_REQUIRES = ["click>=4.0", "click-completion>=0.3.1", "click-didyoumean>=0.0.3"]
+INSTALL_REQUIRES = [
+    "click>=8.0,<9",
+    "click-completion>=0.3.1",
+    "click-didyoumean>=0.0.3",
+    "packaging",
+]
 
 if "win32" in str(sys.platform).lower():
     # Terminal colors for Windows
     INSTALL_REQUIRES.append("colorama>=0.2.4")
 
 EXTRAS_REQUIRE = {
-    "tests": [
-        "pytest",
-        'IPython<6; python_version < "3"',
-        'IPython==6.5.0; python_version >= "3"',
-    ],
+    "tests": ["pytest", "IPython"],
     "lint": [
-        "flake8==3.9.2",
-        'flake8-bugbear==20.11.1; python_version >= "3.5"',
-        "pre-commit==2.12.1",
+        "flake8==7.0.0",
+        "flake8-bugbear==23.12.2",
+        "pre-commit~=3.5",
+    ],
+    "docs": [
+        "sphinx==7.2.6",
+        "sphinx-issues==3.0.1",
     ],
 }
-EXTRAS_REQUIRE["dev"] = EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + ["tox"]
+EXTRAS_REQUIRE["dev"] = (
+    EXTRAS_REQUIRE["tests"] + EXTRAS_REQUIRE["lint"] + EXTRAS_REQUIRE["docs"] + ["tox"]
+)
 
 
 def find_version(fname):
@@ -59,6 +65,7 @@ setup(
     url="https://github.com/sloria/doitlive",
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
+    python_requires=">=3.8",
     license="MIT",
     zip_safe=False,
     keywords="doitlive cli live coding presentations shell",
@@ -66,14 +73,11 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Environment :: Console",
     ],
     packages=["doitlive"],

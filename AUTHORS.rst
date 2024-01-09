@@ -21,3 +21,6 @@ Contributors (chronological)
 - Tristan Le Guern `@Aversiste <https://github.com/Aversiste>`_
 - John Lehett `@jlehett <https://github.com/jlehett>`_
 - Tim Gates `@timgates42 <https://github.com/timgates42>`_
+- Matan Rosenberg `@matan129 <https://github.com/matan129>`_
+- Matthias Maennich  `@metti <https://github.com/metti>`_
+

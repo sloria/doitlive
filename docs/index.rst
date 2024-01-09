@@ -37,7 +37,7 @@ With pip:
     $ pip install doitlive
 
 
-Requires Python >= 2.7 or >= 3.5 with pip.
+Requires Python >= 3.8 with pip.
 
 Quickstart
 ----------
@@ -245,10 +245,6 @@ If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in
    %time fib(100)
 
    ```
-
-.. note::
-
-   Only IPython>=5.0,<7.0 is supported.
 
 
 Shell completion

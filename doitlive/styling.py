@@ -1,18 +1,16 @@
-# -*- coding: utf-8 -*-
 """Functions and classes for styling sessions."""
-import os
-import getpass
 import datetime as dt
+import getpass
+import os
 import socket
 from collections import OrderedDict
 
 import click
-from click import style
 from click import echo as click_echo
+from click import style
 from click.termui import strip_ansi
 
 from doitlive.exceptions import ConfigurationError
-from doitlive.compat import PY2
 from doitlive.version_control import (
     get_current_git_branch,
     get_current_hg_bookmark,
@@ -25,42 +23,42 @@ env = os.environ
 
 THEMES = OrderedDict(
     [
-        ("default", u"{user.cyan.bold}@{hostname.blue}:{dir.green} $"),
+        ("default", "{user.cyan.bold}@{hostname.blue}:{dir.green} $"),
         (
             "sorin",
-            u"{cwd.blue} {vcs_branch.cyan} "
+            "{cwd.blue} {vcs_branch.cyan} "
             "{r_angle.red}{r_angle.yellow}{r_angle.green}",
         ),
-        ("stev", u"{cwd.blue} {vcs_branch.cyan} " "{r_angle.green}"),
-        ("damoekri", u"{dir.cyan} {r_angle.green}"),
-        ("smiley", u"{vcs_branch.blue.paren}{dir.white.bold} {TTY.GREEN}ツ{TTY.RESET}"),
-        ("nicolauj", u"{r_angle.white}"),
+        ("stev", "{cwd.blue} {vcs_branch.cyan} " "{r_angle.green}"),
+        ("damoekri", "{dir.cyan} {r_angle.green}"),
+        ("smiley", "{vcs_branch.blue.paren}{dir.white.bold} {TTY.GREEN}ツ{TTY.RESET}"),
+        ("nicolauj", "{r_angle.white}"),
         (
             "steeef",
-            u"{user.red} at {hostname.yellow} in {cwd.green} "
-            u"{vcs_branch.cyan.paren}\n$",
+            "{user.red} at {hostname.yellow} in {cwd.green} "
+            "{vcs_branch.cyan.paren}\n$",
         ),
-        ("redhat", u"[{user}@{hostname} {dir}]$"),
-        ("redhat_color", u"[{user.red.bold}@{hostname.red} {dir.blue}]$"),
-        ("walters", u"{user}@{hostname.underlined}>"),
-        ("walters_color", u"{user.cyan.bold}@{hostname.blue.underlined}>"),
-        ("minimal", u"{dir} {vcs_branch.square} »"),
-        ("minimal_color", u"{dir.cyan} {vcs_branch.blue.square} »"),
-        ("osx", u"{hostname}:{dir} {user}$"),
-        ("osx_color", u"{hostname.blue}:{dir.green} {user.cyan}$"),
-        ("pws", u"{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%"),
-        ("robbyrussell", u"{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}"),
+        ("redhat", "[{user}@{hostname} {dir}]$"),
+        ("redhat_color", "[{user.red.bold}@{hostname.red} {dir.blue}]$"),
+        ("walters", "{user}@{hostname.underlined}>"),
+        ("walters_color", "{user.cyan.bold}@{hostname.blue.underlined}>"),
+        ("minimal", "{dir} {vcs_branch.square} »"),
+        ("minimal_color", "{dir.cyan} {vcs_branch.blue.square} »"),
+        ("osx", "{hostname}:{dir} {user}$"),
+        ("osx_color", "{hostname.blue}:{dir.green} {user.cyan}$"),
+        ("pws", "{TTY.BOLD}+{TTY.YELLOW}{now:%I:%M}{TTY.RESET}%"),
+        ("robbyrussell", "{r_arrow.red} {dir.cyan} {vcs_branch.red.paren.git}"),
         (
             "giddie",
-            u"{user.magenta}@{hostname.yellow}|{cwd.green} "
-            u"on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}",
+            "{user.magenta}@{hostname.yellow}|{cwd.green} "
+            "on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}",
         ),
-        ("deadsimple", u"$"),
+        ("deadsimple", "$"),
     ]
 )
 
 
-class Style(object):
+class Style:
     """Descriptor that adds ANSI styling to a string when accessed."""
 
     def __init__(self, **kwargs):
@@ -70,13 +68,7 @@ class Style(object):
         return TermString(style(instance, **self.kwargs))
 
 
-if PY2:
-    text_type = unicode  # noqa
-else:
-    text_type = str  # noqa
-
-
-class TermString(text_type):
+class TermString(str):
     """A string-like object that can be formatted with ANSI styles. Useful for
     styling strings within a string.format "template."
     """
@@ -112,47 +104,47 @@ class TermString(text_type):
 
     def _bracketed(self, left, right):
         if strip_ansi(self):
-            return TermString(u"".join([left, self, right]))
+            return TermString("".join([left, self, right]))
         else:
-            return TermString(u"\b")
+            return TermString("\b")
 
     @property
     def paren(self):
-        return self._bracketed(u"(", u")")
+        return self._bracketed("(", ")")
 
     @property
     def square(self):
-        return self._bracketed(u"[", u"]")
+        return self._bracketed("[", "]")
 
     @property
     def curly(self):
-        return self._bracketed(u"{", u"}")
+        return self._bracketed("{", "}")
 
     def _vcs(self, vcsname):
         if strip_ansi(self):
-            return TermString(u"{}:{}".format(style(vcsname, fg="blue"), self))
+            return TermString("{}:{}".format(style(vcsname, fg="blue"), self))
         else:
-            return TermString(u"\b")
+            return TermString("\b")
 
     @property
     def git(self):
-        return self._vcs(u"git")
+        return self._vcs("git")
 
     @property
     def hg(self):
-        return self._vcs(u"hg")
+        return self._vcs("hg")
 
 
 # Some common symbols used in prompts
-R_ANGLE = TermString(u"❯")
-R_ANGLE_DOUBLE = TermString(u"»")
-R_ARROW = TermString(u"➔")
-DOLLAR = TermString(u"$")
-PERCENT = TermString(u"%")
-NEW_LINE = TermString(u"\n")
+R_ANGLE = TermString("❯")
+R_ANGLE_DOUBLE = TermString("»")
+R_ARROW = TermString("➔")
+DOLLAR = TermString("$")
+PERCENT = TermString("%")
+NEW_LINE = TermString("\n")
 
 
-class ANSICode(object):
+class ANSICode:
     """Descriptor that returns the ANSI code the given styles passed to
     the constructor.
     """
@@ -165,7 +157,7 @@ class ANSICode(object):
         return style("", reset=reset, **self.styles)
 
 
-class TTY(object):
+class TTY:
     """Namespace for all ANSI escape sequences provided by click."""
 
     BLUE = ANSICode(fg="blue")
@@ -188,7 +180,7 @@ def _branch_to_term_string(branch_string):
         return TermString(branch_string)
     else:
         # Prevent extra space when not in a VCS repo
-        return TermString(u"\b")
+        return TermString("\b")
 
 
 def format_prompt(prompt):

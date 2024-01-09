@@ -1,12 +1,20 @@
 Changelog
 ---------
 
-(unreleased)
-************
+5.0.0 (unreleased)
+******************
 
 Support:
 
-* Test against Python 3.8 and 3.9.
+* Drop support for Python 2 (:issue:`202`), Python 3.6, Python 3.7, IPython 5, IPython 6, IPython 7, and click<8.
+
+4.4.0 (2022-08-14)
+******************
+
+Support:
+
+* Support IPython 7 and 8 (:issue:`91`). Thanks :user:`matan129` for the PR.
+* Test against Python 3.8, 3.9, and 3.10.
 
 4.3.0 (2019-04-07)
 ******************
