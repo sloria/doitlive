@@ -5,7 +5,7 @@ import sys
 from setuptools import setup
 
 INSTALL_REQUIRES = [
-    "click>=4.0,<9",
+    "click>=8.0,<9",
     "click-completion>=0.3.1",
     "click-didyoumean>=0.0.3",
     "packaging",
