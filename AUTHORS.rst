@@ -23,4 +23,5 @@ Contributors (chronological)
 - Tim Gates `@timgates42 <https://github.com/timgates42>`_
 - Matan Rosenberg `@matan129 <https://github.com/matan129>`_
 - Matthias Maennich  `@metti <https://github.com/metti>`_
+- Dvir Bechor  `@DvirB10 <https://github.com/DvirB10>`_
 

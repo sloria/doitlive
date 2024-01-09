@@ -15,6 +15,7 @@ env = os.environ
 ESC = "\x1b"
 BACKSPACE = "\x7f"
 CTRLC = "\x03"
+CTRLL = "\x0C"
 CTRLZ = "\x1a"
 TAB = "\x09"
 RETURNS = {"\r", "\n"}
@@ -45,6 +46,11 @@ def magictype(text, prompt_template="default", speed=1):
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
+            elif in_char == CTRLL:
+                click.clear()
+                echo_prompt(prompt_template)
+                cursor_position = 0
+                continue
             elif in_char == TAB:
                 return_to_regular_type = True
                 break
@@ -145,6 +151,11 @@ def regulartype(prompt_template="default"):
             if in_char in {ESC, CTRLC}:
                 echo(carriage_return=True)
                 raise click.Abort()
+            elif in_char == CTRLL:
+                click.clear()
+                echo_prompt(prompt_template)
+                cursor_position = 0
+                continue
             elif in_char == TAB:
                 echo("\r", nl=True)
                 return in_char
