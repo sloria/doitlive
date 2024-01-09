@@ -10,6 +10,7 @@ Features:
 
 Support:
 
+* Support Python 3.11 and 3.12.
 * Drop support for Python 2 (:issue:`202`), Python 3.6, Python 3.7, IPython 5, IPython 6, IPython 7, and click<8.
 
 4.4.0 (2022-08-14)
