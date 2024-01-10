@@ -198,7 +198,15 @@ unsets an environment variable.
 #doitlive commentecho: [true|false]
 ************************************
 
-Whether to echo comments or not. If enabled, non-magic comments will be echoed back in bold yellow before each prompt. This can be useful for providing some annotations for yourself and the audience.
+Whether to echo comments or not. If enabled, non-magic comments will be echoed back before each prompt. This can be useful for providing some annotations for yourself and the audience.
+Non-magic comments can be optionally preceded by markup to enable different colors to be used (for callouts) and blank lines added before and/or after the comment.
+
+   #XA:B#  This is the comment that will be coloured
+
+in which:
+- X is an optional letter (T for title, W for warning, I for info)
+- A is an optional number, which indicates the number of blank lines to add before the comment (defaults to 0)
+- B is an optional number, which indicates the number of blank lines to add after the comment (defaults to 0)
 
 
 Python mode
