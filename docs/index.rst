@@ -200,6 +200,13 @@ unsets an environment variable.
 
 Whether to echo comments or not. If enabled, non-magic comments will be echoed back in bold yellow before each prompt. This can be useful for providing some annotations for yourself and the audience.
 
+#doitlive anchor: <name>
+************************
+
+anchors can be used to mark sections in the .sh file. 
+Command line arguments ``--from-anchor`` and ``--to-anchor`` can then be used to restrict the play to just the commands between those 2 anchors.
+Each of those is optional, and if missing, will be the start and end of the file (as normal)
+
 
 Python mode
 -----------
