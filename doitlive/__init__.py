@@ -4,6 +4,7 @@ doitlive
 
 A tool for "live" presentations in the terminal.
 """
+
 from .cli import SessionState
 from .python_consoles import PythonRecorderConsole, PythonPlayerConsole
 from .styling import THEMES, Style, TermString, TTY, echo, echo_prompt, format_prompt

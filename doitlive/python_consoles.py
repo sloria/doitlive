@@ -1,6 +1,7 @@
 """InteractiveConsole subclasses for recording and playback
 of canned Python statements.
 """
+
 from code import InteractiveConsole
 import sys
 
