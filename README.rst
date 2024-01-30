@@ -14,10 +14,6 @@ doitlive
   :alt: pypi badge
   :target: https://pypi.org/project/doitlive/
 
-.. image:: https://badgen.net/badge/code%20style/black/000
-   :target: https://github.com/ambv/black
-   :alt: Code style: Black
-
 
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
