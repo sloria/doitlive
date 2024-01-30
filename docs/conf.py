@@ -1,7 +1,6 @@
 import importlib.metadata
-import sys
 import os
-
+import sys
 
 sys.path.append(os.path.abspath("_themes"))
 

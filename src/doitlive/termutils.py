@@ -27,8 +27,8 @@ def raw_mode():
         yield  # needed for the empty context manager to work
     else:
         #  imports are placed here because this will fail under Windows
-        import tty
         import termios
+        import tty
 
         if not isatty(sys.stdin):
             f = open("/dev/tty")

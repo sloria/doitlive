@@ -1,11 +1,11 @@
 """InteractiveConsole subclasses for recording and playback
 of canned Python statements.
 """
-from code import InteractiveConsole
 import sys
+from code import InteractiveConsole
 
+from doitlive.keyboard import RETURNS, magictype, wait_for
 from doitlive.styling import echo_prompt
-from doitlive.keyboard import magictype, wait_for, RETURNS
 
 
 class PythonPlayerConsole(InteractiveConsole):
@@ -43,11 +43,11 @@ class PythonPlayerConsole(InteractiveConsole):
     def interact(self, banner=None):
         """Run an interactive session."""
         try:
-            sys.ps1
+            sys.ps1  # noqa: B018
         except AttributeError:
             sys.ps1 = ">>>"
         try:
-            sys.ps2
+            sys.ps2  # noqa: B018
         except AttributeError:
             sys.ps2 = "... "
         cprt = (

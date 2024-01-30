@@ -1,15 +1,14 @@
+import getpass
 import os
 import random
-import getpass
-from contextlib import contextmanager
 import subprocess
+from contextlib import contextmanager
 
 import pytest
 
 import doitlive
-from doitlive.cli import cli
 from doitlive.__version__ import __version__
-
+from doitlive.cli import cli
 
 # Check if git is installed
 git_available = None
