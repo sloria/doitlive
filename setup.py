@@ -8,12 +8,7 @@ INSTALL_REQUIRES = [
     "click>=8.0,<9",
     "click-completion>=0.3.1",
     "click-didyoumean>=0.0.3",
-    "packaging",
 ]
-
-if "win32" in str(sys.platform).lower():
-    # Terminal colors for Windows
-    INSTALL_REQUIRES.append("colorama>=0.2.4")
 
 EXTRAS_REQUIRE = {
     "tests": ["pytest", "IPython"],
