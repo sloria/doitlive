@@ -37,8 +37,6 @@ With pip:
     $ pip install doitlive
 
 
-Requires Python >= 3.8 with pip.
-
 Quickstart
 ----------
 
@@ -227,7 +225,7 @@ doitlive supports autotyping in a Python console. You can enter Python mode in a
 IPython mode
 ------------
 
-If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in ``ipython`` mode. Just enclose your Python code in triple-backticks, like so:
+If you have `IPython <https://ipython.org/>`_ installed, you can run doitlive in ``ipython`` mode. Enclose your Python code in triple-backticks, like so:
 
 .. code-block:: bash
 
