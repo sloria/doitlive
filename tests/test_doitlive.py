@@ -1,5 +1,5 @@
-import importlib.metadata
 import getpass
+import importlib.metadata
 import os
 import random
 import subprocess
