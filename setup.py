@@ -24,7 +24,7 @@ EXTRAS_REQUIRE = {
     ],
     "docs": [
         "sphinx==7.2.6",
-        "sphinx-issues==3.0.1",
+        "sphinx-issues==4.0.0",
     ],
 }
 EXTRAS_REQUIRE["dev"] = (
