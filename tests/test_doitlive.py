@@ -1,3 +1,4 @@
+import importlib.metadata
 import getpass
 import os
 import random
@@ -7,7 +8,6 @@ from contextlib import contextmanager
 import pytest
 
 import doitlive
-from doitlive.__version__ import __version__
 from doitlive.cli import cli
 
 # Check if git is installed
@@ -209,7 +209,7 @@ def test_completion_fails_if_SHELL_is_unset(runner, monkeypatch):
 
 def test_version(runner):
     result = runner.invoke(cli, ["--version"])
-    assert __version__ in result.output
+    assert importlib.metadata.version("doitlive") in result.output
     result2 = runner.invoke(cli, ["-v"])
     assert result.output == result2.output
 
