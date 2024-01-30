@@ -5,11 +5,10 @@ import itertools as it
 from click import Abort
 from IPython.terminal.interactiveshell import TerminalInteractiveShell
 from IPython.terminal.ipapp import TerminalIPythonApp
-
 from prompt_toolkit.key_binding import KeyPress
 from prompt_toolkit.keys import Keys
 
-from doitlive import RETURNS, wait_for, echo
+from doitlive import RETURNS, echo, wait_for
 
 
 class DoitliveKeyProcessor:

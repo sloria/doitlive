@@ -1,9 +1,6 @@
-import sys
+import importlib.metadata
 import os
-import datetime as dt
-
-sys.path.insert(0, os.path.abspath(".."))
-import doitlive  # noqa: E402
+import sys
 
 sys.path.append(os.path.abspath("_themes"))
 
@@ -20,9 +17,9 @@ master_doc = "index"
 
 # General information about the project.
 project = "doitlive"
-copyright = f"2014-{dt.datetime.utcnow():%Y}"
+copyright = "Steven Loria and contributors"
 
-version = release = doitlive.__version__
+version = release = importlib.metadata.version("doitlive")
 
 exclude_patterns = ["_build"]
 pygments_style = "flask_theme_support.FlaskyStyle"

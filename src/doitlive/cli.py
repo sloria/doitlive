@@ -1,4 +1,5 @@
 import functools
+import importlib.metadata
 import os
 import re
 import shlex
@@ -11,7 +12,6 @@ import click_completion
 from click import secho, style
 from click_didyoumean import DYMGroup
 
-from doitlive.__version__ import __version__
 from doitlive.exceptions import SessionError
 from doitlive.keyboard import (
     RETURNS,
@@ -208,10 +208,10 @@ def run(
             while more:  # slurp up all the python code
                 try:
                     py_command = commands[i].rstrip()
-                except IndexError:
+                except IndexError as error:
                     raise SessionError(
-                        "Unmatched {} code block in " "session file.".format(shell_name)
-                    )
+                        f"Unmatched {shell_name} code block in " "session file."
+                    ) from error
                 i += 1
                 if py_command.startswith("```"):
                     i += 1
@@ -248,7 +248,7 @@ def run(
 # #######
 
 
-@click.version_option(__version__, "--version", "-v")
+@click.version_option(importlib.metadata.version("doitlive"), "--version", "-v")
 @click.group(cls=DYMGroup, context_settings={"help_option_names": ("-h", "--help")})
 def cli():
     """doitlive: A tool for "live" presentations in the terminal
@@ -328,8 +328,9 @@ def completion():
         )
     else:
         echo(
-            "Please ensure that the {SHELL} environment "
-            "variable is set.".format(SHELL=style("SHELL", bold=True))
+            "Please ensure that the {SHELL} environment " "variable is set.".format(
+                SHELL=style("SHELL", bold=True)
+            )
         )
         sys.exit(1)
 
@@ -520,9 +521,7 @@ def print_recorder_instructions():
         )
     )
     echo(
-        "To view this help message again, enter {}.".format(
-            style(HELP_COMMANDS[0], bold=True)
-        )
+        f"To view this help message again, enter {style(HELP_COMMANDS[0], bold=True)}."
     )
     echo()
 

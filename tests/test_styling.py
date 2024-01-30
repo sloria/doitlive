@@ -2,7 +2,7 @@ import click
 import pytest
 from click import style
 
-from doitlive import TermString, TTY
+from doitlive import TTY, TermString
 
 
 class TestTermString:

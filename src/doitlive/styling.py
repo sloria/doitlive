@@ -186,8 +186,8 @@ def _branch_to_term_string(branch_string):
 def format_prompt(prompt):
     try:
         return prompt.format(**get_prompt_state())
-    except KeyError:
-        raise ConfigurationError("Invalid variable in prompt template.")
+    except KeyError as error:
+        raise ConfigurationError("Invalid variable in prompt template.") from error
 
 
 def echo(

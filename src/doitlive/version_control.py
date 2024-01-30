@@ -1,8 +1,8 @@
 """Utility functions to get information about the
 git or mercurial repository in the working directory
 """
-import subprocess
 import os
+import subprocess
 
 
 def get_current_git_branch():

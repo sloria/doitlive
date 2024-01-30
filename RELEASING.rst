@@ -2,8 +2,8 @@
 Releasing
 =========
 
-* Bump version in ``doitlive/__version__.py``.
-* Update ``CHANGELOG.rst``.
+* Bump version in ``pyproject.toml``.
+* Update ``CHANGELOG.rst`` with today's date.
 * Commit: ``git add . && git commit -m "Bump version and update changelog"``
 * Tag: ``git tag x.y.z``
 * Push (this will trigger a release to PyPI): ``git push --tags origin dev``

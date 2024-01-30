@@ -1,4 +1,5 @@
 import os
+
 import click
 import pytest
 from prompt_toolkit.key_binding import KeyPress
