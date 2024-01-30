@@ -14,11 +14,7 @@ from .version_control import (
     get_current_vcs_branch,
 )
 from .exceptions import DoItLiveError, ConfigurationError, SessionError
-from .__version__ import __version__
 
-__author__ = "Steven Loria"
-__license__ = "MIT"
-__version__ = __version__
 __all__ = [
     "SessionState",
     "PythonRecorderConsole",

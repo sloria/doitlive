@@ -1,3 +1,60 @@
-[tool.black]
-line-length = 88
-target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+[project]
+name = "doitlive"
+version = "5.0.0"
+description = "Because sometimes you need to do it live."
+readme = "README.rst"
+license = { file = "LICENSE" }
+authors = [{ name = "Steven Loria", email = "sloria1@gmail.com" }]
+classifiers = [
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Environment :: Console",
+]
+keywords = ["doitlive", "cli", "live", "coding", "presentations", "shell"]
+requires-python = ">=3.8"
+dependencies = [
+  "click>=8.0,<9",
+  "click-completion>=0.3.1",
+  "click-didyoumean>=0.0.3",
+]
+
+[project.urls]
+Issues = "https://github.com/sloria/doitlive/issues"
+Source = "https://github.com/sloria/doitlive/"
+
+[project.optional-dependencies]
+tests = ["pytest", "IPython>=8"]
+docs = ["sphinx==7.2.6", "sphinx-issues==4.0.0"]
+dev = ["doitlive[tests]", "tox", "pre-commit~=3.6"]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.sdist]
+include = ["tests/", "CONTRIBUTING.md", "tox.ini"]
+exclude = ["docs/_build/"]
+
+[tool.ruff]
+src = ["src"]
+fix = true
+show-fixes = true
+show-source = true
+
+[tool.ruff.lint]
+ignore = ["E203", "E266", "E501", "E731"]
+select = [
+  "B",  # flake8-bugbear
+  "E",  # pycodestyle error
+  "F",  # pyflakes
+  "I",  # isort
+  "UP", # pyupgrade
+  "W",  # pycodestyle warning
+]
