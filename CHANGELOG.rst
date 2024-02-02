@@ -6,7 +6,11 @@ Changelog
 
 Features:
 
-* Add ``pure`` theme.
+* Add ``pure`` theme (:pr:`264`).
+
+Other changes:
+
+* Remove ``packaging`` and ``colorama`` as explicit dependencies (:pr:`262`).
 
 5.0.0 (2024-01-09)
 ******************
