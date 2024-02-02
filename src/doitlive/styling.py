@@ -54,6 +54,7 @@ THEMES = OrderedDict(
             "on {vcs_branch.magenta}\n{TTY.BLUE}±{TTY.RESET}",
         ),
         ("deadsimple", "$"),
+        ("pure", "{cwd.blue} {vcs_branch.bright_black}\n{r_angle.magenta}"),
     ]
 )
 
