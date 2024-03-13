@@ -1,6 +1,7 @@
 """Utility functions to get information about the
 git or mercurial repository in the working directory
 """
+
 import os
 import subprocess
 

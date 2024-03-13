@@ -511,14 +511,10 @@ def print_recorder_instructions():
         "Enter " + style(f"{STOP_COMMAND}", bold=True) + " when you are done recording."
     )
     echo(
-        "To preview the commands in the buffer, enter {}.".format(
-            style(PREVIEW_COMMAND, bold=True)
-        )
+        f"To preview the commands in the buffer, enter {style(PREVIEW_COMMAND, bold=True)}."
     )
     echo(
-        "To undo the last command in the buffer, enter {}.".format(
-            style(UNDO_COMMAND, bold=True)
-        )
+        f"To undo the last command in the buffer, enter {style(UNDO_COMMAND, bold=True)}."
     )
     echo(
         f"To view this help message again, enter {style(HELP_COMMANDS[0], bold=True)}."

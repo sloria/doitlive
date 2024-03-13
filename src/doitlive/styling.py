@@ -1,4 +1,5 @@
 """Functions and classes for styling sessions."""
+
 import datetime as dt
 import getpass
 import os

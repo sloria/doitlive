@@ -4,6 +4,7 @@ doitlive
 
 A tool for "live" presentations in the terminal.
 """
+
 from .cli import SessionState
 from .exceptions import ConfigurationError, DoItLiveError, SessionError
 from .keyboard import BACKSPACE, CTRLC, ESC, RETURNS, magicrun, magictype, wait_for
