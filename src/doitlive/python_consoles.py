@@ -57,7 +57,7 @@ class PythonPlayerConsole(InteractiveConsole):
         if banner is None:
             self.write(f"Python {sys.version} on {sys.platform}\n{cprt}\n")
         else:
-            self.write("%s\n" % str(banner))
+            self.write(f"{banner}\n")
         self.run_commands()
 
 
