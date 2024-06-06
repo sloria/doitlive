@@ -2,16 +2,18 @@
 doitlive
 ========
 
-.. image:: https://badgen.net/homebrew/v/doitlive
+|homebrew| |build-status| |pypi|
+
+
+.. |homebrew| image:: https://badgen.net/homebrew/v/doitlive
   :alt: homebrew badge
   :target: https://github.com/Homebrew/homebrew-core/blob/master/Formula/d/doitlive.rb
-.. image:: https://github.com/sloria/doitlive/actions/workflows/build-release.yml/badge.svg
-  :alt: Build Status
+.. |build-status| image:: https://github.com/sloria/doitlive/actions/workflows/build-release.yml/badge.svg
+  :alt: build status
   :target: https://github.com/sloria/doitlive/actions/workflows/build-release.yml
-.. image:: https://badgen.net/pypi/v/doitlive
+.. |pypi| image:: https://badgen.net/pypi/v/doitlive
   :alt: pypi badge
   :target: https://pypi.org/project/doitlive/
-
 
 `doitlive` is a tool for live presentations in the terminal. It reads a file of shell commands and replays the commands in a fake terminal session as you type random characters.
 
