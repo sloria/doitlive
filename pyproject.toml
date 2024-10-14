@@ -31,7 +31,7 @@ Source = "https://github.com/sloria/doitlive/"
 
 [project.optional-dependencies]
 tests = ["pytest", "IPython>=8"]
-docs = ["sphinx==8.1.3", "sphinx-issues==4.1.0"]
+docs = ["sphinx==8.1.3", "sphinx-issues==5.0.0"]
 dev = ["doitlive[tests]", "tox", "pre-commit>=3.6,<5.0"]
 
 [project.scripts]
