@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+5.2.0 (unreleased)
+******************
+
+Other changes:
+
+- Drop support for Python 3.8.
+- Test against Python 3.13.
+
 5.1.0 (2024-02-02)
 ******************
 
