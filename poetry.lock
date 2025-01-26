@@ -313,6 +313,23 @@ files = [
 traitlets = "*"
 
 [[package]]
+name = "mss"
+version = "10.0.0"
+description = "An ultra fast cross-platform multiple screenshots module in pure python using ctypes."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "mss-10.0.0-py3-none-any.whl", hash = "sha256:82cf6460a53d09e79b7b6d871163c982e6c7e9649c426e7b7591b74956d5cb64"},
+    {file = "mss-10.0.0.tar.gz", hash = "sha256:d903e0d51262bf0f8782841cf16eaa6d7e3e1f12eae35ab41c2e318837c6637f"},
+]
+
+[package.extras]
+dev = ["build (==1.2.2.post1)", "mypy (==1.13.0)", "ruff (==0.7.3)", "twine (==5.1.1)"]
+docs = ["sphinx (==8.1.3)"]
+tests = ["numpy (==2.1.3)", "pillow (==11.0.0)", "pytest (==8.3.3)", "pytest-cov (==6.0.0)", "pytest-rerunfailures (==14.0.0)", "pyvirtualdisplay (==3.0)"]
+
+[[package]]
 name = "numpy"
 version = "2.2.2"
 description = "Fundamental package for array computing in Python"
@@ -680,4 +697,4 @@ tests = ["IPython", "pytest"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10"
-content-hash = "d42c1a650dbe69bbf0636a556b221a8593fa4eeff4d9ab87218cde4d679d952b"
+content-hash = "7ccdb52629e834ff012d91164ddcc0beb52af72995405675f371e5910632af3c"

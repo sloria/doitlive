@@ -24,6 +24,7 @@ dependencies = [
   "click-didyoumean>=0.0.3",
   "opencv-python (>=4.11.0.86,<5.0.0.0)",
   "ipython (>=8.31.0,<9.0.0)",
+  "mss (>=10.0.0,<11.0.0)",
 ]
 
 [project.urls]
