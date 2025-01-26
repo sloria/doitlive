@@ -10,7 +10,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -18,12 +17,13 @@ classifiers = [
   "Environment :: Console",
 ]
 keywords = ["doitlive", "cli", "live", "coding", "presentations", "shell"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "click>=8.0,<9",
   "click-completion>=0.3.1",
   "click-didyoumean>=0.0.3",
   "opencv-python (>=4.11.0.86,<5.0.0.0)",
+  "ipython (>=8.31.0,<9.0.0)",
 ]
 
 [project.urls]
@@ -62,3 +62,7 @@ select = [
   "UP", # pyupgrade
   "W",  # pycodestyle warning
 ]
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+
