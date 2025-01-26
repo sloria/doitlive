@@ -22,9 +22,9 @@ from doitlive.keyboard import (
     wait_for,
 )
 from doitlive.python_consoles import PythonRecorderConsole, start_python_player
+from doitlive.screencast import ScreenCaster
 from doitlive.styling import THEMES, echo, echo_prompt, format_prompt
 from doitlive.termutils import get_default_shell
-from doitlive.screencast import ScreenCaster
 
 env = os.environ
 click_completion.init()
@@ -197,7 +197,9 @@ def run(
             # Handle 'export' and 'alias' commands by storing them in SessionState
             elif command_as_list and command_as_list[0] in ["alias", "export"]:
                 magictype(
-                    command, prompt_template=state["prompt_template"], speed=state["speed"]
+                    command,
+                    prompt_template=state["prompt_template"],
+                    speed=state["speed"],
                 )
                 # Store the raw commands instead of using add_envvar and add_alias
                 # to avoid having to parse the command ourselves

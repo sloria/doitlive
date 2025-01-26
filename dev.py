@@ -3,7 +3,6 @@ from time import sleep
 
 from doitlive.screencast import ScreenCaster
 
-
 PATH = Path("videos/dev.mp4")
 
 
@@ -13,7 +12,6 @@ def emulate_script(seconds):
         sleep(1.0)
 
     print("Done")
-
 
 
 with ScreenCaster(PATH) as screencaster:

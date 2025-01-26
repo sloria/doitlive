@@ -1,11 +1,11 @@
 import threading
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Self
 
 import cv2
-import numpy as np
 import mss
+import numpy as np
 
 
 class ScreenCaster:
@@ -40,10 +40,11 @@ class ScreenCaster:
                 if time_to_wait > 0:
                     time.sleep(time_to_wait)
 
-
     def __enter__(self) -> Self:
         print("Start recording...")
-        self._buffer = cv2.VideoWriter(str(self.filepath), self._codec, self._fps, (self.width, self.height))
+        self._buffer = cv2.VideoWriter(
+            str(self.filepath), self._codec, self._fps, (self.width, self.height)
+        )
         self._is_recording = True
         self._recoding_thread = threading.Thread(target=self.record)
         self._recoding_thread.start()
@@ -55,5 +56,5 @@ class ScreenCaster:
         self._is_recording = False
         if self._recoding_thread.is_alive():
             self._recoding_thread.join()
-        
+
         self._buffer.release()
