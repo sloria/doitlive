@@ -51,9 +51,7 @@ class PythonPlayerConsole(InteractiveConsole):
             sys.ps2  # noqa: B018
         except AttributeError:
             sys.ps2 = "... "
-        cprt = (
-            'Type "help", "copyright", "credits" or "license" for ' "more information."
-        )
+        cprt = 'Type "help", "copyright", "credits" or "license" for more information.'
         if banner is None:
             self.write(f"Python {sys.version} on {sys.platform}\n{cprt}\n")
         else:

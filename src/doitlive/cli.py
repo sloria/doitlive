@@ -210,7 +210,7 @@ def run(
                     py_command = commands[i].rstrip()
                 except IndexError as error:
                     raise SessionError(
-                        f"Unmatched {shell_name} code block in " "session file."
+                        f"Unmatched {shell_name} code block in session file."
                     ) from error
                 i += 1
                 if py_command.startswith("```"):
@@ -328,7 +328,7 @@ def completion():
         )
     else:
         echo(
-            "Please ensure that the {SHELL} environment " "variable is set.".format(
+            "Please ensure that the {SHELL} environment variable is set.".format(
                 SHELL=style("SHELL", bold=True)
             )
         )
@@ -358,9 +358,7 @@ SHELL_OPTION = click.option(
     "-S",
     metavar="<shell>",
     default=get_default_shell,
-    help=(
-        "The shell to use. " "[default: $DOITLIVE_INTERPRETER or $SHELL or /bin/bash]"
-    ),
+    help=("The shell to use. [default: $DOITLIVE_INTERPRETER or $SHELL or /bin/bash]"),
     show_default=False,
 )
 

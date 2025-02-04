@@ -27,17 +27,15 @@ THEMES = OrderedDict(
         ("default", "{user.cyan.bold}@{hostname.blue}:{dir.green} $"),
         (
             "sorin",
-            "{cwd.blue} {vcs_branch.cyan} "
-            "{r_angle.red}{r_angle.yellow}{r_angle.green}",
+            "{cwd.blue} {vcs_branch.cyan} {r_angle.red}{r_angle.yellow}{r_angle.green}",
         ),
-        ("stev", "{cwd.blue} {vcs_branch.cyan} " "{r_angle.green}"),
+        ("stev", "{cwd.blue} {vcs_branch.cyan} {r_angle.green}"),
         ("damoekri", "{dir.cyan} {r_angle.green}"),
         ("smiley", "{vcs_branch.blue.paren}{dir.white.bold} {TTY.GREEN}ツ{TTY.RESET}"),
         ("nicolauj", "{r_angle.white}"),
         (
             "steeef",
-            "{user.red} at {hostname.yellow} in {cwd.green} "
-            "{vcs_branch.cyan.paren}\n$",
+            "{user.red} at {hostname.yellow} in {cwd.green} {vcs_branch.cyan.paren}\n$",
         ),
         ("redhat", "[{user}@{hostname} {dir}]$"),
         ("redhat_color", "[{user.red.bold}@{hostname.red} {dir.blue}]$"),
