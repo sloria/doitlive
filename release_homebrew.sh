@@ -2,6 +2,8 @@
 # Sends a PR to homebrew-core for a new version of doitlive
 # Usage: ./release_homebrew.sh https://files.pythonhosted.org/packages/8c/41/b08e2883c256d52f63f00f622cf8a33d3bf36bb5714af337e67476f8b3fe/doitlive-2.8.0.tar.gz
 
+set -euo pipefail
+
 # Validate argument
 [ "$#" -eq 1 ] || { echo 'ERROR: Must pass a URL'; exit 1; }
 echo $1 | grep -q '^https://files\.pythonhosted\.org' || { echo 'ERROR: URL must start with https://files.pythonhosted.org'; exit 1; }
