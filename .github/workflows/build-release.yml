@@ -13,8 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: "3.9-ipython8", python: "3.9", tox: py39-ipython8 }
-          - { name: "3.13-ipython8", python: "3.13", tox: py13-ipython8 }
+          - { name: "3.10-ipython8", python: "3.10", tox: py310-ipython8 }
+          - { name: "3.14-ipython9", python: "3.14", tox: py314-ipython9 }
     steps:
       - uses: actions/checkout@v4.0.0
       - uses: actions/setup-python@v5
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - name: Install pypa/build
         run: python -m pip install build
       - name: Build a binary wheel and a source tarball
@@ -53,7 +53,7 @@ jobs:
       - uses: actions/checkout@v4.0.0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - run: python -m pip install tox
       - run: python -m tox -elint
   publish-to-pypi:

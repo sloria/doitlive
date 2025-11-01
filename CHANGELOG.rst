@@ -10,9 +10,8 @@ Fixes:
 
 Other changes:
 
-- Drop support for Python 3.8.
-- Test against Python 3.13.
-- Drop support for IPython 8.
+- Drop support for Python 3.8 and 3.9, which are EOL.
+- Test against Python 3.14.
 
 5.1.0 (2024-02-02)
 ******************

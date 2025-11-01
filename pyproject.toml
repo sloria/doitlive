@@ -10,15 +10,15 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Environment :: Console",
 ]
 keywords = ["doitlive", "cli", "live", "coding", "presentations", "shell"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
   "click>=8.0,<9",
   "click-completion>=0.3.1",
