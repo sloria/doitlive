@@ -6,12 +6,13 @@ from click import Abort
 from IPython.terminal.interactiveshell import TerminalInteractiveShell
 from IPython.terminal.ipapp import TerminalIPythonApp
 from prompt_toolkit.key_binding import KeyPress
+from prompt_toolkit.key_binding.key_processor import KeyProcessor
 from prompt_toolkit.keys import Keys
 
 from doitlive import RETURNS, echo, wait_for
 
 
-class DoitliveKeyProcessor:
+class DoitliveKeyProcessor(KeyProcessor):
     def __init__(self, wrapped_processor, next_keys):
         self.__wrapped = wrapped_processor
         self.__next_keys = next_keys
@@ -121,9 +122,11 @@ class DoitliveTerminalInteractiveShell(TerminalInteractiveShell):
     # Override TerminalInteractiveShell
     def init_prompt_toolkit_cli(self):
         super().init_prompt_toolkit_cli()
-        self.pt_app.app.key_processor = DoitliveKeyProcessor(
-            wrapped_processor=self.pt_app.app.key_processor, next_keys=self.next_keys
-        )
+        if self.pt_app:
+            self.pt_app.app.key_processor = DoitliveKeyProcessor(
+                wrapped_processor=self.pt_app.app.key_processor,
+                next_keys=self.next_keys,
+            )
 
 
 class PlayerTerminalIPythonApp(TerminalIPythonApp):
