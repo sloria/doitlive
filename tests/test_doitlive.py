@@ -234,8 +234,13 @@ def test_get_git_branch(runner):
         subprocess.call(["git", "init"])
         subprocess.call(["git", "add", "."])
         subprocess.call(["git", "commit", "-c", '"initial commit"'])
+        default_branch_name = (
+            subprocess.check_output(["git", "config", "--get", "init.defaultBranch"])
+            .decode("utf-8")
+            .strip()
+        )
         branch = doitlive.get_current_git_branch()
-        assert branch == "master"
+        assert branch == default_branch_name.strip()
 
 
 class TestSessionState:
