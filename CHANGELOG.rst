@@ -1,6 +1,14 @@
 Changelog
 ---------
 
+unreleased
+**********
+
+Fixes:
+
+- Fix handling of ``cd`` with quoted paths and no arguments (:pr:`322`).
+  Thanks :user:`ArmaanjeetSandhu` for the PR.
+
 5.2.0 (2025-11-01)
 ******************
 

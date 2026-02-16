@@ -129,6 +129,26 @@ class TestPlayer:
 
         assert result.exit_code == 0
 
+    def test_cd_spaces(self, runner):
+        user_input = (
+            random_string(len('mkdir "test dir"'))
+            + "\n"
+            + random_string(len('cd "test dir"'))
+            + "\n"
+            + random_string(len("pwd"))
+            + "\n"
+            + random_string(len("cd .."))
+            + "\n"
+            + random_string(len('rmdir "test dir"'))
+            + "\n"
+        )
+
+        with runner.isolated_filesystem():
+            result = run_session(runner, "cd_spaces.session", user_input)
+
+        assert result.exit_code == 0
+        assert "test dir" in result.output
+
     def test_python_session(self, runner):
         user_input = '\npython\nprint("f" + "o" + "o")\n'
         result = run_session(runner, "python.session", user_input)
