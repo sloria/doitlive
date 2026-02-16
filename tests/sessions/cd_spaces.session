@@ -1,0 +1,5 @@
+mkdir "test dir"
+cd "test dir"
+pwd
+cd ..
+rmdir "test dir"

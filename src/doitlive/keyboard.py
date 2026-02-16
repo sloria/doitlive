@@ -94,7 +94,12 @@ def run_command(
     command_as_list = shlex.split(cmd)
     if len(command_as_list) and command_as_list[0] == "cd":
         cwd = os.getcwd()  # Save cwd
-        directory = cmd.split()[1].strip()
+
+        if len(command_as_list) > 1:
+            directory = command_as_list[1]
+        else:
+            directory = "~"
+
         if directory == "-":  # Go back to $OLDPWD
             directory = os.environ.get("OLDPWD", directory)
         try:
