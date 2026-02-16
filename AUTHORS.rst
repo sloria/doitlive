@@ -24,4 +24,4 @@ Contributors (chronological)
 - Matan Rosenberg `@matan129 <https://github.com/matan129>`_
 - Matthias Maennich  `@metti <https://github.com/metti>`_
 - Dvir Bechor  `@DvirB10 <https://github.com/DvirB10>`_
-
+- Armaanjeet Singh Sandhu `@ArmaanjeetSandhu <https://github.com/ArmaanjeetSandhu>`_
