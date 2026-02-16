@@ -1,6 +1,6 @@
 [project]
 name = "doitlive"
-version = "5.2.0"
+version = "5.2.1"
 description = "Because sometimes you need to do it live."
 readme = "README.rst"
 license = { file = "LICENSE" }
