@@ -169,12 +169,20 @@ def run(
         commentecho=commentecho,
     )
 
+    backslash_broken_command_buffer = []
     i = 0
     while i < len(commands):
         command = commands[i].strip()
         i += 1
         if not command:
             continue
+        if command.endswith("\\"):
+            backslash_broken_command_buffer.append(command[:-1])
+            continue
+        if backslash_broken_command_buffer:
+            backslash_broken_command_buffer += command
+            command = "".join(backslash_broken_command_buffer)
+            backslash_broken_command_buffer = []
         is_comment = command.startswith("#")
         if not is_comment:
             command_as_list = shlex.split(command)
@@ -466,11 +474,23 @@ def echo_rec_buffer(commands):
 
 def run_recorder(shell, prompt, aliases=None, envvars=None):
     commands = []
-    prefix = "(" + style("REC", fg="red") + ") "
+    default_prefix = "(" + style("REC", fg="red") + ") "
+    broken_line_prefix = "> "
+    backslash_broken_command_buffer = []
     while True:
-        formatted_prompt = prefix + format_prompt(THEMES[prompt]) + " "
+        formatted_prompt = (
+            default_prefix + format_prompt(THEMES[prompt]) + " "
+            if not backslash_broken_command_buffer
+            else broken_line_prefix
+        )
         command = click.prompt(formatted_prompt, prompt_suffix="").strip()
-
+        if command.endswith("\\"):
+            backslash_broken_command_buffer.append(command[:-1])
+            continue
+        if backslash_broken_command_buffer:
+            backslash_broken_command_buffer += command
+            command = "".join(backslash_broken_command_buffer)
+            backslash_broken_command_buffer = []
         if command == STOP_COMMAND:
             break
         elif command == PREVIEW_COMMAND:
