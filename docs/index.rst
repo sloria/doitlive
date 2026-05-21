@@ -65,11 +65,23 @@ Examples
     # Use zsh
     $ doitlive play session.sh --shell /bin/zsh
 
+.. _stealth_mode:
+
 Stealth mode
 ------------
 
 Hit the TAB key to enter "stealth mode." While in stealth mode, you can
 enter commands normally. Hit TAB again to exit stealth mode.
+
+Keyboard shortcuts
+------------------
+
+While a session is playing, the following keys are available:
+
+- ``Ctrl-C``: Exit the session at any time.
+- ``Ctrl-Z``: Suspend the session and return to the parent shell. Resume with ``fg`` to drop back into the presentation.
+- ``Ctrl-L``: Clear the screen.
+- ``TAB``: Toggle :ref:`stealth mode <stealth_mode>`.
 
 Using the recorder
 ------------------
@@ -97,7 +109,20 @@ doitlive comes with many prompt themes. To use a theme:
 
 You can also change a session's theme by using a comment directive (see :ref:`Comment magic <comment_magic>` below).
 
-To view a list of available themes, run ``doitlive themes`` or ``doitlive themes --preview``.
+Finding premade themes
+**********************
+
+The full list of themes that ship with doitlive can be listed or previewed from the command line:
+
+.. code-block:: console
+
+    $ doitlive themes --list
+    $ doitlive themes --preview
+
+Creating your own theme
+***********************
+
+To use a custom prompt, pass a template string to ``-p`` instead of a theme name, or set it via the ``#doitlive prompt:`` comment directive in your session file. The :ref:`Comment magic <comment_magic>` section lists the available placeholders (``{user}``, ``{hostname}``, ``{dir}``, ``{cwd}``, ``{now}``, ``{vcs_branch}``) and ANSI styles.
 
 
 .. _comment_magic:
