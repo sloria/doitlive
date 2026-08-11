@@ -38,7 +38,7 @@ dev = ["doitlive[tests]", "tox", "pre-commit>=3.6,<5.0"]
 doitlive = "doitlive.cli:cli"
 
 [build-system]
-requires = ["flit_core<4"]
+requires = ["flit_core<5"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.sdist]
